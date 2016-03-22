@@ -1,6 +1,10 @@
 # ci-test-shield
 This repo contains the eagle schematics for the ARM mbed CI Test shield. 
 
+![Schematic](./ci-test-shield-sch.PNG)
+![Board Layout](./ci-test-shield-brd.PNG)
+
+
 ## How to reproduce
 0. (Optional) Download eagle files
 1. Buy PCB from OSHPark or other service
