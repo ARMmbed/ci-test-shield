@@ -7,6 +7,7 @@ This repo contains the eagle schematics for the ARM mbed CI Test shield.
 2. Buy Components from Element14 or other vendor
 3. Buy Headers from Samtec or other vendor
 4. Assemble board
+For more information see the [Releases](https://github.com/ARMmbed/ci-test-shield/releases) page.
 
 ## Software
 There is a companion program that uses the CI Test Shield. You can find the program here <TODO>. 
