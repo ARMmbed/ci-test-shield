@@ -6,25 +6,25 @@
 
 using namespace utest::v1;
 
-AnalogIn ain(A0);
-BusInOut outputs(A1,A2,A3,A4,A5);
-
 // Test Analog In
-void test_A0(){
+void test_A0in(){
+    AnalogIn ain(A0);
+    BusInOut outputs(A1,A2,A3,A4,A5);
     outputs.output();
     int x = 0;
-    volatile int y= 0;
+    int y= 0;
     outputs = y;
     float prev_value = 0;
     for(x = 0; x<5; x++) {
-    //	printf("X=%d\n",x);
-    //    printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
+//        printf("X=%d\n",x);
+//        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
         TEST_ASSERT(ain.read() > prev_value)
         prev_value = ain.read();
         y = (y<<1) + 1;
         outputs = y;
     }
-    //printf("Finished the Test\n");
+//    printf("Finished the Test\n");
+    TEST_ASSERT(true);
 }
 
 
@@ -36,7 +36,7 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
 
 // Test cases
 Case cases[] = {
-    Case("Test Analog Input on A0", test_A0)
+    Case("Test Analog Input on A0", test_A0in),
 };
 
 Specification specification(test_setup, cases);
