@@ -1,5 +1,8 @@
 # ci-test-shield
-This repo contains the eagle schematics for the ARM mbed CI Test shield.
+This repo contains the eagle schematics and test code for the ARM mbed CI Test shield.
+
+## Known Issues
+- SPI Tests not working due to issue with SD Card driver, will be fixed soon.
 
 ## How to reproduce
 0. (Optional) Download eagle files
