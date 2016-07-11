@@ -6,11 +6,9 @@
 
 using namespace utest::v1;
 
-Serial uart(D1,D0);
-
-
 // Test single Write / Read
 void test_uart_single(){
+	Serial uart(D1,D0);
 	char value = '0';
 	uart.putc('x');
 	printf("putc\n");
