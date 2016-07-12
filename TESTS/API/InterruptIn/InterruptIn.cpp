@@ -28,7 +28,7 @@ void InterruptInTest()
 	result = false;
 	intin.rise(cbfn);
 	dout = 1;
-	wait(1);
+	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
 	TEST_ASSERT(result);
 
@@ -38,7 +38,7 @@ void InterruptInTest()
 	result = false;
 	intin.fall(cbfn);
 	dout = 0;
-	wait(1);
+	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
 	TEST_ASSERT(result);
 }
