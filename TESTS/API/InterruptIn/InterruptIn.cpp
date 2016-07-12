@@ -6,14 +6,40 @@
 
 using namespace utest::v1;
 
-// A test that returns successfully is considered successful
-void test_success() {
-    TEST_ASSERT(true);
+volatile bool result = false;
+
+// Callback for all InterruptInput functions
+void cbfn(void){
+	result = true;
+	printf("\t**** Interrupt Triggered!\n");
 }
 
-// Tests that assert are considered failing
-void test_failure() {
-    TEST_ASSERT(false);
+// Test Interrupt Input 
+void test_intin_d0(){
+	InterruptIn intin(D0);
+	DigitalOut dout(D1);
+
+	// Test Rising Edge InterruptIn
+	//printf("***** Rising Edge Test \n");
+	dout = 0;
+	result = false;
+	intin.rise(cbfn);
+	dout = 1;
+	wait(1);
+	//printf("Value of result is : %d\n",result);
+	TEST_ASSERT(result);
+
+	// Test Falling Edge InterruptIn
+	//printf("***** Falling Edge Test \n");
+	dout = 1;
+	result = false;
+	intin.fall(cbfn);
+	dout = 0;
+	wait(1);
+	//printf("Value of result is : %d\n",result);
+	TEST_ASSERT(result);
+
+	//printf("***** Test Finished! \n");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
@@ -24,8 +50,7 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
 
 // Test cases
 Case cases[] = {
-    Case("Testing success test", test_success),
-    Case("Testing failure test", test_failure),
+    Case("Test InterruptIn on D0", test_intin_d0),
 };
 
 Specification specification(test_setup, cases);
