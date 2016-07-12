@@ -3,6 +3,7 @@ This repo contains the eagle schematics and test code for the ARM mbed CI Test s
 
 ## Known Issues
 - SPI Tests not working due to issue with SD Card driver, will be fixed soon.
+- The latest version of DAP-Link interface firmware should be used as old versions may not support the testing framework. 
 
 ## How to reproduce
 0. (Optional) Download eagle files
