@@ -49,18 +49,25 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
     return verbose_test_setup_handler(number_of_cases);
 }
 
+// Handle test failures, keep testing, dont stop
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+    greentea_case_failure_abort_handler(source, reason);
+    return STATUS_CONTINUE;
+}
+
 // Test cases
+// TODO: take pins from pinnames.h or from config file
 Case cases[] = {
-    Case("Test InterruptIn on D0", InterruptInTest<D0,D1>),
-    Case("Test InterruptIn on D1", InterruptInTest<D1,D0>),
-    Case("Test InterruptIn on D2", InterruptInTest<D2,D3>),
-    Case("Test InterruptIn on D3", InterruptInTest<D3,D2>),
-    Case("Test InterruptIn on D4", InterruptInTest<D4,D5>),
-    Case("Test InterruptIn on D5", InterruptInTest<D5,D4>),
-    Case("Test InterruptIn on D6", InterruptInTest<D6,D7>),
-    Case("Test InterruptIn on D7", InterruptInTest<D7,D6>),
-    Case("Test InterruptIn on D8", InterruptInTest<D8,D9>),
-    Case("Test InterruptIn on D9", InterruptInTest<D9,D8>),
+    Case("Test InterruptIn on D0", InterruptInTest<D0,D1>,greentea_failure_handler),
+    Case("Test InterruptIn on D1", InterruptInTest<D1,D0>,greentea_failure_handler),
+    Case("Test InterruptIn on D2", InterruptInTest<D2,D3>,greentea_failure_handler),
+    Case("Test InterruptIn on D3", InterruptInTest<D3,D2>,greentea_failure_handler),
+    Case("Test InterruptIn on D4", InterruptInTest<D4,D5>,greentea_failure_handler),
+    Case("Test InterruptIn on D5", InterruptInTest<D5,D4>,greentea_failure_handler),
+    Case("Test InterruptIn on D6", InterruptInTest<D6,D7>,greentea_failure_handler),
+    Case("Test InterruptIn on D7", InterruptInTest<D7,D6>,greentea_failure_handler),
+    Case("Test InterruptIn on D8", InterruptInTest<D8,D9>,greentea_failure_handler),
+    Case("Test InterruptIn on D9", InterruptInTest<D9,D8>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

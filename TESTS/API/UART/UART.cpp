@@ -28,15 +28,30 @@ void test_uart_single(){
 	TEST_ASSERT(true);
 }
 
+// TODO: add more verbose tests
+// - different speeds (9600 / 115200 / ...etc)
+// - flush buffers
+// - write longer strings
+// - special characters
+// - send break characters
+// ...etc
+
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(40, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
+// Handle test failures, keep testing, dont stop
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+    greentea_case_failure_abort_handler(source, reason);
+    return STATUS_CONTINUE;
+}
+
 // Test cases
+// TODO: take pins from config file or from pinnames.h
 Case cases[] = {
-    Case("Testing UART on D1/D0, single byte W/R ", test_uart_single),
+    Case("Testing UART on D1/D0, single byte W/R ", test_uart_single, greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

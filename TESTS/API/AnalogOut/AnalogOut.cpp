@@ -34,6 +34,7 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
     return verbose_test_setup_handler(number_of_cases);
 }
 
+// Handle test failures, keep testing, dont stop
 utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;
