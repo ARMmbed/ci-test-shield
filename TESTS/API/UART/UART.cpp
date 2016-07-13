@@ -20,12 +20,11 @@ void test_uart_single(){
 	TEST_ASSERT(UART_SENTINAL == value);
 	if(UART_SENTINAL == value){
 	//	printf("Test Finished Successfully!\n");
-		TEST_ASSERT(true);
+		TEST_ASSERT_MESSAGE(true,"characters match!");
 	} else{
 	//	printf("Test Failed! \n");
-		TEST_ASSERT(false);
+		TEST_ASSERT_MESSAGE(false,"characters do not match, possible corruption?");
 	}
-	TEST_ASSERT(true);
 }
 
 // TODO: add more verbose tests

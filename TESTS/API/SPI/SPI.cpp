@@ -24,7 +24,7 @@
 
 void test_sd_write(){
 	// Currently no SD Test written, waiting for public release to enable
-	TEST_ASSERT(false);
+	TEST_ASSERT_MESSAGE(false,"SD Tests are not supported yet, this is a placeholder for future tests.");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
