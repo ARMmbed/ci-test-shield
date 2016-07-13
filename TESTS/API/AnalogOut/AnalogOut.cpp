@@ -6,12 +6,13 @@
 
 using namespace utest::v1;
 
-AnalogIn ain(A0);
-AnalogOut aout(A5);
-
-//Test Analog Output on A5
-void AnalogOutput_Test(){
-    
+// Template to set one Analog pin as input and then cycle through the rest as outputs.
+// As you turn more pins on the voltage on the ain pin will go up.
+template <PinName aout_pin, PinName ain_pin> 
+void AnalogOutput_Test()
+{
+    AnalogIn ain(ain_pin);
+    AnalogOut aout(aout_pin);
     float valueOff = 0;
     float valueOn = 0;
     aout = 0;
@@ -33,9 +34,15 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
     return verbose_test_setup_handler(number_of_cases);
 }
 
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+    greentea_case_failure_abort_handler(source, reason);
+    return STATUS_CONTINUE;
+}
+
 // Test cases
+// TODO: take input based on pinmap
 Case cases[] = {
-    Case("Test Analog Output on A5", AnalogOutput_Test),
+    Case("Test Analog Output on A5", AnalogOutput_Test<A5,A0>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
