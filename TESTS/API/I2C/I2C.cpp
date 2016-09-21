@@ -1,8 +1,13 @@
+// check if I2C is supported on this device
+#if !I2C
+  #error [NOT_SUPPORTED] I2C not supported
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "rtos.h"
+//#include "rtos.h"
 #include "LM75B.h"
 #include <I2CEeprom.h>
 

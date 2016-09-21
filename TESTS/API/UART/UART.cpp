@@ -1,8 +1,13 @@
+// check if Seroa; is supported on this device
+#if !DEVICE_SERIAL
+  #error [NOT_SUPPORTED] Serial (UART) not supported
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "rtos.h"
+//#include "rtos.h"
 
 using namespace utest::v1;
 #define UART_SENTINAL 'x'

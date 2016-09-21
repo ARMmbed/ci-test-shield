@@ -1,20 +1,28 @@
 // Waiting for public release to enable, currently there are problems with the SD driver
+#error [NOT_SUPPORTED] Waiting on public release of SD FileSystem API
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "rtos.h"
-// #include "SDFileSystem.h"
+//#include "rtos.h"
+//#include <SDFileSystem.h>
 
- using namespace utest::v1;
+// check if SPI is supported on this device
+#if !DEVICE_SPI
+  #error [NOT_SUPPORTED] SPI is not supported
+#endif
 
-// SDFileSystem sd(D11, D12, D13, D10, "sd"); // the pinout on the mbed Cool Components workshop board
+using namespace utest::v1;
+
+//SDFileSystem sd(D11, D12, D13, D10, "sd"); // the pinout on the mbed Cool Components workshop board
 
 // // Test SPI via the SD File System
 // void test_sd_write(){
 //     mkdir("/sd/mydir", 0777);
 //     FILE *fp = fopen("/sd/mydir/sdtest.txt", "w");
-//     TEST_ASSERT(fp != NULL);
+//     //printf("\r\nfp == %d\r\n",fp);
+//     TEST_ASSERT_MESSAGE(fp != NULL,"Could not open file to write!");
 //     // if(fp == NULL) {
 //     //     error("Could not open file for write\n");
 //     // }

@@ -1,8 +1,13 @@
+// check if AnalogOut is supported on this device
+#if !DEVICE_ANALOGOUT
+  #error [NOT_SUPPORTED] AnalogOut not supported
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "rtos.h"
+//#include "rtos.h"
 
 using namespace utest::v1;
 
@@ -19,12 +24,12 @@ void AnalogOutput_Test()
     valueOff = ain.read();
     aout = 0.5;
     valueOn = ain.read();
-    printf("***** valueOff = %f, valueOn = %f \n",valueOff, valueOn);
+    printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
     TEST_ASSERT(valueOn > valueOff);
     valueOff = ain.read();
     aout = 1.0;
     valueOn = ain.read();
-    printf("***** valueOff = %f, valueOn = %f \n",valueOff, valueOn);
+    printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
     TEST_ASSERT(valueOn > valueOff);
 }
 
