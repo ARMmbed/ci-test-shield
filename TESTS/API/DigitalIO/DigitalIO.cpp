@@ -35,16 +35,16 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pinnames from config file
 Case cases[] = {
-    Case("Testing Digital I/O on D2", DigitalIO_Test<D2,D3>,greentea_failure_handler),
-    Case("Testing Digital I/O on D3", DigitalIO_Test<D3,D2>,greentea_failure_handler),
-    Case("Testing Digital I/O on D4", DigitalIO_Test<D4,D5>,greentea_failure_handler),
-    Case("Testing Digital I/O on D5", DigitalIO_Test<D5,D4>,greentea_failure_handler),
-    Case("Testing Digital I/O on D6", DigitalIO_Test<D6,D7>,greentea_failure_handler),
-    Case("Testing Digital I/O on D7", DigitalIO_Test<D7,D6>,greentea_failure_handler),
-    Case("Testing Digital I/O on D8", DigitalIO_Test<D8,D9>,greentea_failure_handler),
-    Case("Testing Digital I/O on D9", DigitalIO_Test<D9,D8>,greentea_failure_handler),
-    Case("Testing Digital I/O on D0", DigitalIO_Test<D0,D1>,greentea_failure_handler),
-    Case("Testing Digital I/O on D1", DigitalIO_Test<D1,D0>,greentea_failure_handler),
+    Case("Testing Digital I/O on D2", DigitalIO_TestC,greentea_failure_handler),
+    Case("Testing Digital I/O on D3", DigitalIO_Test<CITS_DIO_3,CITS_DIO_2>,greentea_failure_handler),
+    Case("Testing Digital I/O on D4", DigitalIO_Test<CITS_DIO_4,CITS_DIO_5>,greentea_failure_handler),
+    Case("Testing Digital I/O on D5", DigitalIO_Test<CITS_DIO_5,CITS_DIO_4>,greentea_failure_handler),
+    Case("Testing Digital I/O on D6", DigitalIO_Test<CITS_DIO_6,CITS_DIO_7>,greentea_failure_handler),
+    Case("Testing Digital I/O on D7", DigitalIO_Test<CITS_DIO_7,CITS_DIO_6>,greentea_failure_handler),
+    Case("Testing Digital I/O on D8", DigitalIO_Test<CITS_DIO_8,CITS_DIO_9>,greentea_failure_handler),
+    Case("Testing Digital I/O on D9", DigitalIO_Test<CITS_DIO_9,CITS_DIO_8>,greentea_failure_handler),
+//    Case("Testing Digital I/O on D0", DigitalIO_Test<CITS_DIO_0,CITS_DIO_1>,greentea_failure_handler),
+//    Case("Testing Digital I/O on D1", DigitalIO_Test<CITS_DIO_1,CITS_DIO_0>,greentea_failure_handler),
 
 };
 

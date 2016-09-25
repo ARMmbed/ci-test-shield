@@ -15,7 +15,7 @@
 
 using namespace utest::v1;
 
-//SDFileSystem sd(D11, D12, D13, D10, "sd"); // the pinout on the mbed Cool Components workshop board
+//SDFileSystem sd(CITS_SPI_MOSI, CITS_SPI_MISO, CITS_SPI_CLK, CITS_SPI_CS, "sd"); // the pinout on the mbed Cool Components workshop board
 
 // // Test SPI via the SD File System
 // void test_sd_write(){

@@ -12,7 +12,7 @@
 using namespace utest::v1;
 #define UART_SENTINAL 'x'
 
-Serial uart(D1,D0);
+Serial uart(CITS_UART_TX,CITS_UART_RX);
 
 // Test single Write / Read
 void test_uart_single(){
