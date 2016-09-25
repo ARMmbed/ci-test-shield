@@ -46,9 +46,8 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 // Test cases
-// TODO: take input based on pinmap
 Case cases[] = {
-    Case("Test Analog Output on A5", AnalogOutput_Test<A5,A0>,greentea_failure_handler),
+    Case("Test Analog Output on A5", AnalogOutput_Test<CITS_ANALOG_OUT,CITS_ANALOG_IN_0>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
