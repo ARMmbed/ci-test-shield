@@ -1,6 +1,6 @@
 // check if I2C is supported on this device
-#if !I2C
-  #error [NOT_SUPPORTED] I2C not supported
+#if !DEVICE_I2C
+  #error I2C not supported on this platform. 
 #endif
 
 #include "mbed.h"
