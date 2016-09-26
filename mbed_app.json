@@ -27,9 +27,6 @@
         "AOUT":  "A5"
     },
     "target_overrides": {
-        "A":{
-            "OVERRIDES":1
-        },
         "K64F": {
              "AOUT": "DAC0_OUT"
         }
