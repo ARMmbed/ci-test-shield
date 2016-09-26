@@ -1,6 +1,6 @@
 // check if AnalogOut is supported on this device
 #if !DEVICE_ANALOGOUT
-  #error [NOT_SUPPORTED] AnalogOut not supported
+  #error AnalogOut not supported on this platform
 #endif
 
 #include "mbed.h"

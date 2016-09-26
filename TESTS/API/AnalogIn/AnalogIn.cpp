@@ -1,5 +1,5 @@
 #if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported
+  #error AnalogIn not supported on this platform
 #endif
 
 #include "mbed.h"

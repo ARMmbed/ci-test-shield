@@ -1,5 +1,5 @@
 #if !DEVICE_INTERRUPTIN
-	#error [NOT_SUPPORTED] InterruptIn is not supported
+	#error InterruptIn is not supported on this platform
 #endif
 
 #include "mbed.h"

@@ -10,7 +10,7 @@
 
 // check if SPI is supported on this device
 #if !DEVICE_SPI
-  #error [NOT_SUPPORTED] SPI is not supported
+  #error SPI is not supported on this platform!
 #endif
 
 using namespace utest::v1;
