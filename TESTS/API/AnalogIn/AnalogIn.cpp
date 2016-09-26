@@ -49,12 +49,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
-    Case("Test Analog Input on A0", AnalogInput_Test<A0,A1,A2,A3,A4,A5>,greentea_failure_handler),
-    Case("Test Analog Input on A1", AnalogInput_Test<A1,A2,A3,A4,A5,A0>,greentea_failure_handler),
-    Case("Test Analog Input on A2", AnalogInput_Test<A2,A3,A4,A5,A0,A1>,greentea_failure_handler),
-    Case("Test Analog Input on A3", AnalogInput_Test<A3,A4,A5,A0,A1,A2>,greentea_failure_handler),
-    Case("Test Analog Input on A4", AnalogInput_Test<A4,A5,A0,A1,A2,A3>,greentea_failure_handler),
-    Case("Test Analog Input on A5", AnalogInput_Test<A5,A0,A1,A2,A3,A4>,greentea_failure_handler),
+    Case("Test Analog Input on A0", AnalogInput_Test<MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5>,greentea_failure_handler),
+    Case("Test Analog Input on A1", AnalogInput_Test<MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("Test Analog Input on A2", AnalogInput_Test<MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1>,greentea_failure_handler),
+    Case("Test Analog Input on A3", AnalogInput_Test<MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2>,greentea_failure_handler),
+    Case("Test Analog Input on A4", AnalogInput_Test<MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3>,greentea_failure_handler),
+    Case("Test Analog Input on A5", AnalogInput_Test<MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

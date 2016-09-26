@@ -1,34 +1,37 @@
 {
     "config": {
-        "CITS_UART_RX": "D0",
-        "CITS_UART_TX": "D1",
-        "CITS_DIO_2": "D2",
-        "CITS_DIO_3": "D3",
-        "CITS_DIO_4": "D4",
-        "CITS_DIO_5": "D5",
-        "CITS_DIO_6": "D6",
-        "CITS_DIO_7": "D7",
-        "CITS_DIO_8": "D8",
-        "CITS_DIO_9": "D9",
-        "CITS_SPI_CS": "D10",
-        "CITS_SPI_MOSI": "D11",
-        "CITS_SPI_MISO": "D12",
-        "CITS_SPI_CLK": "D13",
-        "CITS_I2C_SDA": "D14",
-        "CITS_I2C_SCL": "D15",
-        "CITS_ANALOG_IN_0": "A0",
-        "CITS_ANALOG_IN_1": "A1",
-        "CITS_ANALOG_IN_2": "A2",
-        "CITS_ANALOG_IN_3": "A3",
-        "CITS_ANALOG_IN_4": "A4",
-        "CITS_ANALOG_OUT":  "A5",
+        "UART_RX": "D0",
+        "UART_TX": "D1",
+        "DIO_0": "D0",
+        "DIO_1": "D1",
+        "DIO_2": "D2",
+        "DIO_3": "D3",
+        "DIO_4": "D4",
+        "DIO_5": "D5",
+        "DIO_6": "D6",
+        "DIO_7": "D7",
+        "DIO_8": "D8",
+        "DIO_9": "D9",
+        "SPI_CS": "D10",
+        "SPI_MOSI": "D11",
+        "SPI_MISO": "D12",
+        "SPI_CLK": "D13",
+        "I2C_SDA": "D14",
+        "I2C_SCL": "D15",
+        "AIN_0": "A0",
+        "AIN_1": "A1",
+        "AIN_2": "A2",
+        "AIN_3": "A3",
+        "AIN_4": "A4",
+        "AIN_5": "A5",
+        "AOUT":  "A5"
     },
     "target_overrides": {
         "A":{
-            "CITS_OVERRIDES":1,
+            "OVERRIDES":1
         },
         "K64F": {
-             "CITS_ANALOG_OUT": "DAC0_OUT",
+             "AOUT": "DAC0_OUT"
         }
     }
 }
