@@ -1,5 +1,5 @@
 #if !DEVICE_INTERRUPTIN
-	#error [NOT_SUPPORTED] InterruptIn is not supported
+	#error InterruptIn is not supported on this platform, add 'DEVICE_INTERRUPTIN' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -34,7 +34,7 @@ void InterruptInTest()
 	dout = 1;
 	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT(result);
+	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
 
 	// Test Falling Edge InterruptIn
 	//printf("***** Falling Edge Test \n");
@@ -44,7 +44,7 @@ void InterruptInTest()
 	dout = 0;
 	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT(result);
+	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
@@ -62,16 +62,16 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pins from pinnames.h or from config file
 Case cases[] = {
-    Case("Test InterruptIn on D0", InterruptInTest<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
-    Case("Test InterruptIn on D1", InterruptInTest<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
-    Case("Test InterruptIn on D2", InterruptInTest<MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3>,greentea_failure_handler),
-    Case("Test InterruptIn on D3", InterruptInTest<MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_2>,greentea_failure_handler),
-    Case("Test InterruptIn on D4", InterruptInTest<MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5>,greentea_failure_handler),
-    Case("Test InterruptIn on D5", InterruptInTest<MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_4>,greentea_failure_handler),
-    Case("Test InterruptIn on D6", InterruptInTest<MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7>,greentea_failure_handler),
-    Case("Test InterruptIn on D7", InterruptInTest<MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_6>,greentea_failure_handler),
-    Case("Test InterruptIn on D8", InterruptInTest<MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9>,greentea_failure_handler),
-    Case("Test InterruptIn on D9", InterruptInTest<MBED_CONF_APP_DIO_9,MBED_CONF_APP_DIO_8>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_0", InterruptInTest<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_1", InterruptInTest<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_2", InterruptInTest<MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_3", InterruptInTest<MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_2>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_4", InterruptInTest<MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_5", InterruptInTest<MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_4>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_6", InterruptInTest<MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_7", InterruptInTest<MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_6>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_8", InterruptInTest<MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9>,greentea_failure_handler),
+    Case("Test InterruptIn on DIO_9", InterruptInTest<MBED_CONF_APP_DIO_9,MBED_CONF_APP_DIO_8>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

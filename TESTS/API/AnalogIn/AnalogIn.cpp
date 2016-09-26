@@ -1,5 +1,5 @@
 #if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported
+  #error AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -25,7 +25,7 @@ void AnalogInput_Test()
     for(x = 0; x<5; x++) {
 //        printf("X=%d\n",x);
 //        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
-        TEST_ASSERT(ain.read() > prev_value)
+        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not incriment. Check that you have assigned valid pins in mbed_app.json file")
         prev_value = ain.read();
         y = (y<<1) + 1;
         outputs = y;
@@ -49,12 +49,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
-    Case("Test Analog Input on A0", AnalogInput_Test<MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5>,greentea_failure_handler),
-    Case("Test Analog Input on A1", AnalogInput_Test<MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
-    Case("Test Analog Input on A2", AnalogInput_Test<MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1>,greentea_failure_handler),
-    Case("Test Analog Input on A3", AnalogInput_Test<MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2>,greentea_failure_handler),
-    Case("Test Analog Input on A4", AnalogInput_Test<MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3>,greentea_failure_handler),
-    Case("Test Analog Input on A5", AnalogInput_Test<MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_0", AnalogInput_Test<MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_1", AnalogInput_Test<MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_2", AnalogInput_Test<MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_3", AnalogInput_Test<MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_4", AnalogInput_Test<MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3>,greentea_failure_handler),
+    Case("Test Analog Input on AIN_5", AnalogInput_Test<MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

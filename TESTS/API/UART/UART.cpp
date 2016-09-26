@@ -1,6 +1,6 @@
 // check if Seroa; is supported on this device
 #if !DEVICE_SERIAL
-  #error [NOT_SUPPORTED] Serial (UART) not supported
+  #error Serial (UART) not supported on this platform, add 'DEVICE_SERIAL' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -55,7 +55,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pins from config file or from pinnames.h
 Case cases[] = {
-    Case("Testing UART on D1/D0, single byte W/R ", test_uart_single, greentea_failure_handler),
+    Case("Testing UART on UART_RX/UART_TX, single byte W/R ", test_uart_single, greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

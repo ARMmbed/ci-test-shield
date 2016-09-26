@@ -1,6 +1,6 @@
 // check if AnalogOut is supported on this device
 #if !DEVICE_ANALOGOUT
-  #error [NOT_SUPPORTED] AnalogOut not supported
+  #error AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
 #endif
 
 #include "mbed.h"
@@ -25,12 +25,12 @@ void AnalogOutput_Test()
     aout = 0.5;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
-    TEST_ASSERT(valueOn > valueOff);
+    TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 0.5");
     valueOff = ain.read();
     aout = 1.0;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
-    TEST_ASSERT(valueOn > valueOff);
+    TEST_ASSERT(valueOn > valueOff,"Value has not increased, expected 1.0");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
@@ -47,7 +47,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
-    Case("Test Analog Output on A5", AnalogOutput_Test<MBED_CONF_APP_AOUT,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("Test Analog Output on AOUT", AnalogOutput_Test<MBED_CONF_APP_AOUT,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
