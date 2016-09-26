@@ -1,6 +1,6 @@
 // check if Seroa; is supported on this device
 #if !DEVICE_SERIAL
-  #error Serial (UART) not supported on this platform
+  #error Serial (UART) not supported on this platform, add 'DEVICE_SERIAL' deffinition to your platform.
 #endif
 
 #include "mbed.h"
