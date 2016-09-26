@@ -25,7 +25,7 @@ void AnalogInput_Test()
     for(x = 0; x<5; x++) {
 //        printf("X=%d\n",x);
 //        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
-        TEST_ASSERT(ain.read() > prev_value)
+        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not incriment. Check that you have assigned valid pins in mbed_app.json file")
         prev_value = ain.read();
         y = (y<<1) + 1;
         outputs = y;

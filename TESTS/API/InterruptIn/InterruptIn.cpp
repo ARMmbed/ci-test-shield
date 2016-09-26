@@ -34,7 +34,7 @@ void InterruptInTest()
 	dout = 1;
 	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT(result);
+	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
 
 	// Test Falling Edge InterruptIn
 	//printf("***** Falling Edge Test \n");
@@ -44,7 +44,7 @@ void InterruptInTest()
 	dout = 0;
 	wait(0); // dummy wait to get volatile result value
 	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT(result);
+	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {

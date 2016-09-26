@@ -25,12 +25,12 @@ void AnalogOutput_Test()
     aout = 0.5;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
-    TEST_ASSERT(valueOn > valueOff);
+    TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 0.5");
     valueOff = ain.read();
     aout = 1.0;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
-    TEST_ASSERT(valueOn > valueOff);
+    TEST_ASSERT(valueOn > valueOff,"Value has not increased, expected 1.0");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {

@@ -14,10 +14,10 @@ void DigitalIO_Test()
     DigitalIn din(din_pin);
     // test 0
     dout = 0;
-    TEST_ASSERT(0 == din.read());
+    TEST_ASSERT_MESSAGE(0 == din.read(),"Expected value to be 0, read value was not zero");
     // test 1
     dout = 1;
-    TEST_ASSERT(1 == din.read());
+    TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
