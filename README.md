@@ -5,6 +5,23 @@ If any tests fail then your platform is exhibiting unexpected behavior. More oft
 
 If you platform does not support a specific feature, such as AnalogOut, then that test will fail or error out. This is expected behavior, please make sure to note this in your communications. 
 
+## What to use the CI Test Shield for?
+The CI Test Shield has several uses.
+1. Test mbed-os software port. Useful for mbed partners and community contributors.
+2. Continuous Integration testing during development and during maintinance release cycles. 
+3. SD Card storage can be used for firmware update development. 
+
+## What is tested?
+Current API's that are tested by the CI Test shield are as follows
+1. `DigitalIO`, `Serial`, `InterruptIn` - tested by Loopback on pins D0-9
+2. `AnalogIO` - tested by resistor star network.
+3. `I2C` - tested with temperature sensor and EEPROM memory.
+4. `SPI` - tested with SD Card. 
+
+#### Coming Soon
+* `PWM`
+* `Ticker/Timer/Time`
+
 ## Hardware : Where to get CI Test Shield?
 1. Buy pre-made shield (coming soon)
 2. DIY - buy PCB from OSHPark and parts from Farnell and assemble it yourself! [see [releases](https://github.com/ARMmbed/ci-test-shield/releases) page page for more details]
@@ -51,6 +68,7 @@ For more on how config files work see the [mbed OS docs](https://github.com/ARMm
 ## Troubleshooting
 - make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working tests cant run. 
 - make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
+- AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work. 
 - If you are seeing any weird problems please contact support@mbed.com for help. 
 
 #### Known Issues
