@@ -7,22 +7,26 @@ If you platform does not support a specific feature, such as AnalogOut, then tha
 
 ## What to use the CI Test Shield for?
 The CI Test Shield has several uses.
+
 1. Test mbed-os software port. Useful for mbed partners and community contributors.
 2. Continuous Integration testing during development and during maintinance release cycles. 
 3. SD Card storage can be used for firmware update development. 
 
 ## What is tested?
 Current API's that are tested by the CI Test shield are as follows
+
 1. `DigitalIO`, `Serial`, `InterruptIn` - tested by Loopback on pins D0-9
 2. `AnalogIO` - tested by resistor star network.
 3. `I2C` - tested with temperature sensor and EEPROM memory.
 4. `SPI` - tested with SD Card. 
 
 #### Coming Soon
+
 * `PWM`
 * `Ticker/Timer/Time`
 
 ## Hardware : Where to get CI Test Shield?
+
 1. Buy pre-made shield (coming soon)
 2. DIY - buy PCB from OSHPark and parts from Farnell and assemble it yourself! [see [releases](https://github.com/ARMmbed/ci-test-shield/releases) page page for more details]
 3. Custom - use the [mbed HDK](http://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield) to modify the design to match the headers on your board. 
@@ -31,10 +35,12 @@ Current API's that are tested by the CI Test shield are as follows
 To run the tests associated with the ci-test-shield follow these steps:
 
 #### Pre-requisites
+
 0. Clone this repo to your computer
 1. Install [mbed-cli](https://github.com/armmbed/mbed-cli) tool.
 
 #### Usage
+
 0. Navigate to the repo on your command line. `cd ci-test-shield`
 1. Set your board using the `mbed config target xxx`, where xxx is the board name [protip: use `mbed target --supported` for list of supported boards].
 3. Set your toolchain using the `mbed config toolchain xxx`, where xxx is the toolchain. (`GCC_ARM`, `IAR`, `UVISION`...etc, use `mbed toolchain --supported` for a full list)
