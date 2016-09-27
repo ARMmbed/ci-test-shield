@@ -1,31 +1,56 @@
 # ci-test-shield
-This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](http://github.com/armmbed/mbed-hdk).
+This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](https://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield). Make sure to use the latest version of the hardware to be fully compatible with the tests!
+
+If any tests fail then your platform is exhibiting unexpected behavior. More often than not this indicates a bug in your software port. For maximum mbed compatibility all tests should pass on your platform.
+
+If you platform does not support a specific feature, such as AnalogOut, then that test will fail or error out. This is expected behavior, please make sure to note this in your communications. 
 
 ## Hardware : Where to get CI Test Shield?
-1. Buy pre-made shield from LTEK [coming soon]
+1. Buy pre-made shield (coming soon)
 2. DIY - buy PCB from OSHPark and parts from Farnell and assemble it yourself! [see [releases](https://github.com/ARMmbed/ci-test-shield/releases) page page for more details]
-3. Custom - use the mbed HDK to modify the design to match the headers on your board. 
+3. Custom - use the [mbed HDK](http://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield) to modify the design to match the headers on your board. 
 
 ## Software : How to use?
 To run the tests associated with the ci-test-shield follow these steps:
 
+#### Pre-requisites
+0. Clone this repo to your computer
 1. Install [mbed-cli](https://github.com/armmbed/mbed-cli) tool.
-2. Set your board using the `mbed config target xxx`, where xxx is the board name [protip: use `mbed target --supported` for list of supported boards].
-3. Set your toolchain using the `mbed config toolchain xxx`, where xxx is the toolchain.
+
+#### Usage
+0. Navigate to the repo on your command line. `cd ci-test-shield`
+1. Set your board using the `mbed config target xxx`, where xxx is the board name [protip: use `mbed target --supported` for list of supported boards].
+3. Set your toolchain using the `mbed config toolchain xxx`, where xxx is the toolchain. (`GCC_ARM`, `IAR`, `UVISION`...etc, use `mbed toolchain --supported` for a full list)
 4. Grab dependencies by running the `mbed deploy` or `mbed update` command inside the top level of this repo.
 5. Run the tests with the test shield plugged into your board. The command will look like `mbed test -n tests-api-*` to run all the CI Test Shield tests, or just run `mbed test` to run all tests, including mbed-os system test.
 
-#### Customization : Non-Arduino Header
-If you are testing a board that does not have Arduino R3 style headers then you will need to do the following:
+## Customization  
+All pin mappings are done in the `mbed_app.json` file. If you need to remap anything this is the palce to do it. 
 
-1. Fly wire the relevant pins together between the board under test and the CI Test Shield. 
-2. Modify the pin names in the `mbed_app.json` file to match your boards MCU pin names. For example if your UART is not on D0 / D1 but instead on `PIN_AWESOME` then you would need to change the `TEST_UART_TX:D0` key value pair to be `TEST_UART_TX:PIN_AWESOME`. For more on how config files work see the [mbed OS docs](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md#configuration-data-in-applications).
-3. Run the tests using the config file `mbed test -n tests-api-* --app-config .\mbed_app.json`
+#### Different Pins
+If your board has peripherals on pins that differ from the Arduino R3 Header layout you will need to manually fly wire them into the appropriate header and adjust the `mbed_app.json` file.
 
-If any tests fail then your platform is exhibiting unexpected behavior. More often than not this indicates a bug in your software port. For maximum mbed compatibility all tests should pass on your platform. 
+For example: the NXP K64F board does not have AnalogOut on A5, instead it is on an inside header pin called DAC0_OUT that is not broken out to the Arduino R3 Headers. To account for this we manually fly wire the DAC0_OUT pin to the A5 pin on the CI Test shield and add the following to the `target_overrides` section of the `mbed_app.json` file. 
+
+```json
+    "target_overrides": {
+        "K64F": {
+             "AOUT": "DAC0_OUT"
+        }
+    }
+```
+The above code essentially says "if the target is `K64F` then `#define AOUT DAC0_OUT`", this allows you to fly wire pins and only modify things in one file instead of having to modify all the tests themselves. 
+
+#### Non-Arduino Header
+If you are testing a board that does not have Arduino R3 style headers then you will need to either fly wire all the pins across manually, or if you want a more permenant solution spin your own version of the CI Test shield with headers that map to your board. 
+
+Either way, you will need to heavily modify the `mbed_app.json` file and redefine every pin mapping since your platform will not have the Arduino Header D0-15 or A0-5 pin aliases. 
+
+For more on how config files work see the [mbed OS docs](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md#configuration-data-in-applications).
 
 ## Troubleshooting
 - make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working tests cant run. 
+- make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
 - If you are seeing any weird problems please contact support@mbed.com for help. 
 
 #### Known Issues
