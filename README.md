@@ -76,6 +76,7 @@ For more on how config files work see the [mbed OS docs](https://github.com/ARMm
 - make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
 - AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work. 
 - If you are seeing any weird problems please contact support@mbed.com for help. 
+- If all tests are failing try bending aside pins D0/D1 on the CI Test Shield. Some platforms only have 1 Serial peripheral and will tie together the debug serial channel and the loopback serial channel, which causes problems for the communications for the testing platform. 
 
 #### Known Issues
 - SPI tests skip - This is known and is due to pending change in mbed OS, should be enabled as part of the mbed OS 5.2 Release. 
