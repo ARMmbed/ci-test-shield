@@ -1,6 +1,8 @@
 // check if AnalogOut is supported on this device
+
+#warning [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
 #if !DEVICE_ANALOGOUT
-  #error AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
+  #error [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
 #endif
 
 #include "mbed.h"
@@ -25,12 +27,14 @@ void AnalogOutput_Test()
     aout = 0.5;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
+    TEST_ASSERT_MESSAGE((0.4f < valueOn) && (0.6f > valueOn), "Value is not in expected range of ~0.5f");
     TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 0.5");
     valueOff = ain.read();
     aout = 1.0;
     valueOn = ain.read();
     printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
-    TEST_ASSERT(valueOn > valueOff,"Value has not increased, expected 1.0");
+    TEST_ASSERT_MESSAGE((0.9f < valueOn) && (1.1f > valueOn), "Value is not in expected range of ~0.5f");
+    TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 1.0");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
