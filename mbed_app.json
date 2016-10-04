@@ -18,6 +18,8 @@
         "SPI_CLK": "D13",
         "I2C_SDA": "D14",
         "I2C_SCL": "D15",
+        "I2C_TEMP_ADDR":"0x90",
+        "I2C_EEPROM_ADDR":"0xA0",
         "AIN_0": "A0",
         "AIN_1": "A1",
         "AIN_2": "A2",
