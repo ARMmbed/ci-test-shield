@@ -2,7 +2,7 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-//#include "rtos.h"
+
 
 using namespace utest::v1;
 
@@ -22,7 +22,7 @@ void DigitalIO_Test()
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
-    GREENTEA_SETUP(40, "default_auto");
+    GREENTEA_SETUP(30, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
@@ -35,16 +35,16 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pinnames from config file
 Case cases[] = {
-    Case("Testing Digital I/O on DIO_2/DIO_3", DigitalIO_Test<MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_3/DIO_2", DigitalIO_Test<MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_2>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_4/DIO_5", DigitalIO_Test<MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_5/DIO_4", DigitalIO_Test<MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_4>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_6/DIO_7", DigitalIO_Test<MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_7/DIO_6", DigitalIO_Test<MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_6>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_8/DIO_9", DigitalIO_Test<MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_9/DIO_8", DigitalIO_Test<MBED_CONF_APP_DIO_9,MBED_CONF_APP_DIO_8>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_0/DIO_1", DigitalIO_Test<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
-    Case("Testing Digital I/O on DIO_1/DIO_0", DigitalIO_Test<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_3/DIO_2", DigitalIO_Test<MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_2/DIO_3", DigitalIO_Test<MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_2>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_5/DIO_4", DigitalIO_Test<MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_4/DIO_5", DigitalIO_Test<MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_4>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_7/DIO_6", DigitalIO_Test<MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_6/DIO_7", DigitalIO_Test<MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_6>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_9/DIO_8", DigitalIO_Test<MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_8/DIO_9", DigitalIO_Test<MBED_CONF_APP_DIO_9,MBED_CONF_APP_DIO_8>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_1/DIO_0", DigitalIO_Test<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
+    Case("Testing Digital I/O on DIO_0/DIO_1", DigitalIO_Test<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
 
 };
 
