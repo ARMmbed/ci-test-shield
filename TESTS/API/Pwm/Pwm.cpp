@@ -8,15 +8,12 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-//#include "rtos.h"
+#include <cmath>
 
 using namespace utest::v1;
 
-#define DUTY_CYCLE_STEP  0.1
-#define MIN_DUTY_CYCLE   0.1
-#define MAX_DUTY_CYCLE   0.9
-
 volatile int rise_count;
+Timer timer;
 void cbfn_rise(void){
     rise_count++;
 }
@@ -28,26 +25,90 @@ void cbfn_fall(void){
 
 // Template to set one Analog pin as input and then cycle through the rest as outputs.
 // As you turn more pins on the voltage on the ain pin will go up.
-void PWM_Test_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_seconds, int duty_cycle_percent)
+void PWM_Test_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, float duty_cycle_percent, int num_cycles)
 {
     PwmOut pwm(pwm_out_pin);
     InterruptIn iin(int_in_pin);
     rise_count = 0; // reset counters
     fall_count = 0;
-    pwm.period(period_in_seconds);    // set PWM period
+    timer.reset();
+    iin.rise(cbfn_rise);
+    iin.fall(cbfn_fall);
+    printf("\r\n***\r\n period = %f \r\n***\r\n",(float)period_in_ms / 1000);
+    pwm.period((float)period_in_ms / 1000); // set PWM period
+    timer.start();
     pwm.write(duty_cycle_percent); // set duty cycle
-
-    // TODO: impliment ticket to count time and compare number of PWM ticks that occurred
+    wait_ms(num_cycles*period_in_ms);
+    timer.stop();
+    printf("\r\n***\r\n rise_count = %d, fall count = %d \r\n***\r\n",rise_count,fall_count);
 }
 
 // Template to itterate through a PWM pin, takes in period and tries 10%-100% duty cycle in intervals of 10%
-template <PinName pwm_out_pin, PinName int_in_pin, int period_in_seconds> 
-void PWM_Test()
+template <PinName pwm_out_pin, PinName int_in_pin, int period_in_miliseconds> 
+void PWM_DutyCycle_Test()
 {
-    int x = 0;
+    #define DUTY_CYCLE_STEP  0.1f
+    #define MIN_DUTY_CYCLE   0.1f
+    #define MAX_DUTY_CYCLE   0.9f
+
+    float x = 0;
     for(x = MIN_DUTY_CYCLE; x < MAX_DUTY_CYCLE; x = x+DUTY_CYCLE_STEP){ // itterate duty cycle test
-        PWM_Test_slave(pwm_out_pin, int_in_pin, period_in_seconds, x);
+        PWM_Test_slave(pwm_out_pin, int_in_pin, period_in_miliseconds, x, 100);
+        printf("\r\n**************\r\n expected 10 cycles, saw %d rise, %d fall, in %dms\r\n*******\r\n",rise_count,fall_count,timer.read_ms());
+        TEST_ASSERT_MESSAGE(100 == rise_count,"Number of cycles not equivalent to amount expected\r\n");
     }
+}
+
+// Template to test that a PWM signal has the correct length by measuring the number of rise and fall
+// interrupts during a specified number of tests. 
+template <PinName pwm_out_pin, PinName int_in_pin, int period_in_miliseconds, int num_tests> 
+void PWM_Period_Test()
+{
+    // Initialize PWM, InterruptIn, Timer, and Rising / Falling edge counts
+    PwmOut pwm(pwm_out_pin);
+    InterruptIn iin(int_in_pin);
+    iin.rise(cbfn_rise);
+    iin.fall(cbfn_fall);
+    fall_count = 0;
+    rise_count = 0;
+    pwm.period((float)period_in_miliseconds/1000);
+    timer.reset();
+
+    //Start Testing
+    timer.start();
+    pwm.write(0.5f); // 50% duty cycle
+    wait_ms(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
+    timer.stop();
+    int rc = rise_count; // grab the numbers to work with as the pwm may continue going
+    int fc = fall_count;
+
+    int expected_count = num_tests;
+
+    int ten_percent  = (expected_count * 0.1f);
+    int five_percent = (expected_count * 0.05f);
+    int one_percent  = (expected_count * 0.01f);
+
+    // fudge factor
+    if(ten_percent  < 1){ten_percent = 1;}
+    if(five_percent < 1){five_percent = 1;}
+    if(one_percent  < 1){one_percent = 1;}
+
+    printf("\r\n*****\r\n rise count = %d, fall count = %d, expected count = %d\r\n*****\r\n",rc,fc,expected_count);
+    printf("\r\n*****\r\n .10 = %d, .05 = %d, .01 = %d\r\n*****\r\n",ten_percent,five_percent,one_percent);
+
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) < ten_percent, "There was more than 10percent variance in number of rise vs fall cycles");
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) < five_percent,"There was more than  5percent variance in number of rise vs fall cycles");
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) < one_percent, "There was more than  1percent variance in number of rise vs fall cycles");
+    
+    printf("\r\n*****\r\n abs(expected-rc) = %d\r\n*****\r\n",std::abs(expected_count - rc));
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) < ten_percent, "There was more than 10 percent variance in number of rise cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) < five_percent,"There was more than  5 percent variance in number of rise cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) < one_percent, "There was more than  1 percent variance in number of rise cycles seen and number expected.");
+
+    printf("\r\n*****\r\n abs(expected-fc) = %d\r\n*****\r\n",std::abs(expected_count - fc));
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) < ten_percent, "There was more than 10 percent variance in number of fall cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) < five_percent,"There was more than  5 percent variance in number of fall cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) < one_percent, "There was more than  1 percent variance in number of fall cycles seen and number expected.");
 }
 
 // test if software constructor / destructor works
@@ -70,6 +131,7 @@ void pwm_define_test(){
     TEST_ASSERT_MESSAGE(true,"The fact that it hasnt errored out proves this passes the sniff test");
 }
 
+
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(30, "default_auto");
@@ -85,11 +147,25 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
-    Case("Test Pwm definable", pwm_define_test,greentea_failure_handler),                                        // test pwm object contructor works
-    //Case("Test PWM on PWM_0", PWM_Test<MBED_CONF_APP_PWM_0,MBED_CONF_APP_DIO_2,4>,greentea_failure_handler), // 4second period, 50% duty cycle
-    //Case("Test PWM on PWM_1", PWM_Test<MBED_CONF_APP_PWM_1,MBED_CONF_APP_DIO_4,4.0f>,greentea_failure_handler), // 4second period, 50% duty cycle
-    //Case("Test PWM on PWM_2", PWM_Test<MBED_CONF_APP_PWM_2,MBED_CONF_APP_DIO_7,4.0f>,greentea_failure_handler), // 4second period, 50% duty cycle
-    //Case("Test PWM on PWM_3", PWM_Test<MBED_CONF_APP_PWM_3,MBED_CONF_APP_DIO_8,4.0f>,greentea_failure_handler)  // 4second period, 50% duty cycle
+    // Creat PwmOut Objects
+    Case("Test PWM on PWM_1", PWM_Period_Test<MBED_CONF_APP_PWM_1,MBED_CONF_APP_DIO_4,30,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    Case("Test Pwm definable", pwm_define_test,greentea_failure_handler),                                               // test pwm object contructor works
+    //Case("Test PWM on PWM_0", PWM_Period_Test<MBED_CONF_APP_PWM_0,MBED_CONF_APP_DIO_2,10,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    // Case("Test PWM on PWM_0", PWM_Period_Test<MBED_CONF_APP_PWM_0,MBED_CONF_APP_DIO_2,30,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    // Case("Test PWM on PWM_0", PWM_Period_Test<MBED_CONF_APP_PWM_0,MBED_CONF_APP_DIO_2,100,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    // Case("Test PWM on PWM_0", PWM_Period_Test<MBED_CONF_APP_PWM_0,MBED_CONF_APP_DIO_2,500,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_1", PWM_Period_Test<MBED_CONF_APP_PWM_1,MBED_CONF_APP_DIO_4,10,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    
+    //Case("Test PWM on PWM_1", PWM_Period_Test<MBED_CONF_APP_PWM_1,MBED_CONF_APP_DIO_4,100,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_1", PWM_Period_Test<MBED_CONF_APP_PWM_1,MBED_CONF_APP_DIO_4,500,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_2", PWM_Period_Test<MBED_CONF_APP_PWM_2,MBED_CONF_APP_DIO_7,10,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_2", PWM_Period_Test<MBED_CONF_APP_PWM_2,MBED_CONF_APP_DIO_7,30,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_2", PWM_Period_Test<MBED_CONF_APP_PWM_2,MBED_CONF_APP_DIO_7,100,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_2", PWM_Period_Test<MBED_CONF_APP_PWM_2,MBED_CONF_APP_DIO_7,500,100>,greentea_failure_handler), // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_3", PWM_Period_Test<MBED_CONF_APP_PWM_3,MBED_CONF_APP_DIO_8,10,100>,greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_3", PWM_Period_Test<MBED_CONF_APP_PWM_3,MBED_CONF_APP_DIO_8,30,100>,greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_3", PWM_Period_Test<MBED_CONF_APP_PWM_3,MBED_CONF_APP_DIO_8,100,100>,greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle
+    //Case("Test PWM on PWM_3", PWM_Period_Test<MBED_CONF_APP_PWM_3,MBED_CONF_APP_DIO_8,500,100>,greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle
 };
 
 Specification specification(test_setup, cases);
