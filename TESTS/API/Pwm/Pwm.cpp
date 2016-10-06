@@ -136,7 +136,7 @@ void pwm_define_test(){
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
-    GREENTEA_SETUP(300, "default_auto");
+    GREENTEA_SETUP(130, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
