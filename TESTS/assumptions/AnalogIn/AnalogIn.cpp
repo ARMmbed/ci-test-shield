@@ -20,13 +20,9 @@ void Macro_Test(){
 // Test if the AnalogInput can also do DigitalIO. Falure expects a timeout. 
 // typical failure is a run time assert deep in mbed library. 
 // CI Test shield assumes AnalogIn pins can double duty as DigitalOut pins.
-void Can_DigitalOut(){
-    DigitalOut dout0(MBED_CONF_APP_AIN_0);
-    DigitalOut dout1(MBED_CONF_APP_AIN_1);
-    DigitalOut dout2(MBED_CONF_APP_AIN_2);
-    DigitalOut dout3(MBED_CONF_APP_AIN_3);
-    DigitalOut dout4(MBED_CONF_APP_AIN_4);
-    DigitalOut dout5(MBED_CONF_APP_AIN_5);
+template <PinName ain_pin>
+void can_digitalout(){
+    DigitalOut dout(ain_pin);
     TEST_ASSERT_MESSAGE(true,"We got to this point, we're goog to go.");
 }
 
@@ -57,9 +53,14 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
-    Case("Test existence of `DEVICE_ANALOGIN` macro", Macro_Test,greentea_failure_handler),
-    Case("Test AnalogIn can do DigitalOut", Can_DigitalOut,greentea_failure_handler),
-    Case("Test AnalogIn can co-exist with DigitalOut", Can_AnalogIn_and_DigitalOut,greentea_failure_handler),
+    Case("AnalogIn - existence of `DEVICE_ANALOGIN` macro", Macro_Test,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_1>,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_2>,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_3>,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_4>,greentea_failure_handler),
+    Case("AnalogIn - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_5>,greentea_failure_handler),
+    Case("AnalogIn - can co-exist with DigitalOut", Can_AnalogIn_and_DigitalOut,greentea_failure_handler),
 
 };
 
