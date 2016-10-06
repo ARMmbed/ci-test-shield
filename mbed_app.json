@@ -34,7 +34,9 @@
     },
     "target_overrides": {
         "K64F": {
-             "AOUT": "DAC0_OUT"
+             "AOUT": "DAC0_OUT",
+             "DIO_8":"PTC12",
+             "DIO_9":"PTC4"
         }
     }
 }
