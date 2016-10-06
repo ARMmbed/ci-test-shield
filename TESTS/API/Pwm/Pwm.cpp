@@ -150,7 +150,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
     // Creat PwmOut Objects
-     Case("Test Pwm definable", pwm_define_test,greentea_failure_handler),   // test pwm object contructor works
+     Case("Pwm object definable", pwm_define_test,greentea_failure_handler),   // test pwm object contructor works
      Case("PWM_0 Frequency 10ms",  PWM_Period_Test< MBED_CONF_APP_PWM_0, MBED_CONF_APP_DIO_2, 10,  1000 >, greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle
      Case("PWM_0 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_0, MBED_CONF_APP_DIO_2, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
      Case("PWM_0 Frequency 100ms", PWM_Period_Test< MBED_CONF_APP_PWM_0, MBED_CONF_APP_DIO_2, 100, 100 >, greentea_failure_handler),  // Test at 100ms 100 times, default 50%duty cycle
