@@ -61,7 +61,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
-    Case("Test Pwm + int + timer object can all play nice together", pwm_interrupt_timer_test,greentea_failure_handler),
+    Case("PwmOut Assumption - pwm + int + timer objects can co-exist", pwm_interrupt_timer_test,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

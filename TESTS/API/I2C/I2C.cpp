@@ -61,10 +61,10 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
-    Case("Testing TMP102 Temperature Read",test_tmp102,greentea_failure_handler),
-	Case("Testing EEProm Write",test_eeprom_W,greentea_failure_handler),
-	Case("Testing EEProm Read",test_eeprom_R,greentea_failure_handler),
-//	Case("Testing EEProm WR",test_eeprom_WR,greentea_failure_handler),
+    Case("I2C -  TMP102 Temperature Read",test_tmp102,greentea_failure_handler),
+	Case("I2C -  EEProm Write",test_eeprom_W,greentea_failure_handler),
+	Case("I2C -  EEProm Read",test_eeprom_R,greentea_failure_handler),
+//	Case("I2C -  EEProm WR",test_eeprom_WR,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

@@ -51,7 +51,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
-    Case("Test Analog Output on AOUT", AnalogOutput_Test<MBED_CONF_APP_AOUT,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("AnalogOut on AOUT", AnalogOutput_Test<MBED_CONF_APP_AOUT,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

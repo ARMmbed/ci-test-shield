@@ -49,7 +49,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
  Case cases[] = {
-     Case("Testing SPI via SD Write", test_sd_write,greentea_failure_handler),
+     Case("SPI - SD Write", test_sd_write,greentea_failure_handler),
  };
 
  Specification specification(test_setup, cases);

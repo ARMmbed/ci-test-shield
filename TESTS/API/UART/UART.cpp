@@ -55,7 +55,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pins from config file or from pinnames.h
 Case cases[] = {
-    Case("Testing UART on UART_RX/UART_TX, single byte W/R ", test_uart_single, greentea_failure_handler),
+    Case("UART on UART_RX/UART_TX, single byte W/R ", test_uart_single, greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
