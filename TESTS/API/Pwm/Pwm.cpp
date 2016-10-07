@@ -65,9 +65,9 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
 
     printf("\r\n***\r\n .10 = %f, .05 = %f, .01 = %f\r\n*****\r\n",ten_percent,five_percent,one_percent);
 
-    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) =< ten_percent, "Greater than 10 percent variance between expected and measured duty cycle");
-    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) =< five_percent,"Greater than 5  percent variance between expected and measured duty cycle");
-    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) =< one_percent, "Greater than 1  percent variance between expected and measured duty cycle");
+    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= ten_percent, "Greater than 10 percent variance between expected and measured duty cycle");
+    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= five_percent,"Greater than 5  percent variance between expected and measured duty cycle");
+    TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= one_percent, "Greater than 1  percent variance between expected and measured duty cycle");
 }
 
 // Template to itterate through a PWM pin, takes in period and tries 10%-100% duty cycle in intervals of 10%
@@ -132,19 +132,19 @@ void PWM_Period_Test()
     printf("\r\n*****\r\n rise count = %d, fall count = %d, expected count = %d\r\n*****\r\n",rc,fc,expected_count);
     printf("\r\n*****\r\n .10 = %f, .05 = %f, .01 = %f\r\n*****\r\n",ten_percent,five_percent,one_percent);
 
-    TEST_ASSERT_MESSAGE( std::abs(rc-fc) =< ten_percent, "There was more than 10percent variance in number of rise vs fall cycles");
-    TEST_ASSERT_MESSAGE( std::abs(rc-fc) =< five_percent,"There was more than  5percent variance in number of rise vs fall cycles");
-    //TEST_ASSERT_MESSAGE( std::abs(rc-fc) =< one_percent, "There was more than  1percent variance in number of rise vs fall cycles");
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) <= ten_percent, "There was more than 10percent variance in number of rise vs fall cycles");
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) <= five_percent,"There was more than  5percent variance in number of rise vs fall cycles");
+    //TEST_ASSERT_MESSAGE( std::abs(rc-fc) <= one_percent, "There was more than  1percent variance in number of rise vs fall cycles");
 
     printf("\r\n*****\r\n abs(expected-rc) = %d\r\n*****\r\n",std::abs(expected_count - rc));
-    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) =< ten_percent, "There was more than 10 percent variance in number of rise cycles seen and number expected.");
-    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) =< five_percent,"There was more than  5 percent variance in number of rise cycles seen and number expected.");
-    //TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) =< one_percent, "There was more than  1 percent variance in number of rise cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) <= ten_percent, "There was more than 10 percent variance in number of rise cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) <= five_percent,"There was more than  5 percent variance in number of rise cycles seen and number expected.");
+    //TEST_ASSERT_MESSAGE( std::abs(expected_count - rc) <= one_percent, "There was more than  1 percent variance in number of rise cycles seen and number expected.");
 
     printf("\r\n*****\r\n abs(expected-fc) = %d\r\n*****\r\n",std::abs(expected_count - fc));
-    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) =< ten_percent, "There was more than 10 percent variance in number of fall cycles seen and number expected.");
-    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) =< five_percent,"There was more than  5 percent variance in number of fall cycles seen and number expected.");
-    //TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) =< one_percent, "There was more than  1 percent variance in number of fall cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) <= ten_percent, "There was more than 10 percent variance in number of fall cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) <= five_percent,"There was more than  5 percent variance in number of fall cycles seen and number expected.");
+    //TEST_ASSERT_MESSAGE( std::abs(expected_count - fc) <= one_percent, "There was more than  1 percent variance in number of fall cycles seen and number expected.");
 }
 
 // test if software constructor / destructor works
@@ -169,7 +169,7 @@ void pwm_define_test(){
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
-    GREENTEA_SETUP(130, "default_auto");
+    GREENTEA_SETUP(200, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
