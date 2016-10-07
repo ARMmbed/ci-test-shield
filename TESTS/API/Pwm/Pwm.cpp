@@ -35,7 +35,7 @@ void duty_cbfn_fall(void){
 // As you turn more pins on the voltage on the ain pin will go up.
 void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, float duty_cycle_percent)
 {
-    #define NUM_TESTS 100
+    #define NUM_TESTS 30
     PwmOut pwm(pwm_out_pin);
     InterruptIn iin(int_in_pin);
     duty_rise_count = 0; // reset counters
@@ -74,7 +74,7 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
 template <PinName pwm_out_pin, PinName int_in_pin, int period_in_miliseconds> 
 void PWM_DutyCycle_Test()
 {
-    #define DUTY_CYCLE_STEP  0.1f
+    #define DUTY_CYCLE_STEP  0.2f
     #define MIN_DUTY_CYCLE   0.1f
     #define MAX_DUTY_CYCLE   0.9f
 
