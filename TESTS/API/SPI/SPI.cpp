@@ -13,6 +13,7 @@
 
 using namespace utest::v1;
 
+// TODO: make this string a randomly generated thing
 #define SD_TEST_STRING "hello world from the most awesome test shield!"
 
 // Test object contructor / destructor
@@ -26,6 +27,7 @@ void test_card_present(){
 	SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
 	FILE *File = fopen("/sd/card-present.txt", "w");   // open file
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
+    // TODO: add greentea trigger to stop testing if SD Card not present
 }
 
 // Test SD Card Write
