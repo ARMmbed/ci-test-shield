@@ -1,5 +1,4 @@
 // Waiting for public release to enable, currently there are problems with the SD driver
-//#error [NOT_SUPPORTED] Waiting on public release of SD FileSystem API
 
 #include "mbed.h"
 #include "greentea-client/test_env.h"
