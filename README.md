@@ -72,15 +72,17 @@ Either way, you will need to heavily modify the `mbed_app.json` file and redefin
 For more on how config files work see the [mbed OS docs](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md#configuration-data-in-applications).
 
 ## Troubleshooting
-- make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working tests cant run. 
+- Use the `-v` flag for verbose debug and failure messages that can help you troubleshoot. 
+- Make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working then tests cant run. 
 - make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
-- AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work. 
-- If you are seeing any weird problems please contact support@mbed.com for help. 
+- Tests in the `assumptions` folder should all pass, if any of the assumptions tests fail then their associated test will likely also fail. For example, AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work, so the assumptions test for AnalogIn tests this functionality. 
 - If all tests are failing try bending aside pins D0/D1 on the CI Test Shield. Some platforms only have 1 Serial peripheral and will tie together the debug serial channel and the loopback serial channel, which causes problems for the communications for the testing platform. 
+- Make sure to put an SD Card into the microSD slot for SPI Tests to work.
+- If you are seeing any weird problems please contact support@mbed.com for help. 
 
-#### Known Issues
-- SPI tests skip - This is known and is due to pending change in mbed OS, should be enabled as part of the mbed OS 5.2 Release. 
+#### Known Issues 
 - The latest version of DAP-Link interface firmware should be used as old versions may not support the testing framework. 
+- AnalogIn pins must also support DigitalOut
 
 ## More information
 For more information see the [Releases](https://github.com/ARMmbed/ci-test-shield/releases) page.
