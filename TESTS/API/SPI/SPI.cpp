@@ -14,7 +14,19 @@
 using namespace utest::v1;
 
 // TODO: make this string a randomly generated thing
-#define SD_TEST_STRING "hello world from the most awesome test shield!"
+//#define SD_TEST_STRING "hello world from the most awesome test shield!"
+#define SD_TEST_STRING_MAX 100
+
+char SD_TEST_STRING[SD_TEST_STRING_MAX] = {0};
+void init_string(){
+	int x = 0;
+	for(x = 0; x < SD_TEST_STRING_MAX-1; x++){
+		SD_TEST_STRING[x] = 'A' + (rand() % 26);
+	}
+	SD_TEST_STRING[SD_TEST_STRING_MAX] = 0;
+
+	printf("\r\n****\r\nSD Test String = %s\r\n****\r\n",SD_TEST_STRING);
+}
 
 // Test object contructor / destructor
 void test_object(){
@@ -35,7 +47,7 @@ void test_sd_w(){
 	SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
 	FILE *File = fopen("/sd/test_sd_w.txt", "w");   // open file
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
-    fprintf(File, SD_TEST_STRING);             // write data
+    TEST_ASSERT_MESSAGE(fprintf(File, SD_TEST_STRING) > 0,"Writing file to sd card failed");             // write data
     // TODO: test that the file was written correctly
     fclose(File);                              // close file on SD
     TEST_ASSERT(true);
@@ -43,20 +55,16 @@ void test_sd_w(){
 
 // Test SD Card Read
 void test_sd_r(){
+	char read_string [SD_TEST_STRING_MAX] = {0};
 	SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
 	FILE *File = fopen("/sd/test_sd_w.txt", "r");   // open file
 	TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
-    
-    // TODO: read the file and grab the string
-    //fprintf(File, "CI Test Shield!");            // write data
-    fclose(File);                                // close file on SD
-
-    // TODO: strcmp on read string against SD_TEST_STRING
-}
-
-// Test SD Card Read / Write in single test for completeness
-void test_sd_rw(){
-	// TODO: Impliment write / read to a different file.
+	fgets(read_string,SD_TEST_STRING_MAX,File); // read string from the file
+	//fread(read_string,sizeof(char),sizeof(SD_TEST_STRING),File); // read the string and compare
+    printf("\r\n****\r\nRead '%s' in read test\r\n, string comparison returns %d\r\n****\r\n",read_string,strcmp(read_string,SD_TEST_STRING));
+    TEST_ASSERT_MESSAGE(strcmp(read_string,SD_TEST_STRING) == 0,"String read does not match string written"); // test that strings match
+    fclose(File);	// close file on SD
+    TEST_ASSERT(true);
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
@@ -76,13 +84,13 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
      Case("SPI - Object Definable", test_object,greentea_failure_handler),
      Case("SPI - SD card exists", 	test_card_present,greentea_failure_handler),
      Case("SPI - SD Write", 		test_sd_w,greentea_failure_handler),
-     // Case("SPI - SD Read", 			test_sd_r,greentea_failure_handler),
-     // Case("SPI - SD Read/Write", 	test_sd_rw,greentea_failure_handler),
+     Case("SPI - SD Read", 			test_sd_r,greentea_failure_handler),
  };
 
  Specification specification(test_setup, cases);
 
 // // Entry point into the tests
 int main() {
+	init_string();
     return !Harness::run(specification);
 }
