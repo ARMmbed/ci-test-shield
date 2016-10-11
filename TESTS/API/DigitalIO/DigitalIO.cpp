@@ -43,8 +43,8 @@ Case cases[] = {
     Case("Digital I/O on DIO_6/DIO_7", DigitalIO_Test<MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_6>,greentea_failure_handler),
     Case("Digital I/O on DIO_9/DIO_8", DigitalIO_Test<MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9>,greentea_failure_handler),
     Case("Digital I/O on DIO_8/DIO_9", DigitalIO_Test<MBED_CONF_APP_DIO_9,MBED_CONF_APP_DIO_8>,greentea_failure_handler),
-    Case("Digital I/O on DIO_1/DIO_0", DigitalIO_Test<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
-    Case("Digital I/O on DIO_0/DIO_1", DigitalIO_Test<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
+    //Case("Digital I/O on DIO_1/DIO_0", DigitalIO_Test<MBED_CONF_APP_DIO_0,MBED_CONF_APP_DIO_1>,greentea_failure_handler),
+    //Case("Digital I/O on DIO_0/DIO_1", DigitalIO_Test<MBED_CONF_APP_DIO_1,MBED_CONF_APP_DIO_0>,greentea_failure_handler),
 
 };
 
