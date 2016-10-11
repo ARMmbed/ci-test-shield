@@ -15,14 +15,15 @@ The CI Test Shield has several uses.
 ## What is tested?
 Current API's that are tested by the CI Test shield are as follows
 
-1. `DigitalIO`, `Serial`, `InterruptIn` - tested by Loopback on pins D0-9
+1. `DigitalIO`, `Serial`, `InterruptIn`, `PwmOut` - tested by Loopback on pins D0-9
 2. `AnalogIO` - tested by resistor star network.
 3. `I2C` - tested with temperature sensor and EEPROM memory.
 4. `SPI` - tested with SD Card. 
+5. `UART` - tested by greentea working
+
 
 #### Coming Soon
 
-* `PWM`
 * `Ticker/Timer/Time`
 
 ## Hardware : Where to get CI Test Shield?
@@ -45,7 +46,7 @@ To run the tests associated with the ci-test-shield follow these steps:
 1. Set your board using the `mbed config target xxx`, where xxx is the board name [protip: use `mbed target --supported` for list of supported boards].
 3. Set your toolchain using the `mbed config toolchain xxx`, where xxx is the toolchain. (`GCC_ARM`, `IAR`, `UVISION`...etc, use `mbed toolchain --supported` for a full list)
 4. Grab dependencies by running the `mbed update` command inside the top level of this repo. This will ensure you have the latest version of the mbed-os library. Alternatively you can swap out the mbed-os library for your version that you are testing. 
-5. Run the tests with the test shield plugged into your board. The command will look like `mbed test -n tests-api-*` to run all the CI Test Shield tests, or just run `mbed test` to run all tests, including mbed-os system test.
+5. Run the tests with the test shield plugged into your board. The command will look like `mbed test -n tests-*` to run all the CI Test Shield tests, or just run `mbed test` to run all tests, including mbed-os system test.
 
 ## Customization  
 All pin mappings are done in the `mbed_app.json` file. If you need to remap anything this is the palce to do it. 
@@ -73,6 +74,7 @@ For more on how config files work see the [mbed OS docs](https://github.com/ARMm
 
 ## Troubleshooting
 - Use the `-v` flag for verbose debug and failure messages that can help you troubleshoot. 
+- Try running a clean build with `mbed test --clean -n tests-* -v`
 - Make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working then tests cant run. 
 - make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
 - Tests in the `assumptions` folder should all pass, if any of the assumptions tests fail then their associated test will likely also fail. For example, AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work, so the assumptions test for AnalogIn tests this functionality. 
