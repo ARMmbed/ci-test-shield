@@ -63,9 +63,11 @@ void single_byte_WR(){
     I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
     char test = 'A' + rand()%26;
     char read;
-    memory.write(address,test);
-    memory.read(address,read);
-    printf("\r\n****\r\n Read byte = %d \r\n Written Byte = %d \r\n****\r\n",&read,&test);
+    int r = 0;
+    int w = 0;
+    w = memory.write(address,test);
+    r = memory.read(address,read);
+    printf("\r\n****\r\n Num Bytes Read = %d \r\n Num Bytes Written = %d \r\n Read byte = %d \r\n Written Byte = %d \r\n****\r\n",r,w,read,test);
 
     TEST_ASSERT_EQUAL_MESSAGE(test,read,"Character Read does not equal character written!");
     TEST_ASSERT_MESSAGE(test == read, "character written does not match character read")
@@ -90,7 +92,7 @@ Case cases[] = {
     //Case("I2C -  EEProm WR 2Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 10Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1>,greentea_failure_handler),
-    Case("I2C -  EEProm WR 100 Bytes",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
+    Case("I2C -  EEProm WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
