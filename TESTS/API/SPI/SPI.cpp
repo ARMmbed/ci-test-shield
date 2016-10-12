@@ -23,7 +23,7 @@ void init_string(){
 	for(x = 0; x < SD_TEST_STRING_MAX-1; x++){
 		SD_TEST_STRING[x] = 'A' + (rand() % 26);
 	}
-	SD_TEST_STRING[SD_TEST_STRING_MAX] = 0;
+	SD_TEST_STRING[SD_TEST_STRING_MAX-1] = 0;
 
 	printf("\r\n****\r\nSD Test String = %s\r\n****\r\n",SD_TEST_STRING);
 }
