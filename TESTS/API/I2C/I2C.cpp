@@ -19,7 +19,7 @@ void init_string(char* buffer, int len){
         buffer[x] = 'A' + (rand() % 26);
     }
     buffer[len-1] = 0; // add \0 to end of string
-    printf("\r\n****\r\nBuffer Len = `%d`, String = `%s`\r\n****\r\n",len,buffer);
+    //printf("\r\n****\r\nBuffer Len = `%d`, String = `%s`\r\n****\r\n",len,buffer);
 }
 
 // a test to see if the temperature can be read. A I2C failure returns a 0
@@ -41,19 +41,23 @@ void flash_WR(){
     I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
     int num_read = 0;
     int num_written = 0;
-    char test_string[size_of_data] = {0};
-    char read_string[size_of_data] = {0};
-    init_string(test_string,size_of_data); // populate test_string with random characters
+    volatile char test_string[size_of_data] = {0};
+    volatile char read_string[size_of_data] = {0};
+    init_string((char *)test_string,size_of_data); // populate test_string with random characters
+    for(int x = 0; x< size_of_data;x++){
+        read_string[x] = 0;
+    }
     //printf("\r\n****\r\n Test String = `%s` \r\n****\r\n",test_string);
 
-    num_written = memory.write(address,test_string,size_of_data);
-    num_read = memory.read(address,read_string,size_of_data);
+    num_written = memory.write(address,(char *)test_string,size_of_data);
+    num_read = memory.read(address,(char *)read_string,size_of_data);
 
-    printf("\r\n****\r\n Address = `%d`\r\n Len = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n Written String = `%s` \r\n Read String = `%s` \r\n****\r\n",address,size_of_data,num_written,num_read,test_string,read_string);
-
-    TEST_ASSERT_MESSAGE(strcmp(test_string,read_string) == 0,"String Written != String Read");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(test_string,read_string,"String read does not match the string written");
+    TEST_ASSERT_MESSAGE(strcmp((char *)test_string,(char *)read_string) == 0,"String Written != String Read");
+    TEST_ASSERT_MESSAGE(strcmp((char *)read_string,(char *)test_string) == 0,"String Written != String Read");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)test_string,(char *)read_string,"String read does not match the string written");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)read_string,(char *)test_string,"String read does not match the string written");
     TEST_ASSERT_EQUAL_MESSAGE(num_written,num_read,"Number of bytes written does not match the number of bytes read");
+    printf("\r\n****\r\n Address = `%d`\r\n Len = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n Written String = `%s` \r\n Read String = `%s` \r\n****\r\n",address,size_of_data,num_written,num_read,test_string,read_string);
 
 }
 
@@ -67,16 +71,22 @@ void single_byte_WR(){
     int w = 0;
     w = memory.write(address,test);
     r = memory.read(address,read);
-    printf("\r\n****\r\n Num Bytes Read = %d \r\n Num Bytes Written = %d \r\n Read byte = %d \r\n Written Byte = %d \r\n****\r\n",r,w,read,test);
+    printf("\r\n****\r\n Num Bytes Read = %d \r\n Num Bytes Written = %d \r\n Read byte = `%c` \r\n Written Byte = `%c` \r\n****\r\n",r,w,read,test);
 
     TEST_ASSERT_EQUAL_MESSAGE(test,read,"Character Read does not equal character written!");
     TEST_ASSERT_MESSAGE(test == read, "character written does not match character read")
+}
 
+// Test initializing an I2C Object
+template<PinName sda, PinName scl>
+void test_object(){
+    I2C i2c(sda,scl);
+    TEST_ASSERT_MESSAGE(true,"If you hang here your I2C Object has problems");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
-    GREENTEA_SETUP(40, "default_auto");
+    GREENTEA_SETUP(20, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
@@ -88,11 +98,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
+    Case("I2C -  Instantiation of I2C Object",test_object<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL>,greentea_failure_handler),
     Case("I2C -  LM75B Temperature Read",test_lm75b<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
-    //Case("I2C -  EEProm WR 2Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,1>,greentea_failure_handler),
-    Case("I2C -  EEProm WR 10Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,1>,greentea_failure_handler),
-    Case("I2C -  EEProm WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
+    Case("I2C -  EEProm WR 2 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,5>,greentea_failure_handler),
+    Case("I2C -  EEProm WR 10  Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,100>,greentea_failure_handler),
+    Case("I2C -  EEProm WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1000>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);
