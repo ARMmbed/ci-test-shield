@@ -15,7 +15,7 @@ using namespace utest::v1;
 // Fill array with random characters
 void init_string(char* buffer, int len){
     int x = 0;
-    for(x = 0; x < len-1; x++){
+    for(x = 0; x < len; x++){
         buffer[x] = 'A' + (rand() % 26);
     }
     buffer[len-1] = 0; // add \0 to end of string
@@ -49,9 +49,9 @@ void flash_WR(){
     num_written = memory.write(address,test_string,size_of_data);
     num_read = memory.read(address,read_string,size_of_data);
 
-    //printf("\r\n****\r\n Address = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n Written String = `%s` \r\n Read String = `%s` \r\n****\r\n",address,num_written,num_read,test_string,read_string);
+    printf("\r\n****\r\n Address = `%d`\r\n Len = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n Written String = `%s` \r\n Read String = `%s` \r\n****\r\n",address,size_of_data,num_written,num_read,test_string,read_string);
 
-    //TEST_ASSERT_MESSAGE(strcmp(test_string,read_string) == 0,"String Written != String Read");
+    TEST_ASSERT_MESSAGE(strcmp(test_string,read_string) == 0,"String Written != String Read");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(test_string,read_string,"String read does not match the string written");
     TEST_ASSERT_EQUAL_MESSAGE(num_written,num_read,"Number of bytes written does not match the number of bytes read");
 
@@ -117,7 +117,7 @@ Case cases[] = {
 	//Case("I2C -  EEProm Write",test_eeprom_W,greentea_failure_handler),
 	//Case("I2C -  EEProm Read",test_eeprom_R,greentea_failure_handler),
 	//Case("I2C -  EEProm WR",test_eeprom_WR,greentea_failure_handler),
-    Case("I2C -  EEProm WR 2Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,1>,greentea_failure_handler),
+    //Case("I2C -  EEProm WR 2Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 10Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1>,greentea_failure_handler),
 };
