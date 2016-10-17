@@ -21,12 +21,14 @@ void AnalogInput_Test()
     int x = 0;
     int y= 0;
     outputs = y;
-    float prev_value = 0;
+    float prev_value = -0.999999;
+    float curr_value;
     for(x = 0; x<5; x++) {
+        curr_value = ain.read();
 //        printf("X=%d\n",x);
-//        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
-        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not incriment. Check that you have assigned valid pins in mbed_app.json file")
-        prev_value = ain.read();
+//        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,curr_value);
+        TEST_ASSERT_MESSAGE(curr_value > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
+        prev_value = curr_value;
         y = (y<<1) + 1;
         outputs = y;
     }
