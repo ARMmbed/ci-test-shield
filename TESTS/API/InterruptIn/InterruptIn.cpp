@@ -18,7 +18,7 @@ void cbfn(void){
 	//printf("\t**** Interrupt Triggered!\n");
 }
 
-// Template to check Falling edge and Risign edge interrupts.
+// Template to check Falling edge and Rising edge interrupts.
 template <PinName int_pin, PinName dout_pin> 
 void InterruptInTest()
 {

@@ -28,7 +28,7 @@ void init_string(){
 	printf("\r\n****\r\nSD Test String = %s\r\n****\r\n",SD_TEST_STRING);
 }
 
-// Test object contructor / destructor
+// Test object constructor / destructor
 void test_object(){
 	SPI(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
 	TEST_ASSERT_MESSAGE(true,"If the tests hangs here then there is a problem with the SPI Object"); // helpful debug message for if the test hangs
