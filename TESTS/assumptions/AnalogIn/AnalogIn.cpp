@@ -10,14 +10,14 @@
 
 using namespace utest::v1;
 
-// test for existance of DEVICE_ANALOGIN macro. If it doesnt exist then the device doesnt support the AnalogIn API
+// test for existence of DEVICE_ANALOGIN macro. If it doesn't exist then the device doesn't support the AnalogIn API
 void Macro_Test(){
     #ifndef DEVICE_ANALOGIN
         TEST_ASSERT_MESSAGE(false,"Macr `DEVICE_ANALOGIN` not defined. This platform does not support AnalogIn.")
     #endif
 }
 
-// Test if the AnalogInput can also do DigitalIO. Falure expects a timeout. 
+// Test if the AnalogInput can also do DigitalIO. Failure expects a timeout. 
 // typical failure is a run time assert deep in mbed library. 
 // CI Test shield assumes AnalogIn pins can double duty as DigitalOut pins.
 template <PinName ain_pin>
@@ -44,7 +44,7 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
     return verbose_test_setup_handler(number_of_cases);
 }
 
-// Handle test failures, keep testing, dont stop
+// Handle test failures, keep testing, don't stop
 utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;

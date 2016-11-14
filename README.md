@@ -9,7 +9,7 @@ If you platform does not support a specific feature, such as AnalogOut, then tha
 The CI Test Shield has several uses.
 
 1. Test mbed-os software port. Useful for mbed partners and community contributors.
-2. Continuous Integration testing during development and during maintinance release cycles. 
+2. Continuous Integration testing during development and during maintenance release cycles. 
 3. SD Card storage can be used for firmware update development. 
 
 ## What is tested?
@@ -66,7 +66,7 @@ For example: the NXP K64F board does not have AnalogOut on A5, instead it is on 
 The above code essentially says "if the target is `K64F` then `#define AOUT DAC0_OUT`", this allows you to fly wire pins and only modify things in one file instead of having to modify all the tests themselves. 
 
 #### Non-Arduino Header
-If you are testing a board that does not have Arduino R3 style headers then you will need to either fly wire all the pins across manually, or if you want a more permenant solution spin your own version of the CI Test shield with headers that map to your board. 
+If you are testing a board that does not have Arduino R3 style headers then you will need to either fly wire all the pins across manually, or if you want a more permanent solution spin your own version of the CI Test shield with headers that map to your board. 
 
 Either way, you will need to heavily modify the `mbed_app.json` file and redefine every pin mapping since your platform will not have the Arduino Header D0-15 or A0-5 pin aliases. 
 
@@ -76,7 +76,7 @@ For more on how config files work see the [mbed OS docs](https://github.com/ARMm
 - Use the `-v` flag for verbose debug and failure messages that can help you troubleshoot. 
 - Try running a clean build with `mbed test --clean -n tests-* --app-config .\mbed_app.json -v`
 - Make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working then tests cant run. 
-- make sure you are using the latest version of greentea and mbed cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
+- make sure you are using the latest version of greentea and mbed-cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 
 - Tests in the `assumptions` folder should all pass, if any of the assumptions tests fail then their associated test will likely also fail. For example, AnalogIn pins should also be DigitalOut capable for the AnalogIn tests to work, so the assumptions test for AnalogIn tests this functionality. 
 - If all tests are failing try bending aside pins D0/D1 on the CI Test Shield. Some platforms only have 1 Serial peripheral and will tie together the debug serial channel and the loopback serial channel, which causes problems for the communications for the testing platform. 
 - Make sure to put an SD Card into the microSD slot for SPI Tests to work.

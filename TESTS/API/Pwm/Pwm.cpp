@@ -32,7 +32,7 @@ void duty_cbfn_fall(void){
 }
 
 // Template to test the Duty cycle API on PWM Pins. This test will collect a sample size of tests and average out the length of the duty cycle
-// the averaged duty cycle is then compared against the expectd duty cycle. 
+// the averaged duty cycle is then compared against the expected duty cycle. 
 void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, float duty_cycle_percent)
 {
     #define NUM_TESTS 30
@@ -70,7 +70,7 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
     //TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= one_percent, "Greater than 1  percent variance between expected and measured duty cycle");
 }
 
-// Template to itterate through a PWM pin, takes in period and tries 10%-100% duty cycle in intervals of 10%
+// Template to iterate through a PWM pin, takes in period and tries 10%-100% duty cycle in intervals of 10%
 template <PinName pwm_out_pin, PinName int_in_pin, int period_in_miliseconds> 
 void PWM_DutyCycle_Test()
 {
@@ -79,7 +79,7 @@ void PWM_DutyCycle_Test()
     #define MAX_DUTY_CYCLE   0.9f
 
     float x = 0;
-    for(x = MIN_DUTY_CYCLE; x < MAX_DUTY_CYCLE; x = x+DUTY_CYCLE_STEP){ // itterate duty cycle test
+    for(x = MIN_DUTY_CYCLE; x < MAX_DUTY_CYCLE; x = x+DUTY_CYCLE_STEP){ // iterate duty cycle test
         PWM_Duty_slave(pwm_out_pin, int_in_pin, period_in_miliseconds, x);
         //printf("\r\n**************\r\n expected 10 cycles, saw %d rise, %d fall\r\n*******\r\n",duty_rise_count,duty_fall_count);
         //TEST_ASSERT_MESSAGE(100 == rise_count,"Number of cycles not equivalent to amount expected\r\n");
@@ -183,7 +183,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
     // Test Creat PwmOut Objects
-    Case("Pwm object definable", pwm_define_test,greentea_failure_handler),   // test pwm object contructor works
+    Case("Pwm object definable", pwm_define_test,greentea_failure_handler),   // test pwm object constructor works
 
     // Test Frequency length by counting rise / fall ticks
      Case("PWM_0 Frequency 10ms",  PWM_Period_Test< MBED_CONF_APP_PWM_0, MBED_CONF_APP_DIO_2, 10,  1000 >, greentea_failure_handler),  // Test at 10ms 100 times, default 50%duty cycle

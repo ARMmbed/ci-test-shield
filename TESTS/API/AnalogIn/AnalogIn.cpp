@@ -28,7 +28,7 @@ void AnalogInput_Test()
         prev_value = ain.read();
         y = (y<<1) + 1;
         outputs = y;
-        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not incriment. Check that you have assigned valid pins in mbed_app.json file")
+        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
     }
 //    printf("Finished the Test\n");
     TEST_ASSERT(true);
