@@ -57,6 +57,7 @@ Case cases[] = {
 Specification specification(test_setup, cases);
 
 // Entry point into the tests
-int main() {
+int main()
+{
     return !Harness::run(specification);
 }

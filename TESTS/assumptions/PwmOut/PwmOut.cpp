@@ -1,7 +1,7 @@
 //#error [NOT_SUPPORTED] PWM tests are still being written and validated, not for public use yet. 
 
 #if !DEVICE_PWMOUT
-  #error PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' deffinition to your platform.
+    #error PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -14,17 +14,22 @@ using namespace utest::v1;
 
 
 volatile int rise_count;
-void cbfn_rise(void){
+
+void cbfn_rise(void)
+{
     rise_count++;
 }
 
 volatile int fall_count; 
-void cbfn_fall(void){
+
+void cbfn_fall(void)
+{
     fall_count++;
 }
 
 // Test to see if PWM, Timer and Interrupt test can all play nice together
-void pwm_interrupt_timer_test(){
+void pwm_interrupt_timer_test()
+{
     // Initialize PWM, InterruptIn, Timer, and Rising / Falling edge counts
     Timer timer;
     PwmOut pwm(MBED_CONF_APP_PWM_0);
@@ -46,14 +51,16 @@ void pwm_interrupt_timer_test(){
 }
 
 
-utest::v1::status_t test_setup(const size_t number_of_cases) {
+utest::v1::status_t test_setup(const size_t number_of_cases)
+{
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(10, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
 // Handle test failures, keep testing, dont stop
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason)
+{
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;
 }

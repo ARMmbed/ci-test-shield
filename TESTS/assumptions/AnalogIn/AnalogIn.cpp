@@ -1,5 +1,5 @@
 #if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' deffinition to your platform.
+    #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -12,9 +12,9 @@ using namespace utest::v1;
 
 // test for existence of DEVICE_ANALOGIN macro. If it doesn't exist then the device doesn't support the AnalogIn API
 void Macro_Test(){
-    #ifndef DEVICE_ANALOGIN
-        TEST_ASSERT_MESSAGE(false,"Macr `DEVICE_ANALOGIN` not defined. This platform does not support AnalogIn.")
-    #endif
+#ifndef DEVICE_ANALOGIN
+    TEST_ASSERT_MESSAGE(false,"Macr `DEVICE_ANALOGIN` not defined. This platform does not support AnalogIn.")
+#endif
 }
 
 // Test if the AnalogInput can also do DigitalIO. Failure expects a timeout. 
@@ -28,7 +28,8 @@ void can_digitalout(){
 
 // Test that AnalogIn ports can be AnalogIn and Digital Out at same time
 //  meant to catch boards that turn all pins to analog in instead of just 1 pin
-void Can_AnalogIn_and_DigitalOut(){
+void Can_AnalogIn_and_DigitalOut()
+{
     AnalogIn ain(MBED_CONF_APP_AIN_0);
     DigitalOut dout(MBED_CONF_APP_AIN_1);
     dout=0;
@@ -38,14 +39,16 @@ void Can_AnalogIn_and_DigitalOut(){
     TEST_ASSERT_MESSAGE(true,"We got to this point, we're goog to go.");
 }
 
-utest::v1::status_t test_setup(const size_t number_of_cases) {
+utest::v1::status_t test_setup(const size_t number_of_cases)
+{
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(5, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
 // Handle test failures, keep testing, don't stop
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason)
+{
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;
 }
@@ -55,12 +58,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 Case cases[] = {
     Case("AnalogIn - existence of `DEVICE_ANALOGIN` macro", Macro_Test,greentea_failure_handler),
     Case("AnalogIn - can co-exist with DigitalOut", Can_AnalogIn_and_DigitalOut,greentea_failure_handler),
-    Case("AnalogIn 0- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_0>,greentea_failure_handler),
-    Case("AnalogIn 1- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_1>,greentea_failure_handler),
-    Case("AnalogIn 2- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_2>,greentea_failure_handler),
-    Case("AnalogIn 3- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_3>,greentea_failure_handler),
-    Case("AnalogIn 4- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_4>,greentea_failure_handler),
-    Case("AnalogIn 5- pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_5>,greentea_failure_handler),
+    Case("AnalogIn 0 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_0>,greentea_failure_handler),
+    Case("AnalogIn 1 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_1>,greentea_failure_handler),
+    Case("AnalogIn 2 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_2>,greentea_failure_handler),
+    Case("AnalogIn 3 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_3>,greentea_failure_handler),
+    Case("AnalogIn 4 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_4>,greentea_failure_handler),
+    Case("AnalogIn 5 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_5>,greentea_failure_handler),
 
 };
 
