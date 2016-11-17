@@ -29,7 +29,8 @@
 using namespace utest::v1;
 
 // Fill array with random characters
-void init_string(char* buffer, int len){
+void init_string(char* buffer, int len)
+{
     int x = 0;
     for(x = 0; x < len; x++){
         buffer[x] = 'A' + (rand() % 26);
@@ -40,7 +41,8 @@ void init_string(char* buffer, int len){
 
 // a test to see if the temperature can be read. A I2C failure returns a 0
 template<PinName sda, PinName scl, int expected_temperature, int delta_in_temperature>
-void test_lm75b(){
+void test_lm75b()
+{
     LM75B  temperature(sda, scl);
     float temp = temperature.temp();
     printf("\r\n****\r\nTEST LM75B : Temperature Read = `%f`\r\n****\r\n",temp);
@@ -53,7 +55,8 @@ void test_lm75b(){
 
 // Template to write arbitrary data to arbitrary address and check the data is written correctly
 template<PinName sda, PinName scl,int size_of_data, int address>
-void flash_WR(){
+void flash_WR()
+{
     I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
     int num_read = 0;
     int num_written = 0;
@@ -74,12 +77,12 @@ void flash_WR(){
     TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)read_string,(char *)test_string,"String read does not match the string written");
     TEST_ASSERT_EQUAL_MESSAGE(num_written,num_read,"Number of bytes written does not match the number of bytes read");
     printf("\r\n****\r\n Address = `%d`\r\n Len = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n Written String = `%s` \r\n Read String = `%s` \r\n****\r\n",address,size_of_data,num_written,num_read,test_string,read_string);
-
 }
 
 // Test single byte R/W
 template<PinName sda, PinName scl, int address>
-void single_byte_WR(){
+void single_byte_WR()
+{
     I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
     char test = 'A' + rand()%26;
     char read;
@@ -95,19 +98,22 @@ void single_byte_WR(){
 
 // Test initializing an I2C Object
 template<PinName sda, PinName scl>
-void test_object(){
+void test_object()
+{
     I2C i2c(sda,scl);
     TEST_ASSERT_MESSAGE(true,"If you hang here your I2C Object has problems");
 }
 
-utest::v1::status_t test_setup(const size_t number_of_cases) {
+utest::v1::status_t test_setup(const size_t number_of_cases)
+{
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(20, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
 // Handle test failures, keep testing, dont stop
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason)
+{
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;
 }
@@ -125,6 +131,7 @@ Case cases[] = {
 Specification specification(test_setup, cases);
 
 // Entry point into the tests
-int main() {
+int main()
+{
     return !Harness::run(specification);
 }

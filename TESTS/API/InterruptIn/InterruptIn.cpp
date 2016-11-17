@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_INTERRUPTIN
-	#error [NOT_SUPPORTED] InterruptIn is not supported on this platform, add 'DEVICE_INTERRUPTIN' deffinition to your platform.
+    #error [NOT_SUPPORTED] InterruptIn is not supported on this platform, add 'DEVICE_INTERRUPTIN' deffinition to your platform.
 #endif
 
 #include "mbed.h"
@@ -29,48 +29,51 @@ using namespace utest::v1;
 volatile bool result = false;
 
 // Callback for all InterruptInput functions
-void cbfn(void){
-	result = true;
-	//printf("\t**** Interrupt Triggered!\n");
+void cbfn(void)
+{
+    result = true;
+    //printf("\t**** Interrupt Triggered!\n");
 }
 
 // Template to check Falling edge and Rising edge interrupts.
 template <PinName int_pin, PinName dout_pin> 
 void InterruptInTest()
 {
-	result = false;
-	InterruptIn intin(int_pin);
-	DigitalOut dout(dout_pin);
+    result = false;
+    InterruptIn intin(int_pin);
+    DigitalOut dout(dout_pin);
 
-	// Test Rising Edge InterruptIn
-	//printf("***** Rising Edge Test \n");
-	dout = 0;
-	result = false;
-	intin.rise(cbfn);
-	dout = 1;
-	wait(0); // dummy wait to get volatile result value
-	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
+    // Test Rising Edge InterruptIn
+    //printf("***** Rising Edge Test \n");
+    dout = 0;
+    result = false;
+    intin.rise(cbfn);
+    dout = 1;
+    wait(0); // dummy wait to get volatile result value
+    //printf("Value of result is : %d\n",result);
+    TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
 
-	// Test Falling Edge InterruptIn
-	//printf("***** Falling Edge Test \n");
-	dout = 1;
-	result = false;
-	intin.fall(cbfn);
-	dout = 0;
-	wait(0); // dummy wait to get volatile result value
-	//printf("Value of result is : %d\n",result);
-	TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
+    // Test Falling Edge InterruptIn
+    //printf("***** Falling Edge Test \n");
+    dout = 1;
+    result = false;
+    intin.fall(cbfn);
+    dout = 0;
+    wait(0); // dummy wait to get volatile result value
+    //printf("Value of result is : %d\n",result);
+    TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
 }
 
-utest::v1::status_t test_setup(const size_t number_of_cases) {
+utest::v1::status_t test_setup(const size_t number_of_cases)
+{
     // Setup Greentea using a reasonable timeout in seconds
     GREENTEA_SETUP(40, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
 // Handle test failures, keep testing, dont stop
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason)
+{
     greentea_case_failure_abort_handler(source, reason);
     return STATUS_CONTINUE;
 }
@@ -93,6 +96,7 @@ Case cases[] = {
 Specification specification(test_setup, cases);
 
 // Entry point into the tests
-int main() {
+int main() 
+{
     return !Harness::run(specification);
 }
