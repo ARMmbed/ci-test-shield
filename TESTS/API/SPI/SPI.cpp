@@ -21,6 +21,7 @@
 #include "unity.h"
 #include "utest.h"
 #include "SDFileSystem.h" 
+#include "ci_test_config.h"
 
 // check if SPI is supported on this device
 #if !DEVICE_SPI
@@ -43,7 +44,7 @@ void init_string()
     }
     SD_TEST_STRING[SD_TEST_STRING_MAX-1] = 0;
 
-    printf("\r\n****\r\nSD Test String = %s\r\n****\r\n",SD_TEST_STRING);
+    DEBUG_PRINTF("\r\n****\r\nSD Test String = %s\r\n****\r\n",SD_TEST_STRING);
 }
 
 // Test object constructor / destructor
@@ -83,7 +84,7 @@ void test_sd_r()
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
     fgets(read_string,SD_TEST_STRING_MAX,File); // read string from the file
     //fread(read_string,sizeof(char),sizeof(SD_TEST_STRING),File); // read the string and compare
-    printf("\r\n****\r\nRead '%s' in read test\r\n, string comparison returns %d\r\n****\r\n",read_string,strcmp(read_string,SD_TEST_STRING));
+    DEBUG_PRINTF("\r\n****\r\nRead '%s' in read test\r\n, string comparison returns %d\r\n****\r\n",read_string,strcmp(read_string,SD_TEST_STRING));
     TEST_ASSERT_MESSAGE(strcmp(read_string,SD_TEST_STRING) == 0,"String read does not match string written"); // test that strings match
     fclose(File);    // close file on SD
     TEST_ASSERT(true);

@@ -74,6 +74,7 @@ For more on how config files work see the [mbed OS docs](https://github.com/ARMm
 
 ## Troubleshooting
 - Use the `-v` flag for verbose debug and failure messages that can help you troubleshoot. 
+- To enable debug messages, set ``DEBUG_MSG`` to 1 in the ./mbed_app.json file
 - Try running a clean build with `mbed test --clean -n tests-* --app-config .\mbed_app.json -v`
 - Make sure your board is detected to run tests. Use the `mbed detect` command to verify your board is recognized and has a COM port assigned. If the Serial driver isn't working then tests cant run. 
 - make sure you are using the latest version of greentea and mbed-cli. Try running `pip install -U mbed-cli mbed-ls mbed-greentea` to update them all to their latest versions. 

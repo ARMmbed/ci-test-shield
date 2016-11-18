@@ -21,6 +21,7 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
+#include "ci_test_config.h"
 //#include "rtos.h"
 
 using namespace utest::v1;
@@ -38,14 +39,14 @@ void AnalogInput_Test()
     outputs = 0;
     float prev_value = 0;
     for(x = 0; x<5; x++) {
-//        printf("X=%d\n",x);
+        DEBUG_PRINTF("X=%d\n",x);
         prev_value = ain.read();
         y = (y<<1) + 1;
         outputs = y;
-//        printf("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
+        DEBUG_PRINTF("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
         TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
     }
-//    printf("Finished the Test\n");
+    DEBUG_PRINTF("Finished the Test\n");
     TEST_ASSERT(true);
 }
 
