@@ -22,6 +22,7 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
+#include "ci_test_config.h"
 //#include "rtos.h"
 
 using namespace utest::v1;
@@ -32,7 +33,7 @@ volatile bool result = false;
 void cbfn(void)
 {
     result = true;
-    //printf("\t**** Interrupt Triggered!\n");
+    DEBUG_PRINTF("\t**** Interrupt Triggered!\n");
 }
 
 // Template to check Falling edge and Rising edge interrupts.
@@ -44,23 +45,23 @@ void InterruptInTest()
     DigitalOut dout(dout_pin);
 
     // Test Rising Edge InterruptIn
-    //printf("***** Rising Edge Test \n");
+    DEBUG_PRINTF("***** Rising Edge Test \n");
     dout = 0;
     result = false;
     intin.rise(cbfn);
     dout = 1;
     wait(0); // dummy wait to get volatile result value
-    //printf("Value of result is : %d\n",result);
+    DEBUG_PRINTF("Value of result is : %d\n",result);
     TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
 
     // Test Falling Edge InterruptIn
-    //printf("***** Falling Edge Test \n");
+    DEBUG_PRINTF("***** Falling Edge Test \n");
     dout = 1;
     result = false;
     intin.fall(cbfn);
     dout = 0;
     wait(0); // dummy wait to get volatile result value
-    //printf("Value of result is : %d\n",result);
+    DEBUG_PRINTF("Value of result is : %d\n",result);
     TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
 }
 

@@ -18,6 +18,7 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
+#include "ci_test_config.h"
 
 using namespace utest::v1;
 
@@ -36,7 +37,7 @@ void busout_define_test(){
     bout = 0;
     volatile int x = 0;
     while(x < 0xFF){
-        //printf("\r\n*********\r\nvalue of x is: 0x%x\r\n********\r\n",x);
+        DEBUG_PRINTF("\r\n*********\r\nvalue of x is: 0x%x\r\n********\r\n",x);
         x++;
         bout.write(x);
     }
@@ -60,7 +61,7 @@ void businout_define_test(){
         bio2.input();
         wait(1);
         volatile int y = bio2.read();
-        //printf("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
+        DEBUG_PRINTF("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
         TEST_ASSERT_MESSAGE(y == x,"Value read on bus does not equal value written. ");
     }
 
@@ -73,7 +74,7 @@ void businout_define_test(){
         bio1.input();
         wait(1);
         volatile int y = bio1.read();
-        //printf("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
+        DEBUG_PRINTF("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
         TEST_ASSERT_MESSAGE(y == x,"Value read on bus does not equal value written. ");
     }
 
@@ -89,7 +90,7 @@ void businout_bidirectional_test(){
     while(x < 0x0F){
         x++;
         bout.write(x);
-        //printf("\r\n*********\r\nvalue of bin,bout,x is: 0x%x, 0x%x, 0x%x\r\n********\r\n",bin.read(),bout.read(),x);
+        DEBUG_PRINTF("\r\n*********\r\nvalue of bin,bout,x is: 0x%x, 0x%x, 0x%x\r\n********\r\n",bin.read(),bout.read(),x);
         TEST_ASSERT_MESSAGE(bin.read() == bout.read(),"Value read on bin does not equal value written on bout. ")
     }
     TEST_ASSERT_MESSAGE(true,"The fact that it hasnt error out proves this passes the sniff test");

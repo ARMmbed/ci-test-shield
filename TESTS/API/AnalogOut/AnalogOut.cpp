@@ -25,6 +25,7 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
+#include "ci_test_config.h"
 //#include "rtos.h"
 
 using namespace utest::v1;
@@ -42,13 +43,13 @@ void AnalogOutput_Test()
     valueOff = ain.read();
     aout = 0.5;
     valueOn = ain.read();
-    printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
+    DEBUG_PRINTF("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
     TEST_ASSERT_MESSAGE((0.4f < valueOn) && (0.6f > valueOn), "Value is not in expected range of ~0.5f");
     TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 0.5");
     valueOff = ain.read();
     aout = 1.0;
     valueOn = ain.read();
-    printf("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
+    DEBUG_PRINTF("\r\n***** valueOff = %f, valueOn = %f \r\n",valueOff, valueOn);
     TEST_ASSERT_MESSAGE((0.9f < valueOn) && (1.1f > valueOn), "Value is not in expected range of ~0.5f");
     TEST_ASSERT_MESSAGE(valueOn > valueOff,"Value has not increased, expected 1.0");
 }

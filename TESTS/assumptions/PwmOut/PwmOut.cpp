@@ -25,6 +25,7 @@
 #include "unity.h"
 #include "utest.h"
 #include <cmath>
+#include "ci_test_config.h"
 
 using namespace utest::v1;
 
@@ -62,7 +63,7 @@ void pwm_interrupt_timer_test()
     pwm.write(0.5f); // 50% duty cycle
     timer.stop();
     x.disable_irq(); // Try enabling this if the test fails
-    printf("\r\n*****\r\n Test is complete, returning now, this shouldnt hang, if this ERROR's then your platform has a problem.\r\n*****\r\n");
+    DEBUG_PRINTF("\r\n*****\r\n Test is complete, returning now, this shouldnt hang, if this ERROR's then your platform has a problem.\r\n*****\r\n");
     TEST_ASSERT_MESSAGE(true,"If we exit this test and return then it all works just fine.");
 }
 
