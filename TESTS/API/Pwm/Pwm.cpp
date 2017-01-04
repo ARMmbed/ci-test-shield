@@ -71,7 +71,9 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
     duty_timer.start();
     pwm.write(duty_cycle_percent); // set duty cycle
     wait_ms(NUM_TESTS*period_in_ms);
+#if !defined(TARGET_STM)
     iin.disable_irq(); // This is here because otherwise it fails on some platforms
+#endif
     duty_timer.stop();
 
     float avgTime = (float)duty_running_count / NUM_TESTS;
@@ -136,7 +138,9 @@ void PWM_Period_Test()
     //Start Testing
     pwm.write(0.5f); // 50% duty cycle
     wait_ms(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
+#if !defined(TARGET_STM)
     iin.disable_irq(); // This is here because otherwise it fails on some platforms
+#endif
     int rc = rise_count; // grab the numbers to work with as the pwm may continue going
     int fc = fall_count;
 
