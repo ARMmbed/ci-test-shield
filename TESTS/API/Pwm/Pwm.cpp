@@ -33,6 +33,14 @@ Timer duty_timer;
 volatile int last_rise_time;
 volatile int duty_rise_count;
 
+void pwmout_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_PWM_0 != NC, "Pin MBED_CONF_APP_PWM_0 defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_PWM_1 != NC, "Pin MBED_CONF_APP_PWM_1 defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_PWM_2 != NC, "Pin MBED_CONF_APP_PWM_2 defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_PWM_3 != NC, "Pin MBED_CONF_APP_PWM_3 defined as NC");
+}
+
 void duty_cbfn_rise(void){
     duty_rise_count++;
     last_rise_time = duty_timer.read_ms();
@@ -213,6 +221,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
+    Case("PwmOut pins defined", pwmout_pins),
     // Test Creat PwmOut Objects
     Case("Pwm object definable", pwm_define_test,greentea_failure_handler),   // test pwm object constructor works
 

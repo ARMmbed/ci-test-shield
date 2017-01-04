@@ -22,6 +22,20 @@
 
 using namespace utest::v1;
 
+void digitalio_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_1 != NC, "Pin MBED_CONF_APP_DIO_1 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_2 != NC, "Pin MBED_CONF_APP_DIO_2 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_3 != NC, "Pin MBED_CONF_APP_DIO_3 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_4 != NC, "Pin MBED_CONF_APP_DIO_4 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_5 != NC, "Pin MBED_CONF_APP_DIO_5 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_6 != NC, "Pin MBED_CONF_APP_DIO_6 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_7 != NC, "Pin MBED_CONF_APP_DIO_7 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_8 != NC, "Pin MBED_CONF_APP_DIO_8 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_DIO_9 != NC, "Pin MBED_CONF_APP_DIO_9 is defined as NC");
+}
+
+
 // Template to test paired Digital IO pins, meant to be re-used multiple times
 template <PinName dout_pin, PinName din_pin> 
 void DigitalIO_Test()
@@ -51,6 +65,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pinnames from config file
 Case cases[] = {
+    Case("Digital I/O pins defined", digitalio_pins),
     Case("Digital I/O on DIO_3/DIO_2", DigitalIO_Test<MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3>,greentea_failure_handler),
     Case("Digital I/O on DIO_2/DIO_3", DigitalIO_Test<MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_2>,greentea_failure_handler),
     Case("Digital I/O on DIO_5/DIO_4", DigitalIO_Test<MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5>,greentea_failure_handler),

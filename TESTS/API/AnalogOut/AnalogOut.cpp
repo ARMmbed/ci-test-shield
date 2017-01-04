@@ -30,6 +30,12 @@
 
 using namespace utest::v1;
 
+// AnalogOut should be defined
+void analogout_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AOUT != NC, "Pin MBED_CONF_APP_AOUT is defined as NC");
+}
+
 // Template to set one Analog pin as input and then cycle through the rest as outputs.
 // As you turn more pins on the voltage on the ain pin will go up.
 template <PinName aout_pin, PinName ain_pin> 
@@ -68,6 +74,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
+    Case("AnalogOut Pins defined", analogout_pins, greentea_failure_handler),
     Case("AnalogOut on AOUT", AnalogOutput_Test<MBED_CONF_APP_AOUT,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
 };
 
