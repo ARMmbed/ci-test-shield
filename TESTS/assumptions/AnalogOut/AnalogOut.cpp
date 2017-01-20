@@ -26,12 +26,6 @@ utest::v1::status_t greentea_failure_handler(const Case* const source, const fai
 }
 
 Case cases[] = {
-	Case("AnalogOut - is pin 0 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_0>, greentea_failure_handler),
-	Case("AnalogOut - is pin 1 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_1>, greentea_failure_handler),
-	Case("AnalogOut - is pin 2 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_2>, greentea_failure_handler),
-	Case("AnalogOut - is pin 3 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_3>, greentea_failure_handler),
-	Case("AnalogOut - is pin 4 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_4>, greentea_failure_handler),
-	Case("AnalogOut - is pin 5 connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_5>, greentea_failure_handler),
 	Case("AnalogOut - is AOUT connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT>, greentea_failure_handler),
 
 };
