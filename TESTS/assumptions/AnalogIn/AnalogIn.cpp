@@ -80,12 +80,12 @@ utest::v1::status_t greentea_failure_handler(const Case* const source, const fai
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
     Case("AnalogIn - existence of `DEVICE_ANALOGIN` macro", Macro_Test,greentea_failure_handler),
-	Case("AnalogIn - is pin 0 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_0>, greentea_failure_handler),
-	Case("AnalogIn - is pin 1 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_1>, greentea_failure_handler),
-	Case("AnalogIn - is pin 2 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_2>, greentea_failure_handler),
-	Case("AnalogIn - is pin 3 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_3>, greentea_failure_handler),
-	Case("AnalogIn - is pin 4 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_4>, greentea_failure_handler),
-	Case("AnalogIn - is pin 5 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_5>, greentea_failure_handler),
+    Case("AnalogIn - is pin 0 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_0>, greentea_failure_handler),
+    Case("AnalogIn - is pin 1 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_1>, greentea_failure_handler),
+    Case("AnalogIn - is pin 2 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_2>, greentea_failure_handler),
+    Case("AnalogIn - is pin 3 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_3>, greentea_failure_handler),
+    Case("AnalogIn - is pin 4 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_4>, greentea_failure_handler),
+    Case("AnalogIn - is pin 5 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_5>, greentea_failure_handler),
     Case("AnalogIn - can co-exist with DigitalOut", Can_AnalogIn_and_DigitalOut,greentea_failure_handler),
     Case("AnalogIn 0 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_0>,greentea_failure_handler),
     Case("AnalogIn 1 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_1>,greentea_failure_handler),
