@@ -9,14 +9,14 @@ using namespace utest::v1;
 template <PinName d_pin>
 void test_PWM_NC()
 {
-	TEST_ASSERT_MESSAGE(d_pin != NC, "Pin is NC");
+    TEST_ASSERT_MESSAGE(d_pin != NC, "Pin is NC");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases)
 {
-	// Setup Greentea using a reasonable timeout in seconds
-	GREENTEA_SETUP(5, "default_auto");
-	return verbose_test_setup_handler(number_of_cases);
+    // Setup Greentea using a reasonable timeout in seconds
+    GREENTEA_SETUP(5, "default_auto");
+    return verbose_test_setup_handler(number_of_cases);
 }
 
 utest::v1::status_t greentea_failure_handler(const Case* const source, const failure_t reason)
@@ -26,15 +26,15 @@ utest::v1::status_t greentea_failure_handler(const Case* const source, const fai
 }
 
 Case cases[] = {
-	Case("PWM - is Pin 0 connected?", test_PWM_NC<MBED_CONF_APP_PWM_0>, greentea_failure_handler),
-	Case("PWM - is Pin 1 connected?", test_PWM_NC<MBED_CONF_APP_PWM_1>, greentea_failure_handler),
-	Case("PWM - is Pin 2 connected?", test_PWM_NC<MBED_CONF_APP_PWM_2>, greentea_failure_handler),
-	Case("PWM - is Pin 3 connected?", test_PWM_NC<MBED_CONF_APP_PWM_3>, greentea_failure_handler),
+    Case("PWM - is Pin 0 connected?", test_PWM_NC<MBED_CONF_APP_PWM_0>, greentea_failure_handler),
+    Case("PWM - is Pin 1 connected?", test_PWM_NC<MBED_CONF_APP_PWM_1>, greentea_failure_handler),
+    Case("PWM - is Pin 2 connected?", test_PWM_NC<MBED_CONF_APP_PWM_2>, greentea_failure_handler),
+    Case("PWM - is Pin 3 connected?", test_PWM_NC<MBED_CONF_APP_PWM_3>, greentea_failure_handler),
 
 };
 
 Specification specification(test_setup, cases);
 
 int main() {
-	return !Harness::run(specification);
+    return !Harness::run(specification);
 }
