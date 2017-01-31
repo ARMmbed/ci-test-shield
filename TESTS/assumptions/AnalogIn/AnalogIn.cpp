@@ -59,14 +59,14 @@ void Can_AnalogIn_and_DigitalOut()
 template <PinName d_pin>
 void test_AnalogIn_NC()
 {
-	TEST_ASSERT_MESSAGE(d_pin != NC, "Pin is NC");
+    TEST_ASSERT_MESSAGE(d_pin != NC, "Pin is NC");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases)
 {
-	// Setup Greentea using a reasonable timeout in seconds
-	GREENTEA_SETUP(5, "default_auto");
-	return verbose_test_setup_handler(number_of_cases);
+    // Setup Greentea using a reasonable timeout in seconds
+    GREENTEA_SETUP(5, "default_auto");
+    return verbose_test_setup_handler(number_of_cases);
 }
 
 utest::v1::status_t greentea_failure_handler(const Case* const source, const failure_t reason)
