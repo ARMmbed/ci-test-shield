@@ -55,6 +55,13 @@ void Can_AnalogIn_and_DigitalOut()
     TEST_ASSERT_MESSAGE(true,"We got to this point, we're goog to go.");
 }
 
+// Test that the pins are actually connected
+template <PinName d_pin>
+void test_AnalogIn_NC()
+{
+    TEST_ASSERT_MESSAGE(d_pin != NC, "Pin is NC");
+}
+
 utest::v1::status_t test_setup(const size_t number_of_cases)
 {
     // Setup Greentea using a reasonable timeout in seconds
@@ -62,17 +69,23 @@ utest::v1::status_t test_setup(const size_t number_of_cases)
     return verbose_test_setup_handler(number_of_cases);
 }
 
-// Handle test failures, keep testing, don't stop
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason)
+utest::v1::status_t greentea_failure_handler(const Case* const source, const failure_t reason)
 {
     greentea_case_failure_abort_handler(source, reason);
-    return STATUS_CONTINUE;
+    return STATUS_CONTINUE;	
 }
+
 
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
     Case("AnalogIn - existence of `DEVICE_ANALOGIN` macro", Macro_Test,greentea_failure_handler),
+    Case("AnalogIn - is pin 0 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_0>, greentea_failure_handler),
+    Case("AnalogIn - is pin 1 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_1>, greentea_failure_handler),
+    Case("AnalogIn - is pin 2 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_2>, greentea_failure_handler),
+    Case("AnalogIn - is pin 3 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_3>, greentea_failure_handler),
+    Case("AnalogIn - is pin 4 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_4>, greentea_failure_handler),
+    Case("AnalogIn - is pin 5 connected?", test_AnalogIn_NC<MBED_CONF_APP_AIN_5>, greentea_failure_handler),
     Case("AnalogIn - can co-exist with DigitalOut", Can_AnalogIn_and_DigitalOut,greentea_failure_handler),
     Case("AnalogIn 0 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_0>,greentea_failure_handler),
     Case("AnalogIn 1 - pin can do DigitalOut", can_digitalout<MBED_CONF_APP_AIN_1>,greentea_failure_handler),
