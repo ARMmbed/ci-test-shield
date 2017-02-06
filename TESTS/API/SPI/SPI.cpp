@@ -61,7 +61,6 @@ void test_card_present()
     SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
     FILE *File = fopen("/sd/card-present.txt", "w");   // open file
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
-    // TODO: add greentea trigger to stop testing if SD Card not present
 }
 
 // Test SD Card Write
@@ -105,10 +104,17 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_CONTINUE;
 }
 
+// Handle test failures, stop on failure
+utest::v1::status_t greentea_failure_handler_abort(const Case *const source, const failure_t reason)
+{
+    greentea_case_failure_abort_handler(source, reason);
+    return STATUS_ABORT;
+}
+
 // Test cases
  Case cases[] = {
      Case("SPI - Object Definable", test_object,greentea_failure_handler),
-     Case("SPI - SD card exists",     test_card_present,greentea_failure_handler),
+     Case("SPI - SD card exists",     test_card_present,greentea_failure_handler_abort),
      Case("SPI - SD Write",     test_sd_w,greentea_failure_handler),
      Case("SPI - SD Read",     test_sd_r,greentea_failure_handler),
  };
