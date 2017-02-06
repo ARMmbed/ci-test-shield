@@ -125,9 +125,13 @@ Case cases[] = {
     Case("I2C -  Instantiation of I2C Object",test_object<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL>,greentea_failure_handler),
     Case("I2C -  LM75B Temperature Read",test_lm75b<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
     Case("I2C -  EEProm WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
+    Case("I2C -  EEProm 2nd WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 2 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,5>,greentea_failure_handler),
+    Case("I2C -  EEProm 2nd WR 2 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,5>,greentea_failure_handler),
     Case("I2C -  EEProm WR 10  Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,100>,greentea_failure_handler),
+    Case("I2C -  EEProm 2nd WR 10  Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,10,100>,greentea_failure_handler),
     Case("I2C -  EEProm WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1000>,greentea_failure_handler),
+    Case("I2C -  EEProm 2nd WR 100 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,100,1000>,greentea_failure_handler),
 };
 
 Specification specification(test_setup, cases);

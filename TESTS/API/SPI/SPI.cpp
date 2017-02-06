@@ -111,6 +111,8 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
      Case("SPI - SD card exists",     test_card_present,greentea_failure_handler),
      Case("SPI - SD Write",     test_sd_w,greentea_failure_handler),
      Case("SPI - SD Read",     test_sd_r,greentea_failure_handler),
+     Case("SPI - SD 2nd Write",     test_sd_w,greentea_failure_handler),
+     Case("SPI - SD 2nd Read",     test_sd_r,greentea_failure_handler),
  };
 
  Specification specification(test_setup, cases);
