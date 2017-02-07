@@ -70,7 +70,7 @@ If you are testing a board that does not have Arduino R3 style headers then you 
 
 Either way, you will need to heavily modify the `mbed_app.json` file and redefine every pin mapping since your platform will not have the Arduino Header D0-15 or A0-5 pin aliases. 
 
-For more on how config files work see the [mbed OS docs](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md#configuration-data-in-applications).
+For more on how config files work see the [mbed OS docs](https://docs.mbed.com/docs/mbed-os-handbook/en/latest/advanced/config_system/).
 
 ## Troubleshooting
 - Use the `-v` flag for verbose debug and failure messages that can help you troubleshoot. 
