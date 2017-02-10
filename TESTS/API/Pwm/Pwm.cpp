@@ -17,7 +17,7 @@
 //#error [NOT_SUPPORTED] PWM tests are still being written and validated, not for public use yet. 
 
 #if !DEVICE_PWMOUT
-  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' deffinition to your platform.
+  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' definition to your platform.
 #endif
 
 #include "mbed.h"

@@ -25,7 +25,7 @@
 
 // check if SPI is supported on this device
 #if !DEVICE_SPI
-    #error SPI is not supported on this platform, add 'DEVICE_SPI' deffinition to your platform.
+    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
 #endif
 
 using namespace utest::v1;

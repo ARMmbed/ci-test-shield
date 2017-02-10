@@ -16,9 +16,9 @@
 
 // check if AnalogOut is supported on this device
 
-#warning [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
+#warning [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' definition to your platform. 
 #if !DEVICE_ANALOGOUT
-  #error [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' deffinition to your platform. 
+  #error [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' definition to your platform. 
 #endif
 
 #include "mbed.h"
