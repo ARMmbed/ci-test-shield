@@ -26,7 +26,7 @@ utest::v1::status_t greentea_failure_handler(const Case* const source, const fai
 }
 
 Case cases[] = {
-    Case("AnalogOut - is AOUT connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT_0>, greentea_failure_handler),
+    Case("AnalogOut - is AOUT connected?", test_AnalogOut_NC<MBED_CONF_APP_AOUT>, greentea_failure_handler),
 
 };
 
