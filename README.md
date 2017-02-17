@@ -45,7 +45,7 @@ To run the tests associated with the ci-test-shield follow these steps:
 0. `cd ci-test-shield`- Navigate to the repo on your command line. 
 1. `mbed target auto` - Automatically detect board plugged into computer and set it as the target
 3. `mbed toolchain GCC_ARM` - Select compiler. You can also use IAR, UVISION, or any other toolchain listed in `mbed toolchain --supported`
-4. `mbed update` - Update libraries to latest version
+4. [Optional] Update mbed-os and tests to latest version. Do nothing to use the last stable version.
 5. `mbed test -n tests-* --app-config .\mbed_app.json` - Run CI Test Shield tests. 
 
 ## Customization  
