@@ -33,7 +33,6 @@ volatile bool result = false;
 void cbfn(void)
 {
     result = true;
-    DEBUG_PRINTF("\t**** Interrupt Triggered!\n");
 }
 
 // Template to check Falling edge and Rising edge interrupts.
