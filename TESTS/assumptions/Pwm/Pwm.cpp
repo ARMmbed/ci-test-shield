@@ -1,3 +1,7 @@
+#if !DEVICE_PWMOUT
+  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' definition to your platform.
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
