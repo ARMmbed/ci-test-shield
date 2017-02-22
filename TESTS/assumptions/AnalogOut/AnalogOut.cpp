@@ -1,3 +1,8 @@
+// check if AnalogOut is supported on this device
+#if !DEVICE_ANALOGOUT
+  #error [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' definition to your platform. 
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"

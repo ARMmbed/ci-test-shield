@@ -1,3 +1,8 @@
+// check if SPI is supported on this device
+#if !DEVICE_SPI
+    #error [NOT_SUPPORTED] SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
