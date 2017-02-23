@@ -33,9 +33,8 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-int TestFramework::analog_pin_index;
-std::vector<PinName> TestFramework::analog_in_pins;
-std::vector<PinName> TestFramework::analog_out_pins;
+std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector<int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
 TestFramework test_framework;

@@ -36,20 +36,22 @@ public:
 	enum Type {
 		AnalogInput,
 		AnalogOutput,
-		DigitalIO
+		DigitalIO,
+		CITS_AnalogInput,
+		CITS_AnalogOutput,
+		CITS_DigitalIO,
+		TS_NC
 	};
-
-	// Analog pin iterator
-	static int analog_pin_index;
-	// Analog input pins
-	static vector<PinName> analog_in_pins;
-	// Analog output pins
-	static vector<PinName> analog_out_pins;
 
 	// Analog In tests
 	static utest::v1::control_t test_l0_analogin(const size_t call_count);
+	static utest::v1::control_t test_l1_analogin(const size_t call_count);
+
 	// Analog Out tests
 	static utest::v1::control_t test_l0_analogout(const size_t call_count);
+
+	static vector< vector <PinName> > pinout;
+	static vector<int> pin_iterators;
 
 	TestFramework();
 
@@ -60,7 +62,15 @@ private:
 	  * @param PinMap[] from the HAL
 	  * @param Type specifying which pin type to save the pins as
 	**/
-	void map_pins(const PinMap pinmap[], std::vector<PinName> * pin_list);
+	void map_pins(const PinMap pinmap[], Type pintype);
+
+	void setup_cits_pins();
+
+	static int find_pin(PinName pin, Type pintype);
+
+	static utest::v1::control_t reset_iterator(Type pintype);
+
+	static void test_analogin_execute(PinName pin);
 
 };
 
