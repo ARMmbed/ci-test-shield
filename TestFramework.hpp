@@ -27,6 +27,7 @@
 #include "ci_test_config.h"
 
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -46,6 +47,7 @@ public:
 	// Analog In tests
 	static utest::v1::control_t test_l0_analogin(const size_t call_count);
 	static utest::v1::control_t test_l1_analogin(const size_t call_count);
+	static utest::v1::control_t test_l2_analogin(const size_t call_count);
 
 	// Analog Out tests
 	static utest::v1::control_t test_l0_analogout(const size_t call_count);
@@ -70,7 +72,8 @@ private:
 
 	static utest::v1::control_t reset_iterator(Type pintype);
 
-	static void test_analogin_execute(PinName pin);
+	// Analog helper functions
+	static void test_analogin_execute(PinName pin, float tolerance);
 
 };
 

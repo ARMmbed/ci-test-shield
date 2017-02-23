@@ -44,8 +44,13 @@ utest::v1::status_t test_setup(const size_t number_of_cases) {
     return verbose_test_setup_handler(number_of_cases);
 }
 
+utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
+    greentea_case_failure_abort_handler(source, reason);
+    return STATUS_ABORT;
+}
+
 Case cases[] = {
-	Case("L1 - Analog Input Range test (single pin)", TestFramework::test_l1_analogin),
+	Case("L1 - Analog Input Range test (single pin)", TestFramework::test_l1_analogin, greentea_failure_handler),
 };
 
 int main() {
