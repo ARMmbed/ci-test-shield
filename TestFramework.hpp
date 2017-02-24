@@ -52,6 +52,11 @@ public:
 	// Analog Out tests
 	static utest::v1::control_t test_l0_analogout(const size_t call_count);
 
+	// Digitial IO tests
+	static utest::v1::control_t test_l0_digitalio(const size_t call_count);
+	static utest::v1::control_t test_l1_digitalio(const size_t call_count);
+
+
 	static vector< vector <PinName> > pinout;
 	static vector<int> pin_iterators;
 
@@ -72,8 +77,9 @@ private:
 
 	static utest::v1::control_t reset_iterator(Type pintype);
 
-	// Analog helper functions
+	// Helper functions
 	static void test_analogin_execute(PinName pin, float tolerance, int iterations);
+	static void test_digitalio_execute(PinName pin, int iterations);
 
 };
 

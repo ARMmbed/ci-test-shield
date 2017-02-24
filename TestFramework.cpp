@@ -18,6 +18,8 @@
 TestFramework::TestFramework() {
 	map_pins(PinMap_ADC, AnalogInput);
 	map_pins(PinMap_DAC, AnalogOutput);
+	map_pins(PinMap_PWM, DigitalIO);
+	map_pins(PinMap_ADC, DigitalIO);
 	setup_cits_pins();
 }
 
@@ -29,6 +31,16 @@ void TestFramework::setup_cits_pins() {
 	pinout[CITS_AnalogInput].push_back(MBED_CONF_APP_AIN_4);
 	pinout[CITS_AnalogInput].push_back(MBED_CONF_APP_AIN_5);
 	pinout[CITS_AnalogOutput].push_back(MBED_CONF_APP_AOUT);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_0);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_1);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_2);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_3);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_4);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_5);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_6);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_7);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_8);
+	pinout[CITS_DigitalIO].push_back(MBED_CONF_APP_DIO_9);
 }
 
 void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
@@ -78,13 +90,52 @@ utest::v1::control_t TestFramework::test_l0_analogout(const size_t call_count) {
 	return reset_iterator(AnalogOutput);
 }
 
+utest::v1::control_t TestFramework::test_l0_digitalio(const size_t call_count) {
+	PinName pin = pinout[DigitalIO][pin_iterators[DigitalIO]++];
+	DEBUG_PRINTF("Running digital io constructor on pin %d\n", pin);
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+
+	DigitalOut dout(pin);
+	DigitalIn din(pin);
+
+	TEST_ASSERT(true);
+	return reset_iterator(DigitalIO);
+}
+
+utest::v1::control_t TestFramework::test_l1_digitalio(const size_t call_count) {
+	PinName pin = pinout[DigitalIO][pin_iterators[DigitalIO]];
+	int index = find_pin(pin, CITS_DigitalIO);
+	int tag = 0;
+	// State: Execute
+	if (index != -1) {
+		test_digitalio_execute(pin, 10);
+		pin_iterators[DigitalIO] = 0;
+		return utest::v1::CaseNext;
+	}
+	while (pin_iterators[DigitalIO] < pinout[DigitalIO].size()) {
+		// State: Increment iterator
+		pin_iterators[DigitalIO]++;
+		pin = pinout[DigitalIO][pin_iterators[DigitalIO]];
+		index = find_pin(pin, CITS_DigitalIO);
+
+		if (index != -1) {
+			// State: Execute
+			test_digitalio_execute(pin, 10);
+			pin_iterators[DigitalIO] = 0;
+			return utest::v1::CaseNext;
+		}
+	}
+	// State: End test
+	return reset_iterator(DigitalIO);
+}
+
 utest::v1::control_t TestFramework::test_l1_analogin(const size_t call_count) {
 	PinName pin = pinout[AnalogInput][pin_iterators[AnalogInput]];
 	int index = find_pin(pin, CITS_AnalogInput);
 	int tag = 0;
 	// State: Execute
 	if (index != -1) {
-		test_analogin_execute(pin, 0.10, 10);
+		test_analogin_execute(pin, 0.05, 10);
 		pin_iterators[AnalogInput] = 0;
 		return utest::v1::CaseNext;
 	}
@@ -96,7 +147,7 @@ utest::v1::control_t TestFramework::test_l1_analogin(const size_t call_count) {
 
 		if (index != -1) {
 			// State: Execute
-			test_analogin_execute(pin, 0.10, 10);
+			test_analogin_execute(pin, 0.05, 10);
 			pin_iterators[AnalogInput] = 0;
 			return utest::v1::CaseNext;
 		}
@@ -111,7 +162,7 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 	int tag = 0;
 	// State: Execute
 	if (index != -1) {
-		test_analogin_execute(pin, 0.05, 100);
+		test_analogin_execute(pin, 0.01, 100);
 		tag = 1;
 	}
 	while (pin_iterators[AnalogInput] < pinout[AnalogInput].size()) {
@@ -127,7 +178,7 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 				return utest::v1::CaseRepeatAll;
 			// State: Execute
 			} else {
-				test_analogin_execute(pin, 0.05, 100);
+				test_analogin_execute(pin, 0.01, 100);
 				tag = 1;
 			}
 		}
@@ -171,5 +222,19 @@ void TestFramework::test_analogin_execute(PinName pin, float tolerance, int iter
 			input = ain.read();
 			TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input matches analog output");
 		}
+	}
+}
+
+void TestFramework::test_digitalio_execute(PinName pin, int iterations) {
+	DEBUG_PRINTF("Running digital io test on pin %d\n", pin);
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+
+    for (int i=0; i<iterations; i++) {
+	    DigitalOut dout(pin);
+	    DigitalIn din(pin);
+	    dout = 0;
+	    TEST_ASSERT_MESSAGE(0 == din.read(),"Expected value to be 0, read value was not zero");
+	    dout = 1;
+	    TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
 	}
 }
