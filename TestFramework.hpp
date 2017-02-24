@@ -73,7 +73,7 @@ private:
 	static utest::v1::control_t reset_iterator(Type pintype);
 
 	// Analog helper functions
-	static void test_analogin_execute(PinName pin, float tolerance);
+	static void test_analogin_execute(PinName pin, float tolerance, int iterations);
 
 };
 

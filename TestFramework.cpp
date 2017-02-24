@@ -84,7 +84,7 @@ utest::v1::control_t TestFramework::test_l1_analogin(const size_t call_count) {
 	int tag = 0;
 	// State: Execute
 	if (index != -1) {
-		test_analogin_execute(pin, 0.10);
+		test_analogin_execute(pin, 0.10, 10);
 		pin_iterators[AnalogInput] = 0;
 		return utest::v1::CaseNext;
 	}
@@ -96,7 +96,7 @@ utest::v1::control_t TestFramework::test_l1_analogin(const size_t call_count) {
 
 		if (index != -1) {
 			// State: Execute
-			test_analogin_execute(pin, 0.10);
+			test_analogin_execute(pin, 0.10, 10);
 			pin_iterators[AnalogInput] = 0;
 			return utest::v1::CaseNext;
 		}
@@ -111,7 +111,7 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 	int tag = 0;
 	// State: Execute
 	if (index != -1) {
-		test_analogin_execute(pin, 0.05);
+		test_analogin_execute(pin, 0.05, 100);
 		tag = 1;
 	}
 	while (pin_iterators[AnalogInput] < pinout[AnalogInput].size()) {
@@ -127,7 +127,7 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 				return utest::v1::CaseRepeatAll;
 			// State: Execute
 			} else {
-				test_analogin_execute(pin, 0.05);
+				test_analogin_execute(pin, 0.05, 100);
 				tag = 1;
 			}
 		}
@@ -136,38 +136,40 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 	return reset_iterator(AnalogInput);
 }
 
-void TestFramework::test_analogin_execute(PinName pin, float tolerance) {
+void TestFramework::test_analogin_execute(PinName pin, float tolerance, int iterations) {
 	DEBUG_PRINTF("Running analog input range test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-    // Case 1: Digital and Analog non-conflicting
-	AnalogIn ain(pin);
-    DigitalOut dout(MBED_CONF_APP_DIO_0);
-    dout=0;
-    float compare1 = ain.read();
-    dout=1;
-    float compare2 = ain.read();
-    TEST_ASSERT_MESSAGE(true, "Digital writes prevent analog inputs");
-    TEST_ASSERT_MESSAGE(abs(compare1-compare2)<tolerance, "Digital write changed the analog input");
+    for (int i=0; i<iterations; i++) {
 
-    // Case 2: Dual purpose analog/digital
-    // DigitalOut dout2(pin);
-    // dout2=0;
-    // dout2=1;
-    // TEST_ASSERT_MESSAGE(true, "Analog pins do not dual purpose as digital IO");
-    // float input = ain.read();
-    // dout2=0;
-    // TEST_ASSERT_MESSAGE(input > (1-tolerance) && input < (1+tolerance), "Analog pin did not match digital output");
+	    // Case 1: Digital and Analog non-conflicting
+		AnalogIn ain(pin);
+	    DigitalOut dout(MBED_CONF_APP_DIO_0);
+	    dout=0;
+	    float compare1 = ain.read();
+	    dout=1;
+	    float compare2 = ain.read();
+	    TEST_ASSERT_MESSAGE(true, "Digital writes prevent analog inputs");
+	    TEST_ASSERT_MESSAGE(abs(compare1-compare2)<tolerance, "Digital write changed the analog input");
 
-    float input = 0.0f;
-	AnalogOut aout(MBED_CONF_APP_AOUT);
-	aout = 0.5;
+	    // Case 2: Dual purpose analog/digital
+	    // DigitalOut dout2(pin);
+	    // dout2=0;
+	    // dout2=1;
+	    // TEST_ASSERT_MESSAGE(true, "Analog pins do not dual purpose as digital IO");
+	    // float input = ain.read();
+	    // dout2=0;
+	    // TEST_ASSERT_MESSAGE(input > (1-tolerance) && input < (1+tolerance), "Analog pin did not match digital output");
 
-    TEST_ASSERT_MESSAGE(true, "Analog input pins do not dual purpose as analog output pins");
-	for (float i=0.0f; i<=1.0f; i+=0.1f) {
-		aout=i;
-		input = ain.read();
-		DEBUG_PRINTF("Is input (%f) between %f and %f?\n", input, i-tolerance, i+tolerance);
-		TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input matches analog output");
+	    // Case 3: Range test
+	    float input = 0.0f;
+		AnalogOut aout(MBED_CONF_APP_AOUT);
+		aout = 0.5;
+	    TEST_ASSERT_MESSAGE(true, "Analog input pins do not dual purpose as analog output pins");
+		for (float i=0.0f; i<=1.0f; i+=0.1f) {
+			aout=i;
+			input = ain.read();
+			TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input matches analog output");
+		}
 	}
 }
