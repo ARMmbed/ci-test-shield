@@ -25,6 +25,12 @@ TestFramework::TestFramework() {
 	map_pins(PinMap_PWM, DigitalIO);
 	map_pins(PinMap_ADC, DigitalIO);
 	map_pins(PinMap_PWM, PWM);
+	map_pins(PinMap_I2C_SDA, I2C_SDA);
+	map_pins(PinMap_I2C_SCL, I2C_SCL);
+	map_pins(PinMap_SPI_SCLK, SPI_CLK);
+	map_pins(PinMap_SPI_MOSI, SPI_MOSI);
+	map_pins(PinMap_SPI_MISO, SPI_MISO);
+	map_pins(PinMap_SPI_SSEL, SPI_CS);
 	setup_cits_pins();
 }
 
@@ -50,7 +56,12 @@ void TestFramework::setup_cits_pins() {
 	pinout[CITS_PWM].push_back(MBED_CONF_APP_PWM_1);
 	pinout[CITS_PWM].push_back(MBED_CONF_APP_PWM_2);
 	pinout[CITS_PWM].push_back(MBED_CONF_APP_PWM_3);
-
+	pinout[CITS_I2C_SDA].push_back(MBED_CONF_APP_I2C_SDA);
+	pinout[CITS_I2C_SCL].push_back(MBED_CONF_APP_I2C_SCL);
+	pinout[CITS_SPI_CLK].push_back(MBED_CONF_APP_SPI_CLK);
+	pinout[CITS_SPI_MISO].push_back(MBED_CONF_APP_SPI_MISO);
+	pinout[CITS_SPI_MOSI].push_back(MBED_CONF_APP_SPI_MOSI);
+	pinout[CITS_SPI_CS].push_back(MBED_CONF_APP_SPI_CS);
 }
 
 void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
@@ -147,6 +158,41 @@ utest::v1::control_t TestFramework::test_l0_pwm(const size_t call_count) {
 	return reset_iterator(PWM);
 }
 
+utest::v1::control_t TestFramework::test_l0_i2c(const size_t call_count) {
+	PinName pin_sda = pinout[I2C_SDA][pin_iterators[I2C_SDA]++];
+	PinName pin_scl = pinout[I2C_SCL][pin_iterators[I2C_SCL]++];
+	DEBUG_PRINTF("Running I2C constructor on SDA pin %d and SCL pin %d\n", pin_sda, pin_scl);
+    TEST_ASSERT_MESSAGE(pin_sda != NC, "SDA Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_scl != NC, "SCL Pin is NC");
+
+    I2C i2c(pin_sda, pin_scl);
+
+	TEST_ASSERT(true);
+	reset_iterator(I2C_SDA);
+	return reset_iterator(I2C_SCL);
+}
+
+utest::v1::control_t TestFramework::test_l0_spi(const size_t call_count) {
+	PinName pin_clk = pinout[SPI_CLK][pin_iterators[SPI_CLK]++];
+	PinName pin_mosi = pinout[SPI_MOSI][pin_iterators[SPI_MOSI]++];
+	PinName pin_miso = pinout[SPI_MISO][pin_iterators[SPI_MISO]++];
+	PinName pin_cs = pinout[SPI_CS][pin_iterators[SPI_CS]++];
+	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+
+    SPI(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK);
+    DigitalOut cs(MBED_CONF_APP_SPI_CS);
+
+	TEST_ASSERT(true);
+	reset_iterator(SPI_MOSI);
+	reset_iterator(SPI_MISO);
+	reset_iterator(SPI_CS);
+	return reset_iterator(SPI_CLK);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //									L1 										 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,6 +242,14 @@ utest::v1::control_t TestFramework::test_l1_analogout(const size_t call_count) {
 // 	return test_l1_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
 // }
 
+utest::v1::control_t TestFramework::test_l1_i2c(const size_t call_count) {
+	return test_l1_framework(I2C_SCL, CITS_I2C_SCL, &test_i2c_execute, 0.05, 10);
+}
+
+utest::v1::control_t TestFramework::test_l1_spi(const size_t call_count) {
+	return test_l1_framework(SPI_CLK, CITS_SPI_CLK, &test_spi_execute, 0.05, 10);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //									L2 										 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -240,7 +294,7 @@ utest::v1::control_t TestFramework::test_l2_analogin(const size_t call_count) {
 }
 
 utest::v1::control_t TestFramework::test_l2_analogout(const size_t call_count) {
-	return test_l1_framework(AnalogOutput, CITS_AnalogOutput, &test_analogout_execute, 0.01, 100);
+	return test_l2_framework(AnalogOutput, CITS_AnalogOutput, &test_analogout_execute, 0.01, 100);
 }
 
 // EXISTS IN HEADER - DO NOT UNCOMMENT - HERE FOR REFERENCE
@@ -248,6 +302,14 @@ utest::v1::control_t TestFramework::test_l2_analogout(const size_t call_count) {
 // utest::v1::control_t TestFramework::test_l2_pwm(const size_t call_count) {
 // 	return test_l2_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
 // }
+
+utest::v1::control_t TestFramework::test_l2_i2c(const size_t call_count) {
+	return test_l2_framework(I2C_SCL, CITS_I2C_SCL, &test_i2c_execute, 0.01, 100);
+}
+
+utest::v1::control_t TestFramework::test_l2_spi(const size_t call_count) {
+	return test_l2_framework(SPI_CLK, CITS_SPI_CLK, &test_spi_execute, 0.01, 100);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //									Tests									 //
@@ -361,4 +423,55 @@ void TestFramework::test_pwm_execute(PinName pin, float dutycycle, int period) {
     TEST_ASSERT_MESSAGE( std::abs(iterations - rc) <= calculated_percent, "There was more than a specific variance in number of rise cycles seen and number expected.");
     TEST_ASSERT_MESSAGE( std::abs(iterations - fc) <= calculated_percent, "There was more than a specific variance in number of fall cycles seen and number expected.");
     TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= calculated_percent,"Greater than a specific variance between expected and measured duty cycle");
+}
+
+void TestFramework::test_i2c_execute(PinName pin_scl, float null_float, int null_int) {
+	PinName pin_sda = pinout[I2C_SDA][pin_iterators[I2C_SCL]];
+	DEBUG_PRINTF("Running I2C constructor on SDA pin %d and SCL pin %d\n", pin_sda, pin_scl);
+    TEST_ASSERT_MESSAGE(pin_sda != NC, "SDA Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_scl != NC, "SCL Pin is NC");
+
+    I2C i2c(pin_sda, pin_scl);
+    I2CEeprom memory(pin_sda,pin_scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+    char test = 'A' + rand()%26;
+    char read;
+    int r = 0;
+    int w = 0;
+    w = memory.write(1,test);
+    r = memory.read(1,read);
+    DEBUG_PRINTF("Num Bytes Read = %d\nNum Bytes Written = %d\nRead byte = `%c`\nWritten Byte = `%c`\n",r,w,read,test);
+
+    TEST_ASSERT_EQUAL_MESSAGE(test,read,"Character Read does not equal character written!");
+    TEST_ASSERT_MESSAGE(test == read, "character written does not match character read")
+
+    TEST_ASSERT(true);
+}
+
+void TestFramework::test_spi_execute(PinName pin_clk, float null_float, int null_int) {
+	char test_string_write[TEST_STRING_MAX] = {0};
+
+	PinName pin_mosi = pinout[SPI_MOSI][pin_iterators[SPI_CLK]];
+	PinName pin_miso = pinout[SPI_MISO][pin_iterators[SPI_CLK]];
+	PinName pin_cs = pinout[SPI_CS][pin_iterators[SPI_CLK]];
+	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+
+    SDFileSystem sd(pin_mosi, pin_miso, pin_clk, pin_cs, "sd");
+    FILE *File_write = fopen("/sd/test_card.txt", "w"); // open File_write
+    TEST_ASSERT_MESSAGE(File_write != NULL,"SD Card is not present. Please insert an SD Card.");
+    TEST_ASSERT_MESSAGE(fprintf(File_write, test_string_write) > 0,"Writing File to sd card failed"); // write data
+    fclose(File_write);// close file on SD
+
+    FILE *File_read = fopen("/sd/test_card.txt", "r"); // open File_read
+    char test_string_read [TEST_STRING_MAX] = {0};
+    fgets(test_string_read,TEST_STRING_MAX,File_read); // read string from the file
+    DEBUG_PRINTF("Read '%s' in read test\nString comparison returns %d\n",test_string_read,strcmp(test_string_read,test_string_write));
+    TEST_ASSERT_MESSAGE(strcmp(test_string_read,test_string_write) == 0,"String read does not match string written"); // test that strings match
+
+    // fclose(File);// close file on SD
+
+    TEST_ASSERT(true);
 }

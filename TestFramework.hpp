@@ -25,9 +25,14 @@
 #include "unity.h"
 #include "utest.h"
 #include "ci_test_config.h"
+#include <I2CEeprom.h>
+#include "SDFileSystem.h" 
 
 #include <vector>
 #include <cmath>
+#include <string>
+
+#define TEST_STRING_MAX 100
 
 class TestFramework {
 public:
@@ -37,10 +42,22 @@ public:
 		AnalogOutput,
 		DigitalIO,
 		PWM,
+		I2C_SDA,
+		I2C_SCL,
+		SPI_MISO,
+		SPI_MOSI,
+		SPI_CLK,
+		SPI_CS,
 		CITS_AnalogInput,
 		CITS_AnalogOutput,
 		CITS_DigitalIO,
 		CITS_PWM,
+		CITS_I2C_SDA,
+		CITS_I2C_SCL,
+		CITS_SPI_MOSI,
+		CITS_SPI_MISO,
+		CITS_SPI_CLK,
+		CITS_SPI_CS,
 		RiseCount,
 		FallCount,
 		DutyCount,
@@ -76,6 +93,17 @@ public:
 		return test_l2_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
 	}
 
+	// I2C tests
+	static utest::v1::control_t test_l0_i2c(const size_t call_count);
+	static utest::v1::control_t test_l1_i2c(const size_t call_count);
+	static utest::v1::control_t test_l2_i2c(const size_t call_count);
+
+	// SPI tests
+	static utest::v1::control_t test_l0_spi(const size_t call_count);
+	static utest::v1::control_t test_l1_spi(const size_t call_count);
+	static utest::v1::control_t test_l2_spi(const size_t call_count);
+
+	// Static variables
 	static std::vector< std::vector <PinName> > pinout;
 	static std::vector<int> pin_iterators;
 	static Timer duty_timer;
@@ -104,6 +132,8 @@ private:
 	static void test_digitalio_execute(PinName pin, float tolerance, int iterations);
 	static void test_analogout_execute(PinName pin, float tolerance, int iterations);
 	static void test_pwm_execute(PinName pin, float dutycycle, int period);
+	static void test_i2c_execute(PinName pin, float tolerance, int iterations);
+	static void test_spi_execute(PinName pin, float tolerance, int iterations);
 
 	static volatile int fall_count;
 	static volatile int rise_count;
