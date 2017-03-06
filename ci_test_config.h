@@ -16,8 +16,10 @@
 #ifndef CI_TEST_CONFIG_H
 #define CI_TEST_CONFIG_H
 
+#include "utest_serial.h"
+
 #if defined(MBED_CONF_APP_DEBUG_MSG) && (MBED_CONF_APP_DEBUG_MSG != 0)
-#define DEBUG_PRINTF(...) do { printf(__VA_ARGS__); } while(0)
+#define DEBUG_PRINTF(...) do { utest_printf(__VA_ARGS__); } while(0)
 #else
 #define DEBUG_PRINTF(...) {}
 #endif
