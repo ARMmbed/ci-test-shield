@@ -47,7 +47,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L1 - DigitalIO Range test (single pin)", TestFramework::test_l1_digitalio, greentea_failure_handler),
+	Case("Level 1 - DigitalIO Range test (single pin)", TestFramework::test_level1_digitalio, greentea_failure_handler),
 };
 
 int main() {

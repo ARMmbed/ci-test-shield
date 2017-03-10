@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
+
+// check if SPI is supported on this device
+#if !DEVICE_SPI
+    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
 #endif
 
 #include "cmsis.h"
@@ -50,7 +52,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L1 - Analog Input Range test (single pin)", TestFramework::test_l1_analogin, greentea_failure_handler),
+	Case("Level 1 - SPI Range test (single pin)", TestFramework::test_level1_spi, greentea_failure_handler),
 };
 
 int main() {

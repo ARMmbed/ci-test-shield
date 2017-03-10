@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !DEVICE_PWMOUT
-  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' definition to your platform.
-#endif
 
 #include "cmsis.h"
 #include "pinmap.h"
@@ -33,7 +30,7 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
@@ -49,8 +46,20 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+utest::v1::control_t test_level0_digitalio(const size_t call_count) {
+	PinMap pin = test_framework.get_increment_pin(TestFramework::DigitalIO);
+	DEBUG_PRINTF("Running digital io constructor on pin %d\n", pin.pin);
+    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+
+	DigitalOut dout(pin.pin);
+	DigitalIn din(pin.pin);
+
+	TEST_ASSERT(true);
+	return test_framework.reset_iterator(TestFramework::DigitalIO);
+}
+
 Case cases[] = {
-	Case("L0 - PWM Constructor", TestFramework::test_l0_pwm, greentea_failure_handler),
+	Case("Level 0 - DigitalIO Constructor", test_level0_digitalio, greentea_failure_handler),
 };
 
 int main() {

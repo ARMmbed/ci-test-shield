@@ -33,7 +33,7 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
@@ -49,8 +49,22 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+void construct_i2c(PinName sda, PinName scl) {
+	DEBUG_PRINTF("Running I2C Constructor on SDA pin %d and SCL pin %d\n", sda, scl);
+    TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
+    TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
+
+    I2C i2c(sda, scl);
+
+	TEST_ASSERT(true);
+}
+
+utest::v1::control_t test_level0_i2c(const size_t call_count) {
+	return test_framework.run_i2c(&construct_i2c);
+}
+
 Case cases[] = {
-	Case("L1 - I2C Range test (single pin set)", TestFramework::test_l1_i2c, greentea_failure_handler),
+	Case("Level 0 - I2C Constructor", test_level0_i2c, greentea_failure_handler),
 };
 
 int main() {

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+// check if SPI is supported on this device
+#if !DEVICE_SPI
+    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
+#endif
+
 #include "cmsis.h"
 #include "pinmap.h"
 #include "PeripheralPins.h"
@@ -30,7 +35,7 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
@@ -46,8 +51,26 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+void construct_i2c(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) {
+	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+
+    SPI(pin_mosi, pin_miso, pin_clk);
+    DigitalOut cs(pin_cs);
+
+	TEST_ASSERT(true);
+}
+
+utest::v1::control_t test_level0_spi(const size_t call_count) {
+	return test_framework.run_spi(&construct_i2c);
+}
+
+
 Case cases[] = {
-	Case("L0 - DigitalIO Constructor", TestFramework::test_l0_digitalio, greentea_failure_handler),
+	Case("Level 0 - SPI Constructor", test_level0_spi, greentea_failure_handler),
 };
 
 int main() {

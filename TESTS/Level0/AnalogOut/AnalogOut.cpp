@@ -33,7 +33,7 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
@@ -49,8 +49,19 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+utest::v1::control_t test_level0_analogout(const size_t call_count) {
+	PinMap pin = test_framework.get_increment_pin(TestFramework::AnalogOutput);
+	DEBUG_PRINTF("Running analog output constructor on pin %d\n", pin.pin);
+    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+
+	AnalogOut ain(pin.pin);
+
+	TEST_ASSERT(true);
+	return test_framework.reset_iterator(TestFramework::AnalogOutput);
+}
+
 Case cases[] = {
-	Case("L0 - Analog Output Constructor", TestFramework::test_l0_analogout, greentea_failure_handler),
+	Case("Level 0 - Analog Output Constructor", test_level0_analogout, greentea_failure_handler),
 };
 
 int main() {

@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#if !DEVICE_PWMOUT
+  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' definition to your platform.
+#endif
 
 #include "cmsis.h"
 #include "pinmap.h"
@@ -32,6 +35,7 @@ using namespace utest::v1;
 // Static variables for managing the dynamic list of pins
 std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
+Timer TestFramework::duty_timer;
 
 // Initialize a test framework object
 TestFramework test_framework;
@@ -47,7 +51,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L2 - DigitalIO Range test (all pins)", TestFramework::test_l2_digitalio, greentea_failure_handler),
+	Case("Level 1 - PWM Range test (single pin) - 10ms", TestFramework::test_level1_pwm<50, 10>, greentea_failure_handler),
+	Case("Level 1 - PWM Range test (single pin) - 30ms", TestFramework::test_level1_pwm<50, 30>, greentea_failure_handler),
+	// Case("Level 1 - PWM Range test (single pin) - 100ms", TestFramework::test_level1_pwm<50, 100>, greentea_failure_handler),
+	Case("Level 1 - PWM Range test (single pin) - 10%", TestFramework::test_level1_pwm<10, 10>, greentea_failure_handler),
+	Case("Level 1 - PWM Range test (single pin) - 50%", TestFramework::test_level1_pwm<50, 10>, greentea_failure_handler),
+	Case("Level 1 - PWM Range test (single pin) - 90%", TestFramework::test_level1_pwm<90, 10>, greentea_failure_handler),
 };
 
 int main() {

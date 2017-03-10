@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// check if SPI is supported on this device
-#if !DEVICE_SPI
-    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
+#if !DEVICE_ANALOGIN
+  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
 #endif
 
 #include "cmsis.h"
@@ -52,7 +50,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L0 - SPI Constructor", TestFramework::test_l0_spi, greentea_failure_handler),
+	Case("Level 2 - Analog Input Range test (all pins)", TestFramework::test_level2_analogin, greentea_failure_handler),
 };
 
 int main() {

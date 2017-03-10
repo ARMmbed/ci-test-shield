@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
+#if !DEVICE_I2C
+  #error [NOT_SUPPORTED] I2C not supported on this platform, add 'DEVICE_I2C' definition to your platform.
 #endif
 
 #include "cmsis.h"
@@ -50,7 +50,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L2 - Analog Input Range test (all pins)", TestFramework::test_l2_analogin, greentea_failure_handler),
+	Case("Level 1 - I2C Range test (single pin set)", TestFramework::test_level1_i2c, greentea_failure_handler),
 };
 
 int main() {

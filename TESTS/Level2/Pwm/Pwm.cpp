@@ -41,7 +41,7 @@ Timer TestFramework::duty_timer;
 TestFramework test_framework;
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(30, "default_auto");
+    GREENTEA_SETUP(60, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
@@ -51,12 +51,12 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L1 - PWM Range test (single pin) - 10ms", TestFramework::test_l1_pwm<50, 10>, greentea_failure_handler),
-	Case("L1 - PWM Range test (single pin) - 30ms", TestFramework::test_l1_pwm<50, 30>, greentea_failure_handler),
-	// Case("L1 - PWM Range test (single pin) - 100ms", TestFramework::test_l1_pwm<50, 100>, greentea_failure_handler),
-	Case("L1 - PWM Range test (single pin) - 10%", TestFramework::test_l1_pwm<10, 10>, greentea_failure_handler),
-	Case("L1 - PWM Range test (single pin) - 50%", TestFramework::test_l1_pwm<50, 10>, greentea_failure_handler),
-	Case("L1 - PWM Range test (single pin) - 90%", TestFramework::test_l1_pwm<90, 10>, greentea_failure_handler),
+	Case("Level 2 - PWM Range test (all pins) - 10ms", TestFramework::test_level2_pwm<50, 10>, greentea_failure_handler),
+	Case("Level 2 - PWM Range test (all pins) - 30ms", TestFramework::test_level2_pwm<50, 30>, greentea_failure_handler),
+	// Case("Level 2 - PWM Range test (all pins) - 100ms", TestFramework::test_level2_pwm<50, 100>, greentea_failure_handler),
+	Case("Level 2 - PWM Range test (all pins) - 10%", TestFramework::test_level2_pwm<10, 10>, greentea_failure_handler),
+	Case("Level 2 - PWM Range test (all pins) - 50%", TestFramework::test_level2_pwm<50, 10>, greentea_failure_handler),
+	Case("Level 2 - PWM Range test (all pins) - 90%", TestFramework::test_level2_pwm<90, 10>, greentea_failure_handler),
 };
 
 int main() {

@@ -44,9 +44,9 @@ public:
 		PWM,
 		I2C_SDA,
 		I2C_SCL,
+		SPI_CLK,
 		SPI_MISO,
 		SPI_MOSI,
-		SPI_CLK,
 		SPI_CS,
 		CITS_AnalogInput,
 		CITS_AnalogOutput,
@@ -66,49 +66,60 @@ public:
 	};
 
 	// Analog In tests
-	static utest::v1::control_t test_l0_analogin(const size_t call_count);
-	static utest::v1::control_t test_l1_analogin(const size_t call_count);
-	static utest::v1::control_t test_l2_analogin(const size_t call_count);
+	static utest::v1::control_t test_level1_analogin(const size_t call_count);
+	static utest::v1::control_t test_level2_analogin(const size_t call_count);
 
 	// Analog Out tests
-	static utest::v1::control_t test_l0_analogout(const size_t call_count);
-	static utest::v1::control_t test_l1_analogout(const size_t call_count);
-	static utest::v1::control_t test_l2_analogout(const size_t call_count);
+	static utest::v1::control_t test_level1_analogout(const size_t call_count);
+	static utest::v1::control_t test_level2_analogout(const size_t call_count);
 
 	// Digitial IO tests
-	static utest::v1::control_t test_l0_digitalio(const size_t call_count);
-	static utest::v1::control_t test_l1_digitalio(const size_t call_count);
-	static utest::v1::control_t test_l2_digitalio(const size_t call_count);
+	static utest::v1::control_t test_level1_digitalio(const size_t call_count);
+	static utest::v1::control_t test_level2_digitalio(const size_t call_count);
 
 	// PWM tests
-	static utest::v1::control_t test_l0_pwm(const size_t call_count);
 
 	template <int dutycycle, int period> 
-	static utest::v1::control_t test_l1_pwm(const size_t call_count) {
-		return test_l1_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
+	static utest::v1::control_t test_level1_pwm(const size_t call_count) {
+		return test_level1_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
 	}
 
 	template <int dutycycle, int period> 
-	static utest::v1::control_t test_l2_pwm(const size_t call_count) {
-		return test_l2_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
+	static utest::v1::control_t test_level2_pwm(const size_t call_count) {
+		return test_level2_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
 	}
 
 	// I2C tests
-	static utest::v1::control_t test_l0_i2c(const size_t call_count);
-	static utest::v1::control_t test_l1_i2c(const size_t call_count);
-	static utest::v1::control_t test_l2_i2c(const size_t call_count);
+	static utest::v1::control_t test_level1_i2c(const size_t call_count);
+	static utest::v1::control_t test_level2_i2c(const size_t call_count);
 
 	// SPI tests
-	static utest::v1::control_t test_l0_spi(const size_t call_count);
-	static utest::v1::control_t test_l1_spi(const size_t call_count);
-	static utest::v1::control_t test_l2_spi(const size_t call_count);
+	static utest::v1::control_t test_level1_spi(const size_t call_count);
+	static utest::v1::control_t test_level2_spi(const size_t call_count);
 
 	// Static variables
-	static std::vector< std::vector <PinName> > pinout;
+	static std::vector< std::vector <PinMap> > pinout;
 	static std::vector<int> pin_iterators;
 	static Timer duty_timer;
 
 	TestFramework();
+
+	static utest::v1::control_t reset_iterator(Type pintype);
+
+	PinMap get_increment_pin(Type pintype);
+
+
+
+	static utest::v1::control_t run_i2c(void (*execution_callback)(PinName, PinName));
+
+	static utest::v1::control_t run_spi(void (*execution_callback)(PinName, PinName, PinName, PinName));
+
+	// static int spi_helper(void (*execution_callback)(PinName, PinName, PinName, PinName), int pin_iterator, int * tag);
+
+	static utest::v1::control_t test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
+
+	static utest::v1::control_t test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
+
 
 private:
 
@@ -121,11 +132,6 @@ private:
 	void setup_cits_pins();
 	static int find_pin(PinName pin, Type pintype);
 	static PinName find_pin_pair(PinName pin);
-
-	static utest::v1::control_t reset_iterator(Type pintype);
-
-	static utest::v1::control_t test_l1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
-	static utest::v1::control_t test_l2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
 
 	// Helper functions
 	static void test_analogin_execute(PinName pin, float tolerance, int iterations);

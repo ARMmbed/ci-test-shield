@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !DEVICE_ANALOGIN
-  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
-#endif
 
 #include "cmsis.h"
 #include "pinmap.h"
@@ -50,7 +47,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("L0 - Analog Input Constructor", TestFramework::test_l0_analogin, greentea_failure_handler),
+	Case("Level 2 - DigitalIO Range test (all pins)", TestFramework::test_level2_digitalio, greentea_failure_handler),
 };
 
 int main() {

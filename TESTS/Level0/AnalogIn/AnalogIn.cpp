@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !DEVICE_PWMOUT
-  #error [NOT_SUPPORTED] PWMOUT not supported on this platform, add 'DEVICE_PWMOUT' definition to your platform.
+#if !DEVICE_ANALOGIN
+  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
 #endif
 
 #include "cmsis.h"
@@ -33,15 +33,14 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
-Timer TestFramework::duty_timer;
 
 // Initialize a test framework object
 TestFramework test_framework;
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(60, "default_auto");
+    GREENTEA_SETUP(30, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
@@ -50,13 +49,19 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+utest::v1::control_t test_level0_analogin(const size_t call_count) {
+	PinMap pin = test_framework.get_increment_pin(TestFramework::AnalogInput);
+	DEBUG_PRINTF("Running analog input constructor on pin %d\n", pin.pin);
+    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+
+	AnalogIn ain(pin.pin);
+
+	TEST_ASSERT(true);
+	return test_framework.reset_iterator(TestFramework::AnalogInput);
+}
+
 Case cases[] = {
-	Case("L2 - PWM Range test (all pins) - 10ms", TestFramework::test_l2_pwm<50, 10>, greentea_failure_handler),
-	Case("L2 - PWM Range test (all pins) - 30ms", TestFramework::test_l2_pwm<50, 30>, greentea_failure_handler),
-	// Case("L2 - PWM Range test (all pins) - 100ms", TestFramework::test_l2_pwm<50, 100>, greentea_failure_handler),
-	Case("L2 - PWM Range test (all pins) - 10%", TestFramework::test_l2_pwm<10, 10>, greentea_failure_handler),
-	Case("L2 - PWM Range test (all pins) - 50%", TestFramework::test_l2_pwm<50, 10>, greentea_failure_handler),
-	Case("L2 - PWM Range test (all pins) - 90%", TestFramework::test_l2_pwm<90, 10>, greentea_failure_handler),
+	Case("Level 0 - Analog Input Constructor", test_level0_analogin, greentea_failure_handler),
 };
 
 int main() {
