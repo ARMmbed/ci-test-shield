@@ -37,7 +37,7 @@ To run the tests associated with the ci-test-shield follow these steps:
 
 #### Pre-requisites
 
-0. Clone this repo to your computer using git, or use `mbed import URL`. 
+0. `mbed import https://github.com/ARMmbed/ci-test-shield.git` Clone this repo to your computer using mbed import. 
 1. Install [mbed-cli](https://github.com/armmbed/mbed-cli) tool (need version 0.9.9 or greater).
 
 #### Usage
