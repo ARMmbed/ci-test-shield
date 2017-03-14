@@ -150,41 +150,6 @@ utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, 
 }
 
 /**
-  * (DEPRECATED) Iterate through every combination of SPI pins on the same HW block and execute a callback with that pinset
-  * Reasoning for deprecation: On K64F, there were 1300 combinations and it takes forever to run tests for each combination
-  * Note
-  * @param Callback to a function to run once a pin set has been found
-  * @param int representing which pin type the recursive function is currently looking at (SCLK, MISO, MOSI, CS)
-  * @param int tag identifying if looking for a pin to execute, or if the function is looking for the next case
-  * @return 
-**/
-// int TestFramework::spi_helper(void (*execution_callback)(PinName, PinName, PinName, PinName), int pin_iterator, int * tag) {
-
-// 	if (pin_iterator >= 4) {
-// 		if (*tag == 1)
-// 			return 1;
-// 		execution_callback(pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin, pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin, pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin, pinout[SPI_CS][pin_iterators[SPI_CS]].pin);
-// 		*tag = 1;
-// 		return 0;
-// 	}
-
-// 	while (pin_iterators[pin_iterator] < pinout[pin_iterator].size()) {
-// 		if (pinout[pin_iterator][pin_iterators[pin_iterator]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
-// 			int status = spi_helper(execution_callback, pin_iterator+1, tag);
-// 			if (status == 1)
-// 				return 1;
-// 		}
-// 		pin_iterators[pin_iterator]++;
-// 	}
-
-// 	DEBUG_PRINTF("Pin iterator: %d\n", pin_iterator);
-// 	if (pin_iterator == SPI_CLK)
-// 		return 2;
-// 	pin_iterators[pin_iterator] = 0;
-// 	return 0;
-// }
-
-/**
   * Find a pin set (CLK, MISO, MOSI, CS) based on HW blocks that matches the current pin. Iterate the corresponding pins after test execution
   * @param Callback to a function to run once a pin pairing has been found
   * @return control_t Case control to repeat or move on to the next test cases
