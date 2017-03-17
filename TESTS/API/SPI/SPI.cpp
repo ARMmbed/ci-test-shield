@@ -20,8 +20,9 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "SDFileSystem.h" 
 #include "ci_test_config.h"
+#include "FATFileSystem.h"
+#include "SDBlockDevice.h"
 
 // check if SPI is supported on this device
 #if !DEVICE_SPI
@@ -58,28 +59,53 @@ void test_object()
 // Test for SD Card being present on the shield
 void test_card_present()
 {
-    SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
-    FILE *File = fopen("/sd/card-present.txt", "w");   // open file
+    int error = 0; 
+	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
+	FATFileSystem fs("sd");
+	sd.init();
+
+	error = fs.mount(&sd);
+	
+    FILE *File = fopen("/sd/card-present.txt", "w+");   // open file
+	
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
+
+	sd.deinit();
 }
 
 // Test SD Card Write
 void test_sd_w()
 {
-    SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
+	int error = 0; 
+	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);//alvin add
+	FATFileSystem fs("sd", &sd);
+
+	sd.init();
+
+	error = fs.mount(&sd);
+
     FILE *File = fopen("/sd/test_sd_w.txt", "w");   // open file
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
     TEST_ASSERT_MESSAGE(fprintf(File, SD_TEST_STRING) > 0,"Writing file to sd card failed");             // write data
     // TODO: test that the file was written correctly
     fclose(File);                              // close file on SD
     TEST_ASSERT(true);
+
+	sd.deinit();
 }
 
 // Test SD Card Read
 void test_sd_r()
 {
     char read_string [SD_TEST_STRING_MAX] = {0};
-    SDFileSystem sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS,"sd");
+	int error = 0; 
+	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);//alvin add
+	FATFileSystem fs("sd", &sd);
+
+	sd.init();
+	
+	error = fs.mount(&sd);
+
     FILE *File = fopen("/sd/test_sd_w.txt", "r");   // open file
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
     fgets(read_string,SD_TEST_STRING_MAX,File); // read string from the file
@@ -88,6 +114,8 @@ void test_sd_r()
     TEST_ASSERT_MESSAGE(strcmp(read_string,SD_TEST_STRING) == 0,"String read does not match string written"); // test that strings match
     fclose(File);    // close file on SD
     TEST_ASSERT(true);
+
+	sd.deinit();
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases)
