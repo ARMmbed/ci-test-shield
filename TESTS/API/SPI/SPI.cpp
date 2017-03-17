@@ -65,10 +65,14 @@ void test_card_present()
 	sd.init();
 
 	error = fs.mount(&sd);
+	TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 	
     FILE *File = fopen("/sd/card-present.txt", "w+");   // open file
 	
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
+
+	error = fs.unmount();
+	TEST_ASSERT_MESSAGE(error==0,"SD file system unmount failed.");
 
 	sd.deinit();
 }
@@ -90,6 +94,8 @@ void test_sd_w()
     // TODO: test that the file was written correctly
     fclose(File);                              // close file on SD
     TEST_ASSERT(true);
+
+	error = fs.unmount();
 
 	sd.deinit();
 }
@@ -114,6 +120,8 @@ void test_sd_r()
     TEST_ASSERT_MESSAGE(strcmp(read_string,SD_TEST_STRING) == 0,"String read does not match string written"); // test that strings match
     fclose(File);    // close file on SD
     TEST_ASSERT(true);
+
+	error = fs.unmount();
 
 	sd.deinit();
 }
