@@ -59,7 +59,7 @@ void test_object()
 // Test for SD Card being present on the shield
 void test_card_present()
 {
-    int error = 0; 
+	int error = 0; 
 	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
 	FATFileSystem fs("sd");
 	sd.init();
@@ -67,10 +67,10 @@ void test_card_present()
 	error = fs.mount(&sd);
 	TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 	
-    FILE *File = fopen("/sd/card-present.txt", "w+");   // open file
+	FILE *File = fopen("/sd/card-present.txt", "w+");
 	
-    TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
-
+	TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
+	
 	error = fs.unmount();
 	TEST_ASSERT_MESSAGE(error==0,"SD file system unmount failed.");
 
@@ -81,14 +81,14 @@ void test_card_present()
 void test_sd_w()
 {
 	int error = 0; 
-	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);//alvin add
+	SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
 	FATFileSystem fs("sd", &sd);
 
 	sd.init();
 
 	error = fs.mount(&sd);
 
-    FILE *File = fopen("/sd/test_sd_w.txt", "w");   // open file
+    FILE *File = fopen("/sd/test_sd_w.txt", "w");
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
     TEST_ASSERT_MESSAGE(fprintf(File, SD_TEST_STRING) > 0,"Writing file to sd card failed");             // write data
     // TODO: test that the file was written correctly
@@ -112,7 +112,7 @@ void test_sd_r()
 	
 	error = fs.mount(&sd);
 
-    FILE *File = fopen("/sd/test_sd_w.txt", "r");   // open file
+    FILE *File = fopen("/sd/test_sd_w.txt", "r");
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
     fgets(read_string,SD_TEST_STRING_MAX,File); // read string from the file
     //fread(read_string,sizeof(char),sizeof(SD_TEST_STRING),File); // read the string and compare
