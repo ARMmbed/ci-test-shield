@@ -33,15 +33,20 @@
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
-std::vector< vector <PinName> > TestFramework::pinout(TS_NC);
+std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
-Timer TestFramework::duty_timer;
+Timer TestFramework::all_purpose_timer;
 
 // Initialize a test framework object
 TestFramework test_framework;
 
+int rise_count;
+int fall_count;
+int last_rise_time;
+int duty_count;
+
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(60, "default_auto");
+    GREENTEA_SETUP(200, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
@@ -50,13 +55,104 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
     return STATUS_ABORT;
 }
 
+void callback_pwm_rise(void) {
+    rise_count++;
+    last_rise_time = TestFramework::all_purpose_timer.read_ms();
+}
+
+void callback_pwm_fall(void) {
+    fall_count++;
+    if (last_rise_time != 0)
+        duty_count = duty_count + (TestFramework::all_purpose_timer.read_ms() - last_rise_time);
+}
+
+void test_pwm_execute(PinName pin, float tolerance, int iterations, float dutycycle, int period) {
+    float calculated_percent = iterations * tolerance;
+    if (calculated_percent < 1) calculated_percent = 1.0f;
+
+    // Initialize PWM, InterruptIn, Timer, and Rising / Falling edge counts
+    fall_count = 0;
+    rise_count = 0;
+    last_rise_time = 0;
+    duty_count = 0;
+    PwmOut pwm(pin);
+
+    TestFramework::all_purpose_timer.reset();
+    InterruptIn iin(TestFramework::find_pin_pair(pin));
+    iin.rise(callback_pwm_rise);
+    iin.fall(callback_pwm_fall);
+
+	DEBUG_PRINTF("Duty cycle: %f, Period: %d\n", dutycycle, period);
+
+    pwm.period((float)period/1000);
+    
+    //Start Testing
+    pwm.write(0);
+    TestFramework::all_purpose_timer.start();
+    pwm.write(dutycycle); // 50% duty cycle
+    wait_ms(iterations * period); // wait for pwm to run and counts to add up
+    pwm.write(0);
+    iin.disable_irq(); // This is here because otherwise it fails on some platforms
+    TestFramework::all_purpose_timer.stop();
+    int rc = rise_count; // grab the numbers to work with as the pwm may continue going
+    int fc = fall_count;
+    float avgTime = (float)duty_count / iterations;
+    float expectedTime = (float)period * dutycycle;
+    // DEBUG_PRINTF("Expected time: %f, Avg Time: %f\n", expectedTime, avgTime);
+    // DEBUG_PRINTF("rise count = %d, fall count = %d, expected count = %d\n", rc, fc, iterations);
+    TEST_ASSERT_MESSAGE( std::abs(rc-fc) <= calculated_percent, "There was more than a specific variance in number of rise vs fall cycles");
+    TEST_ASSERT_MESSAGE( std::abs(iterations - rc) <= calculated_percent, "There was more than a specific variance in number of rise cycles seen and number expected.");
+    TEST_ASSERT_MESSAGE( std::abs(iterations - fc) <= calculated_percent, "There was more than a specific variance in number of fall cycles seen and number expected.");
+    // TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= calculated_percent,"Greater than a specific variance between expected and measured duty cycle");
+
+}
+
+void test_pwm_dutycycle(PinName pin, float tolerance, int iterations) {
+	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+    
+	for (float dutycycle=0.05f; dutycycle <= 0.95f; dutycycle+=0.1f) {
+		test_pwm_execute(pin, tolerance, iterations, dutycycle, 10);
+	}
+
+}
+
+void test_pwm_frequency(PinName pin, float tolerance, int iterations) {
+	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+
+    for (int period=10; period<=200; period+=40) {
+		test_pwm_execute(pin, tolerance, iterations, 0.5f, period);
+	}
+}
+
+void test_pwm(PinName pin, float tolerance, int iterations) {
+	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+
+	for (float dutycycle=0.2f; dutycycle <= 0.8f; dutycycle+=0.2f) {
+    	for (int period=10; period<=200; period+=40) {
+			test_pwm_execute(pin, tolerance, iterations, dutycycle, period);
+		}
+	}
+}
+
+utest::v1::control_t test_level2_pwm_frequency(const size_t call_count) {
+	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm_frequency, 0.05f, 20);
+}
+
+utest::v1::control_t test_level2_pwm_dutycycle(const size_t call_count) {
+	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm_dutycycle, 0.05f, 20);
+}
+
+utest::v1::control_t test_level2_pwm(const size_t call_count) {
+	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm, 0.05f, 20);
+}
+
 Case cases[] = {
-	Case("Level 2 - PWM Range test (all pins) - 10ms", TestFramework::test_level2_pwm<50, 10>, greentea_failure_handler),
-	Case("Level 2 - PWM Range test (all pins) - 30ms", TestFramework::test_level2_pwm<50, 30>, greentea_failure_handler),
-	// Case("Level 2 - PWM Range test (all pins) - 100ms", TestFramework::test_level2_pwm<50, 100>, greentea_failure_handler),
-	Case("Level 2 - PWM Range test (all pins) - 10%", TestFramework::test_level2_pwm<10, 10>, greentea_failure_handler),
-	Case("Level 2 - PWM Range test (all pins) - 50%", TestFramework::test_level2_pwm<50, 10>, greentea_failure_handler),
-	Case("Level 2 - PWM Range test (all pins) - 90%", TestFramework::test_level2_pwm<90, 10>, greentea_failure_handler),
+	Case("Level 2 - PWM Frequency test (all pins)", test_level2_pwm_frequency, greentea_failure_handler),
+	Case("Level 2 - PWM Dutycycle test (all pins)", test_level2_pwm_dutycycle, greentea_failure_handler),
+	Case("Level 2 - PWM all tests (all pins)", test_level2_pwm, greentea_failure_handler),
 };
 
 int main() {
