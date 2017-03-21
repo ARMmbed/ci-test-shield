@@ -29,6 +29,12 @@
 
 using namespace utest::v1;
 
+void i2c_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_I2C_SDA, "Pin MBED_CONF_APP_I2C_SDA is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_I2C_SCL, "Pin MBED_CONF_APP_I2C_SCL is defined as NC");
+}
+
 // Fill array with random characters
 void init_string(char* buffer, int len)
 {
@@ -122,6 +128,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
+    Case("I2C pins defined", i2c_pins),
     Case("I2C -  Instantiation of I2C Object",test_object<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL>,greentea_failure_handler),
     Case("I2C -  LM75B Temperature Read",test_lm75b<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
     Case("I2C -  EEProm WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),

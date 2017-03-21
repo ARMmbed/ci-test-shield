@@ -37,6 +37,13 @@ using namespace utest::v1;
 
 char SD_TEST_STRING[SD_TEST_STRING_MAX] = {0};
 
+void spi_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_SPI_MOSI != NC, "Pin MBED_CONF_APP_SPI_MOSI defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_SPI_MISO != NC, "Pin MBED_CONF_APP_SPI_MISO defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_SPI_CLK != NC, "Pin MBED_CONF_APP_SPI_CLK defined as NC");
+}
+
 void init_string()
 {
     int x = 0;
@@ -149,6 +156,7 @@ utest::v1::status_t greentea_failure_handler_abort(const Case *const source, con
 
 // Test cases
  Case cases[] = {
+     Case("SPI pins defined", spi_pins),
      Case("SPI - Object Definable", test_object,greentea_failure_handler),
      Case("SPI - SD card exists",     test_card_present,greentea_failure_handler_abort),
      Case("SPI - SD Write",     test_sd_w,greentea_failure_handler),

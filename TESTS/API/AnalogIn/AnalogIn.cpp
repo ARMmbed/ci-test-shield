@@ -26,6 +26,17 @@
 
 using namespace utest::v1;
 
+// Pins A0-5 should be defined as connected
+void analogin_pins()
+{
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_0 != NC, "Pin MBED_CONF_APP_AIN_0 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_1 != NC, "Pin MBED_CONF_APP_AIN_1 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_2 != NC, "Pin MBED_CONF_APP_AIN_2 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_3 != NC, "Pin MBED_CONF_APP_AIN_3 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_4 != NC, "Pin MBED_CONF_APP_AIN_4 is defined as NC");
+    TEST_ASSERT_MESSAGE(MBED_CONF_APP_AIN_5 != NC, "Pin MBED_CONF_APP_AIN_5 is defined as NC");
+}
+
 // Template to set one Analog pin as input and then cycle through the rest as outputs.
 // As you turn more pins on the voltage on the ain pin will go up.
 template <PinName ain_pin, PinName dout_pin1, PinName dout_pin2, PinName dout_pin3, PinName dout_pin4, PinName dout_pin5> 
@@ -65,6 +76,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 // TODO: take pin names from config file or generate from pinmap file
 Case cases[] = {
+    Case("Änalog Input pins tests", analogin_pins, greentea_failure_handler),
     Case("Analog Input on AIN_0", AnalogInput_Test<MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5>,greentea_failure_handler),
     Case("Analog Input on AIN_1", AnalogInput_Test<MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0>,greentea_failure_handler),
     Case("Analog Input on AIN_2", AnalogInput_Test<MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1>,greentea_failure_handler),
