@@ -15,7 +15,7 @@ The CI Test Shield has several uses.
 ## What is tested?
 Current API's that are tested by the CI Test shield are as follows
 
-1. `DigitalIO`, `Serial`, `InterruptIn`, `PwmOut` - tested by Loopback on pins D0-9
+1. `DigitalIO`, `InterruptIn`, `PwmOut` - tested by Loopback on pins D0-9
 2. `AnalogIO` - tested by resistor star network.
 3. `I2C` - tested with temperature sensor and EEPROM memory.
 4. `SPI` - tested with SD Card. 
@@ -37,19 +37,20 @@ To run the tests associated with the ci-test-shield follow these steps:
 
 #### Pre-requisites
 
-0. Clone this repo to your computer using git, or use `mbed import URL`. 
-1. Install [mbed-cli](https://github.com/armmbed/mbed-cli) tool (need version 0.9.9 or greater).
+0. Install [mbed-cli](https://github.com/armmbed/mbed-cli) tool (need version 1.0.0 or greater). Please verify that you installed [mbed-cli requirements](https://github.com/ARMmbed/mbed-cli#requirements)
+1. Install [mbed-os requirements](https://github.com/ARMmbed/mbed-os/blob/master/requirements.txt)
+2. `mbed import https://github.com/ARMmbed/ci-test-shield.git` Clone this repo to your computer using mbed import. 
 
 #### Usage
 
-0. Navigate to the repo on your command line. `cd ci-test-shield`
-1. Set your board using the `mbed config target xxx`, where xxx is the board name [protip: use `mbed target --supported` for list of supported boards].
-3. Set your toolchain using the `mbed config toolchain xxx`, where xxx is the toolchain. (`GCC_ARM`, `IAR`, `UVISION`...etc, use `mbed toolchain --supported` for a full list)
-4. Grab dependencies by running the `mbed update` command inside the top level of this repo. This will ensure you have the latest version of the mbed-os library. Alternatively you can swap out the mbed-os library for your version that you are testing. 
-5. Run the tests with the test shield plugged into your board. The command will look like `mbed test -n tests-* --app-config .\mbed_app.json` to run all the CI Test Shield tests. 
+0. `cd ci-test-shield`- Navigate to the repo on your command line. 
+1. `mbed target auto` - Automatically detect board plugged into computer and set it as the target
+3. `mbed toolchain GCC_ARM` - Select compiler. You can also use IAR, UVISION, or any other toolchain listed in `mbed toolchain --supported`
+4. [Optional] Update mbed-os and tests to latest version. Do nothing to use the last stable version.
+5. `mbed test -n tests-* --app-config .\mbed_app.json` - Run CI Test Shield tests. 
 
 ## Customization  
-All pin mappings are done in the `mbed_app.json` file. If you need to remap anything this is the palce to do it. 
+All pin mappings are done in the `mbed_app.json` file. If you need to remap or override you can do so here. Please note that all pin mappings will be pre-pended with `MBED_APP_CONF_`. 
 
 #### Different Pins
 If your board has peripherals on pins that differ from the Arduino R3 Header layout you will need to manually fly wire them into the appropriate header and adjust the `mbed_app.json` file.

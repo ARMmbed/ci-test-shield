@@ -34,6 +34,48 @@
         "DEBUG_MSG": 1
     },
     "target_overrides": {
+        "NUCLEO_L476RG": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_F072RB": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_F091RC": {
+             "PWM_0": "D2",
+             "PWM_2": "D7",
+             "AOUT": "A2"
+        },
+        "NUCLEO_F302R8": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_F303RE": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_F334R8": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_F446RE": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_L053R8": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_L073RZ": {
+             "AOUT": "A2"
+        },
+        "NUCLEO_L152RE": {
+             "AOUT": "A2"
+        },
+        "DISCO_F769NI": {
+             "AOUT": "A1"
+        },
+        "DISCO_F746NG": {
+             "PWM_1": "D1"
+        },
+        "NUCLEO_F070RB": {
+            "PWM_0": "D4",
+            "PWM_2": "D5"
+        },
         "K64F": {
              "AOUT": "DAC0_OUT",
              "DIO_8":"PTC12",
