@@ -32,7 +32,7 @@ using namespace utest::v1;
 // Static variables for managing the dynamic list of pins
 std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
-Timer TestFramework::all_purpose_timer;
+Timer timer;
 
 // Initialize a test framework object
 TestFramework test_framework;
@@ -50,7 +50,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 int clocked_dio_toggle;
 
 void dio_toggled(void) {
-	clocked_dio_toggle = TestFramework::all_purpose_timer.read_us();
+	clocked_dio_toggle = timer.read_us();
 }
 
 void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
@@ -71,14 +71,14 @@ void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
     for (unsigned int i=0; i<iterations; i++) {
     	dout = 0;
     	clocked_dio_toggle = 0;
-	    TestFramework::all_purpose_timer.reset();
+	    timer.reset();
 	    InterruptIn iin(pin);
 	    iin.rise(dio_toggled);
-    	TestFramework::all_purpose_timer.start();
+    	timer.start();
     	dout = 1;
     	wait_us(us_timeout*2);
 	    iin.disable_irq();
-	    TestFramework::all_purpose_timer.stop();
+	    timer.stop();
 	    // DEBUG_PRINTF("DIO pin %d has response delay: %dus\n", pin, clocked_dio_toggle);
 	    TEST_ASSERT_MESSAGE(clocked_dio_toggle < us_timeout, "DIO took longer than the designated timeout to respond");
     }

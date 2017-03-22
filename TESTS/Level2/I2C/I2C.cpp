@@ -52,7 +52,7 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 template <int iterations>
-utest::v1::control_t test_level1_i2c(const size_t call_count) {
+utest::v1::control_t test_level2_i2c(const size_t call_count) {
 
 	PinName pin_scl = MBED_CONF_APP_I2C_SCL;
 	PinName pin_sda = MBED_CONF_APP_I2C_SDA;
@@ -81,8 +81,9 @@ utest::v1::control_t test_level1_i2c(const size_t call_count) {
 	    char read[128] = {0};
 	    int r = 0;
 	    int w = 0;
-	    w = memory.write(1, test_string, iterations);
-	    r = memory.read(1, read, iterations);
+	    int location = rand() % 200 + 1;
+	    w = memory.write(location, test_string, iterations);
+	    r = memory.read(location, read, iterations);
 	    DEBUG_PRINTF("Num Bytes Read = %d, Num Bytes Written = %d\nRead bytes = %s\nWritten Bytes = %s\n",r,w,read,test_string);
 	    TEST_ASSERT_MESSAGE(strcmp(read,test_string) == 0,"String read does not match string written");
 	}
@@ -92,11 +93,11 @@ utest::v1::control_t test_level1_i2c(const size_t call_count) {
 }
 
 Case cases[] = {
-	Case("Level 1 - I2C test - 1 byte (single pin set)", test_level1_i2c<1>, greentea_failure_handler),
-	Case("Level 1 - I2C test - 10 byte (single pin set)", test_level1_i2c<10>, greentea_failure_handler),
-	Case("Level 1 - I2C test - 100 byte (single pin set)", test_level1_i2c<100>, greentea_failure_handler),
+	Case("Level 2 - I2C test - 1 byte (all pin set)", test_level2_i2c<1>, greentea_failure_handler),
+	Case("Level 2 - I2C test - 10 byte (all pin set)", test_level2_i2c<10>, greentea_failure_handler),
+	Case("Level 2 - I2C test - 100 byte (all pin set)", test_level2_i2c<100>, greentea_failure_handler),
 };
-
+	
 Specification specification(test_setup, cases);
 
 int main() {

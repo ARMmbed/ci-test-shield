@@ -35,7 +35,7 @@ using namespace utest::v1;
 // Static variables for managing the dynamic list of pins
 std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<int> TestFramework::pin_iterators(TS_NC);
-Timer TestFramework::all_purpose_timer;
+Timer timer;
 
 // Initialize a test framework object
 TestFramework test_framework;
@@ -57,13 +57,13 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 void callback_pwm_rise(void) {
     rise_count++;
-    last_rise_time = TestFramework::all_purpose_timer.read_ms();
+    last_rise_time = timer.read_ms();
 }
 
 void callback_pwm_fall(void) {
     fall_count++;
     if (last_rise_time != 0)
-        duty_count = duty_count + (TestFramework::all_purpose_timer.read_ms() - last_rise_time);
+        duty_count = duty_count + (timer.read_ms() - last_rise_time);
 }
 
 void test_pwm_execute(PinName pin, float dutycycle, int period) {
@@ -82,7 +82,7 @@ void test_pwm_execute(PinName pin, float dutycycle, int period) {
     duty_count = 0;
     PwmOut pwm(pin);
 
-    TestFramework::all_purpose_timer.reset();
+    timer.reset();
     InterruptIn iin(TestFramework::find_pin_pair(pin));
     iin.rise(callback_pwm_rise);
     iin.fall(callback_pwm_fall);
@@ -93,12 +93,12 @@ void test_pwm_execute(PinName pin, float dutycycle, int period) {
     //Start Testing
     pwm.write(0);
     DEBUG_PRINTF("Waiting for %dms\n", iterations * period);
-    TestFramework::all_purpose_timer.start();
+    timer.start();
     pwm.write(dutycycle); // 50% duty cycle
     wait_ms(iterations * period); // wait for pwm to run and counts to add up
     pwm.write(0);
     iin.disable_irq(); // This is here because otherwise it fails on some platforms
-    TestFramework::all_purpose_timer.stop();
+    timer.stop();
     int rc = rise_count; // grab the numbers to work with as the pwm may continue going
     int fc = fall_count;
     float avgTime = (float)duty_count / iterations;

@@ -79,26 +79,29 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
     error = fs.mount(&sd);
     TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 
-
-
     for (int i=0; i<2; i++) {
 
 	    char test_string[128] = {0};
-	    for (int i=0; i<iterations; i++) 
-	    	test_string[i] = 'A' + rand()%26;
+	    for (int j=0; j<iterations; j++) 
+	    	test_string[j] = 'A' + rand()%26;
 
-	    FILE *File_write = fopen("/sd/test_card.txt", "w"); // open File_write
+	   	char file_name[] = "/sd/          .txt";
+	   	for (int j=4; j<14; j++)
+	   		file_name[j] = 'A' + rand()%26;
+
+	    FILE *File_write = fopen(file_name, "w"); // open File_write
 	    TEST_ASSERT_MESSAGE(File_write != NULL,"SD Card is not present. Please insert an SD Card.");
 	    TEST_ASSERT_MESSAGE(fprintf(File_write, test_string) > 0,"Writing File to sd card failed"); // write data
 	    fclose(File_write);// close file on SD
 
-	    FILE *File_read = fopen("/sd/test_card.txt", "r"); // open File_read
+	    FILE *File_read = fopen(file_name, "r"); // open File_read
 	    char test_string_read[128] = {0};
 	    fgets(test_string_read, 128, File_read); // read string from the file
-	    DEBUG_PRINTF("Read '%s' in read test\nString comparison returns %d\n",test_string_read,strcmp(test_string_read,test_string));
+	    DEBUG_PRINTF("Read '%s' in read test\n",test_string_read);
+	    DEBUG_PRINTF("File name: '%s'\n",file_name);
 	    TEST_ASSERT_MESSAGE(strcmp(test_string_read,test_string) == 0,"String read does not match string written"); // test that strings match
 	    fclose(File_read);// close file on SD
-	    remove("/sd/test_card.txt");
+	    remove(file_name);
 	}
 
     error = fs.unmount();

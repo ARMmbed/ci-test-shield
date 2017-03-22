@@ -12,6 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author Michael Ray
+ * @since 3/22/2017
+ * @version 1.0.0
+ * 
  */
 #ifndef TESTFRAMEWORK_H
 #define TESTFRAMEWORK_H
@@ -29,6 +34,8 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <iostream>
+#include <sstream>
 
 #define TEST_STRING_MAX 100
 
@@ -59,31 +66,18 @@ public:
 		TS_NC
 	};
 
-	// template <int dutycycle, int period> 
-	// static utest::v1::control_t test_level2_pwm(const size_t call_count) {
-	// 	return test_level2_framework(PWM, CITS_PWM, &test_pwm_execute, dutycycle*0.01f, period);
-	// }
-
-	// I2C tests
-	// static utest::v1::control_t test_level1_i2c(const size_t call_count);
-	// static utest::v1::control_t test_level2_i2c(const size_t call_count);
-
-	// SPI tests
-	// static utest::v1::control_t test_level1_spi(const size_t call_count);
-	// static utest::v1::control_t test_level2_spi(const size_t call_count);
-
-	// Static variables
 	static std::vector< std::vector <PinMap> > pinout;
-	static std::vector<int> pin_iterators;
-	static Timer all_purpose_timer;
+	static std::vector<unsigned int> pin_iterators;
 
 	TestFramework();
 
 	static utest::v1::control_t reset_iterator(Type pintype);
 
-	PinMap get_increment_pin(Type pintype);
+	static PinMap get_increment_pin(Type pintype);
 	
 	static PinName find_pin_pair(PinName pin);
+
+	static int find_pin(PinName pin, Type pintype);
 
 	static std::vector<PinName> find_resistor_ladder_pins(PinName pin);
 
@@ -95,6 +89,18 @@ public:
 
 	static utest::v1::control_t test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
 
+	static unsigned int get_seed();
+
+	template <int timeout>
+	static utest::v1::status_t test_setup(const size_t number_of_cases) {
+	    GREENTEA_SETUP(timeout, "rand_provider");
+	    return utest::v1::verbose_test_setup_handler(number_of_cases);
+	}
+
+	static utest::v1::status_t greentea_failure_handler(const utest::v1::Case *const source, const utest::v1::failure_t reason) {
+	    greentea_case_failure_abort_handler(source, reason);
+	    return utest::v1::STATUS_ABORT;
+	}
 
 private:
 
@@ -102,11 +108,7 @@ private:
 
 	void setup_cits_pins();
 
-	static int find_pin(PinName pin, Type pintype);
-
-	// Helper functions
-	// static void test_i2c_execute(PinName pin, float tolerance, int iterations);
-	// static void test_spi_execute(PinName pin, float tolerance, int iterations);
+	PinMap construct_pinmap(PinName pin);
 
 };
 
