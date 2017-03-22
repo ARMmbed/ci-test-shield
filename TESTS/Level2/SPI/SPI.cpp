@@ -12,14 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author Michael Ray
+ * @since 3/22/2017
+ * @version 1.0.0
+ * 
  */
+
 #if !DEVICE_SPI
     #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
 #endif
-
-#include "cmsis.h"
-#include "pinmap.h"
-#include "PeripheralPins.h"
 
 #include "mbed.h"
 #include "greentea-client/test_env.h"
@@ -36,23 +38,14 @@ using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
 std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
-std::vector<int> TestFramework::pin_iterators(TS_NC);
+std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 
 // Initialize a test framework object
 TestFramework test_framework;
 
-utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(30, "rand_provider");
-    return verbose_test_setup_handler(number_of_cases);
-}
-
-utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
-    greentea_case_failure_abort_handler(source, reason);
-    return STATUS_ABORT;
-}
-
 void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
 
+	// Verify that the CI test shield pins are connected to the SPI pins
 	PinName pin_mosi = MBED_CONF_APP_SPI_MOSI;
 	PinName pin_miso = MBED_CONF_APP_SPI_MISO;
 	PinName pin_cs = MBED_CONF_APP_SPI_CS;
@@ -70,8 +63,10 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
     TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
     TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
+    // Get a random seed from the Greentea host test
     srand(TestFramework::get_seed());
 
+    // Initialize the SD card and file system residing on the SD card
     int error = 0; 
     SDBlockDevice sd(pin_mosi, pin_miso, pin_clk, pin_cs);
     FATFileSystem fs("sd");
@@ -79,21 +74,26 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
     error = fs.mount(&sd);
     TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 
+    // Iterate twice for consistency
     for (int i=0; i<2; i++) {
 
+    	// Generate a random string
 	    char test_string[128] = {0};
 	    for (int j=0; j<iterations; j++) 
 	    	test_string[j] = 'A' + rand()%26;
 
+	    // Generate a random file name
 	   	char file_name[] = "/sd/          .txt";
 	   	for (int j=4; j<14; j++)
 	   		file_name[j] = 'A' + rand()%26;
 
+	    // Open the file and write the string
 	    FILE *File_write = fopen(file_name, "w"); // open File_write
 	    TEST_ASSERT_MESSAGE(File_write != NULL,"SD Card is not present. Please insert an SD Card.");
 	    TEST_ASSERT_MESSAGE(fprintf(File_write, test_string) > 0,"Writing File to sd card failed"); // write data
 	    fclose(File_write);// close file on SD
 
+	    // Close the old file, open the same file in read only mode, and read the file
 	    FILE *File_read = fopen(file_name, "r"); // open File_read
 	    char test_string_read[128] = {0};
 	    fgets(test_string_read, 128, File_read); // read string from the file
@@ -104,6 +104,7 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
 	    remove(file_name);
 	}
 
+	// Unmount and de-initialize the SD card
     error = fs.unmount();
     TEST_ASSERT_MESSAGE(error==0,"SD file system unmount failed.");
 
@@ -117,13 +118,13 @@ utest::v1::control_t test_level1_spi(const size_t call_count) {
 }
 
 Case cases[] = {
-	Case("Level 1 - SPI test - 1 byte (single pin set)", test_level1_spi<1>, greentea_failure_handler),
-	Case("Level 1 - SPI test - 10 byte (single pin set)", test_level1_spi<10>, greentea_failure_handler),
-	Case("Level 1 - SPI test - 100 byte (single pin set)", test_level1_spi<100>, greentea_failure_handler),
+	Case("Level 2 - SPI test - 1 byte (all pin sets)", test_level1_spi<1>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 10 byte (all pin sets)", test_level1_spi<10>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 100 byte (all pin sets)", test_level1_spi<100>, TestFramework::greentea_failure_handler),
 };
 
 int main() {
 	// Formulate a specification and run the tests based on the Case array
-	Specification specification(test_setup, cases);
+	Specification specification(TestFramework::test_setup<30>, cases);
     return !Harness::run(specification);
 }

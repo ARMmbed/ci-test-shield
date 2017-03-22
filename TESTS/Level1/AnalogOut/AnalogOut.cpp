@@ -50,11 +50,7 @@ void test_analogout_execute(PinName pin, float tolerance, int iterations) {
 	if (resistor_ladder_pins.size() < 5)
 		TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
 
-	// Float the remaining pins so that they don't drive the input wire to a specific voltage
-    BusInOut inputs(resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
-	inputs.input();
-
-	AnalogIn ain(MBED_CONF_APP_AIN_0);
+	AnalogIn ain(resistor_ladder_pins[0]);
 
 	// Repeat to guarentee consistency
     for (unsigned int i=0; i<iterations; i++) {
@@ -66,9 +62,8 @@ void test_analogout_execute(PinName pin, float tolerance, int iterations) {
 		for (float i=0.0f; i<=1.0f; i+=0.1f) {
 			aout = i;
 			input = ain.read();
-			DEBUG_PRINTF("Input voltage: %f, Output voltage: %f\n", input, i);
 			// Verify input matches expected output within a certain tolerance
-			// TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input does not match analog output");
+			TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input does not match analog output");
 		}
 	}
 }
