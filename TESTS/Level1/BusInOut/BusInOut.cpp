@@ -19,10 +19,6 @@
  * 
  */
 
-#if !DEVICE_ANALOGOUT
-  #error [NOT_SUPPORTED] AnalogOut not supported on this platform, add 'DEVICE_ANALOGOUT' definition to your platform.
-#endif
-
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"
@@ -41,40 +37,28 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_analogout_execute(PinName pin, float tolerance, int iterations) {
-	DEBUG_PRINTF("Running analog output range test on pin %d\n", pin);
+void test_busio_execute(PinName pin, float tolerance, int iterations) {
+	DEBUG_PRINTF("Running analog input range test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-    // Find all pins on the resistor ladder that are not the current pin
-	std::vector<PinName> resistor_ladder_pins = TestFramework::find_resistor_ladder_pins(pin);
-	if (resistor_ladder_pins.size() < 5)
-		TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
+    PinName pin_pair = TestFramework::find_pin_pair(pin);
+    BusInOut bio1(pin);
+    BusInOut bio2(pin_pair);
 
-	AnalogIn ain(resistor_ladder_pins[0]);
-
-	// Repeat to guarentee consistency
-    for (unsigned int i=0; i<iterations; i++) {
-    	
-	    float input = 0.0f;
-		AnalogOut aout(pin);
-
-		// Itereate at 100mV increments
-		aout = 0.5;
-		for (float i=0.0f; i<=1.0f; i+=0.1f) {
-			aout=i;
-			input = ain.read();
-			// Verify input matches expected output within a certain tolerance
-			TEST_ASSERT_MESSAGE(input>=(i-tolerance) && input<=(i+tolerance), "Analog input matches analog output");
-		}
-	}
+    bio1.output();
+    bio2.input();
+    bio1 = 0;
+    TEST_ASSERT_MESSAGE(bio2.read()==0, "Value read on bus does not equal value written.");
+    bio1 = 1;
+    TEST_ASSERT_MESSAGE(bio2.read()==1, "Value read on bus does not equal value written.");
 }
 
-utest::v1::control_t test_level2_analogout(const size_t call_count) {
-	return TestFramework::test_level2_framework(TestFramework::AnalogOutput, TestFramework::CITS_AnalogOutput, &test_analogout_execute, 0.02, 100);
+utest::v1::control_t test_level1_busio(const size_t call_count) {
+	return TestFramework::test_level2_framework(TestFramework::BusIO, TestFramework::CITS_DigitalIO, &test_busio_execute, 0.05, 10);
 }
 
 Case cases[] = {
-	Case("Level 2 - Analog Output Range test (all pins)", test_level2_analogout, TestFramework::greentea_failure_handler),
+	Case("Level 1 - Bus Input/Output pair test", test_level1_busio, TestFramework::greentea_failure_handler),
 };
 
 int main() {

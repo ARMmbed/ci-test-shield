@@ -53,6 +53,7 @@ public:
 		SPI_MISO,
 		SPI_MOSI,
 		SPI_CS,
+		BusIO,
 		CITS_AnalogInput,
 		CITS_AnalogOutput,
 		CITS_DigitalIO,
@@ -70,6 +71,8 @@ public:
 	static std::vector<unsigned int> pin_iterators;
 
 	TestFramework();
+
+	static bool check_size(Type pintype);
 
 	static utest::v1::control_t reset_iterator(Type pintype);
 

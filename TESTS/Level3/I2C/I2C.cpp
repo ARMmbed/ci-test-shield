@@ -67,7 +67,8 @@ utest::v1::control_t test_level2_i2c(const size_t call_count) {
 
 	// Generate a random string
     char test_string[128] = {0};
-    for (int i=0; i<iterations; i++) 
+    int rand_size = rand()%128+1;
+    for (int i=0; i<rand_size; i++) 
     	test_string[i] = 'A' + rand()%26;
     int location = rand() % 200 + 1;
 
@@ -75,12 +76,12 @@ utest::v1::control_t test_level2_i2c(const size_t call_count) {
     char should_be_null[128] = {0};
     char read_data[128] = {0};
 
-    int initial_read_bytes = memory.read(location, initial_read, iterations);
-    int initial_write_bytes = memory.write(location, NULL_STR, iterations);
-    int secondary_read_bytes = memory.read(location, should_be_null, iterations);
+    int initial_read_bytes = memory.read(location, initial_read, rand_size);
+    int initial_write_bytes = memory.write(location, NULL_STR, rand_size);
+    int secondary_read_bytes = memory.read(location, should_be_null, rand_size);
 
-    int w = memory.write(location, test_string, iterations);
-    int r = memory.read(location, read_data, iterations);
+    int w = memory.write(location, test_string, rand_size);
+    int r = memory.read(location, read_data, rand_size);
 
     DEBUG_PRINTF("Wrote %d bytes: %s\nRead %d bytes: %s\n", w, test_string, r, read_data);
     TEST_ASSERT_MESSAGE(strcmp(initial_read,should_be_null) != 0,"Write never occurred. Null characters never got written");
@@ -88,13 +89,13 @@ utest::v1::control_t test_level2_i2c(const size_t call_count) {
     TEST_ASSERT_MESSAGE(strcmp(test_string,read_data) == 0,"Read and write data does not match");
 
     TEST_ASSERT(true);
+    if (call_count < iterations)
+    	return utest::v1::CaseRepeatAll;
     return utest::v1::CaseNext;
 }
 
 Case cases[] = {
-	Case("Level 2 - I2C test - 1 byte (all pin set)", test_level2_i2c<1>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - I2C test - 10 byte (all pin set)", test_level2_i2c<10>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - I2C test - 100 byte (all pin set)", test_level2_i2c<100>, TestFramework::greentea_failure_handler),
+	Case("Level 3 - I2C test - randomized", test_level2_i2c<20>, TestFramework::greentea_failure_handler),
 };
 	
 int main() {

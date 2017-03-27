@@ -43,9 +43,11 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
+template <int iterations>
+utest::v1::control_t test_level2_spi(const size_t call_count) {
 
 	// Verify that the CI test shield pins are connected to the SPI pins
+	PinName pin_clk = MBED_CONF_APP_SPI_CLK;
 	PinName pin_mosi = MBED_CONF_APP_SPI_MOSI;
 	PinName pin_miso = MBED_CONF_APP_SPI_MISO;
 	PinName pin_cs = MBED_CONF_APP_SPI_CS;
@@ -54,7 +56,7 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
 		TestFramework::find_pin(pin_cs, TestFramework::SPI_CS)==-1) {
 		TEST_ASSERT(false);
-		return;
+		return utest::v1::CaseNext;
 	}
 
 	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
@@ -110,17 +112,14 @@ void test_spi_execute(PinName pin_clk, float null_float, int iterations) {
 
     sd.deinit();
     TEST_ASSERT(true);
-}
 
-template <int iterations>
-utest::v1::control_t test_level1_spi(const size_t call_count) {
-	return TestFramework::test_level1_framework(TestFramework::SPI_CLK, TestFramework::CITS_SPI_CLK, &test_spi_execute, 0.05, iterations);
+    return utest::v1::CaseNext;
 }
 
 Case cases[] = {
-	Case("Level 2 - SPI test - 1 byte (all pin sets)", test_level1_spi<1>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - SPI test - 10 byte (all pin sets)", test_level1_spi<10>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - SPI test - 100 byte (all pin sets)", test_level1_spi<100>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 1 byte (all pin sets)", test_level2_spi<1>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 10 byte (all pin sets)", test_level2_spi<10>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 100 byte (all pin sets)", test_level2_spi<100>, TestFramework::greentea_failure_handler),
 };
 
 int main() {

@@ -32,6 +32,14 @@ TestFramework::TestFramework() {
 	map_pins(PinMap_DAC, AnalogOutput);
 	map_pins(PinMap_PWM, DigitalIO);
 	map_pins(PinMap_ADC, DigitalIO);
+	// map_pins(PinMap_DAC, DigitalIO);
+	map_pins(PinMap_I2C_SDA, DigitalIO);
+	map_pins(PinMap_I2C_SCL, DigitalIO);
+	map_pins(PinMap_SPI_SCLK, DigitalIO);
+	map_pins(PinMap_SPI_MOSI, DigitalIO);
+	// map_pins(PinMap_SPI_MISO, DigitalIO);
+	map_pins(PinMap_SPI_SSEL, DigitalIO);
+	pinout[BusIO] = pinout[DigitalIO];
 	map_pins(PinMap_PWM, PWM);
 	map_pins(PinMap_I2C_SDA, I2C_SDA);
 	map_pins(PinMap_I2C_SCL, I2C_SCL);
@@ -88,8 +96,8 @@ PinMap TestFramework::construct_pinmap(PinName pin) {
 void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 	int i = 0;
 	while(pinmap[i].pin != (PinName)NC) {
-		// printf("Pin %d\n", pinmap[i].pin);
 		bool alreadyExists = false;
+		// printf("Pin %d\n", pinmap[i].pin);
 		for (unsigned int j=0; j<pinout[pintype].size(); j++) {
 			if (pinout[pintype][j].pin == pinmap[i].pin)
 				alreadyExists = true;
@@ -132,13 +140,22 @@ PinName TestFramework::find_pin_pair(PinName pin) {
 }
 
 /**
+  * Check to see if the pin iterator is pointing at a valid pin in the pinout
+  * @param Type pin type to validate
+  * @return bool if the pin iterator is a valid pin in the pinout
+**/
+bool TestFramework::check_size(Type pintype) {
+	return (pin_iterators[pintype] < pinout[pintype].size());
+}
+
+/**
   * Reset the iterator if all pins of the specified pin type have been looked at,<br>
   *   or proceed to the next pin of the pin type if there are remaining pins
   * @param Type pin type to reset
   * @return control_t Case control statement to repeat or move on to the next case
 **/
 utest::v1::control_t TestFramework::reset_iterator(Type pintype) {
-	if (pin_iterators[pintype] < pinout[pintype].size())
+	if (check_size(pintype))
 		return utest::v1::CaseRepeatAll;
 	else {
 		pin_iterators[pintype] = 0;
@@ -311,7 +328,7 @@ utest::v1::control_t TestFramework::test_level1_framework(Type pintype, Type tes
 		pin_iterators[pintype] = 0;
 		return utest::v1::CaseNext;
 	}
-	while (pin_iterators[pintype] < pinout[pintype].size()) {
+	while (check_size(pintype)) {
 		// State: Increment iterator
 		pin_iterators[pintype]++;
 		pin = pinout[pintype][pin_iterators[pintype]].pin;
@@ -364,7 +381,7 @@ utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type tes
 		tag = 1;
 	}
 	// Search the remaining pins of the pintype to find a pin on the CI test shield
-	while (pin_iterators[pintype] < pinout[pintype].size()) {
+	while (check_size(pintype)) {
 		// State: Increment iterator
 		pin_iterators[pintype]++;
 		pin = pinout[pintype][pin_iterators[pintype]].pin;
