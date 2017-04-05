@@ -81,6 +81,5 @@
              "DIO_8":"PTC12",
              "DIO_9":"PTC4"
         }
-    },
-    "macros": ["IDB0XA1_D13_PATCH"]
+    }
 }
