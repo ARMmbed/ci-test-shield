@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @author Michael Ray
- * @since 3/22/2017
- * @version 1.0.0
  * 
  */
 #if !DEVICE_ANALOGOUT

@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @author Michael Ray
- * @since 3/22/2017
- * @version 1.0.0
  * 
  */
 
@@ -106,6 +103,7 @@ void test_pwm_execute(PinName pin, float dutycycle, int period) {
     TEST_ASSERT_MESSAGE( std::abs(rc-fc) <= calculated_percent, "There was more than a specific variance in number of rise vs fall cycles");
     TEST_ASSERT_MESSAGE( std::abs(iterations - rc) <= calculated_percent, "There was more than a specific variance in number of rise cycles seen and number expected.");
     TEST_ASSERT_MESSAGE( std::abs(iterations - fc) <= calculated_percent, "There was more than a specific variance in number of fall cycles seen and number expected.");
+    // @TODO The following assert is a good check to have (comparing times) but fails on most platforms. Need to come up with a better way to do this test
     // TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= calculated_percent,"Greater than a specific variance between expected and measured duty cycle");
 }
 

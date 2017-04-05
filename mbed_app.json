@@ -31,7 +31,7 @@
         "PWM_1": "D5",
         "PWM_2": "D6",
         "PWM_3": "D9",
-        "DEBUG_MSG": 1
+        "DEBUG_MSG": 0
     },
     "target_overrides": {
         "NUCLEO_L476RG": {
@@ -81,5 +81,6 @@
              "DIO_8":"PTC12",
              "DIO_9":"PTC4"
         }
-    }
+    },
+    "macros": ["IDB0XA1_D13_PATCH"]
 }

@@ -44,11 +44,11 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("Arduino - Analog Output Constructor on AOUT_0", AnalogOutput_Test<MBED_CONF_APP_AOUT>, greentea_failure_handler),
+    Case("Arduino - Analog Output Constructor on AOUT_0", AnalogOutput_Test<MBED_CONF_APP_AOUT>, greentea_failure_handler),
 };
 
 int main() {
-	// Formulate a specification and run the tests based on the Case array
-	Specification specification(test_setup, cases);
+    // Formulate a specification and run the tests based on the Case array
+    Specification specification(test_setup, cases);
     return !Harness::run(specification);
 }

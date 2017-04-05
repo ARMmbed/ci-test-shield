@@ -46,16 +46,16 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("Arduino - Analog Input Constructor on AIN_0", AnalogInput_Test<MBED_CONF_APP_AIN_0>, greentea_failure_handler),
-	Case("Arduino - Analog Input Constructor on AIN_1", AnalogInput_Test<MBED_CONF_APP_AIN_1>, greentea_failure_handler),
-	Case("Arduino - Analog Input Constructor on AIN_2", AnalogInput_Test<MBED_CONF_APP_AIN_2>, greentea_failure_handler),
-	Case("Arduino - Analog Input Constructor on AIN_3", AnalogInput_Test<MBED_CONF_APP_AIN_3>, greentea_failure_handler),
-	Case("Arduino - Analog Input Constructor on AIN_4", AnalogInput_Test<MBED_CONF_APP_AIN_4>, greentea_failure_handler),
-	Case("Arduino - Analog Input Constructor on AIN_5", AnalogInput_Test<MBED_CONF_APP_AIN_5>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_0", AnalogInput_Test<MBED_CONF_APP_AIN_0>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_1", AnalogInput_Test<MBED_CONF_APP_AIN_1>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_2", AnalogInput_Test<MBED_CONF_APP_AIN_2>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_3", AnalogInput_Test<MBED_CONF_APP_AIN_3>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_4", AnalogInput_Test<MBED_CONF_APP_AIN_4>, greentea_failure_handler),
+    Case("Arduino - Analog Input Constructor on AIN_5", AnalogInput_Test<MBED_CONF_APP_AIN_5>, greentea_failure_handler),
 };
 
 int main() {
-	// Formulate a specification and run the tests based on the Case array
-	Specification specification(test_setup, cases);
+    // Formulate a specification and run the tests based on the Case array
+    Specification specification(test_setup, cases);
     return !Harness::run(specification);
 }

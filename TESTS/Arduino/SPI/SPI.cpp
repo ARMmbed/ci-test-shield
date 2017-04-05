@@ -47,11 +47,11 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 }
 
 Case cases[] = {
-	Case("Arduino - SPI Constructor", SPI_Test<MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS>, greentea_failure_handler),
+    Case("Arduino - SPI Constructor", SPI_Test<MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS>, greentea_failure_handler),
 };
 
 int main() {
-	// Formulate a specification and run the tests based on the Case array
-	Specification specification(test_setup, cases);
+    // Formulate a specification and run the tests based on the Case array
+    Specification specification(test_setup, cases);
     return !Harness::run(specification);
 }

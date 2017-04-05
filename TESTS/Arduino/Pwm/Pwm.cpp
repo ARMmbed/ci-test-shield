@@ -51,7 +51,7 @@ Case cases[] = {
 };
 
 int main() {
-	// Formulate a specification and run the tests based on the Case array
-	Specification specification(test_setup, cases);
+    // Formulate a specification and run the tests based on the Case array
+    Specification specification(test_setup, cases);
     return !Harness::run(specification);
 }

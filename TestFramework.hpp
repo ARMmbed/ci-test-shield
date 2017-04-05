@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @author Michael Ray
- * @since 3/22/2017
- * @version 1.0.0
  * 
  */
 #ifndef TESTFRAMEWORK_H
@@ -36,8 +33,17 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <stdarg.h>
 
 #define TEST_STRING_MAX 100
+
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 class TestFramework {
 public:
@@ -70,29 +76,11 @@ public:
 	static std::vector< std::vector <PinMap> > pinout;
 	static std::vector<unsigned int> pin_iterators;
 
+	/**
+	  * Constructor for the test framework. Add all of the PinMaps to the pinout, as well as CI test shield pins
+	**/
 	TestFramework();
 
-	static bool check_size(Type pintype);
-
-	static utest::v1::control_t reset_iterator(Type pintype);
-
-	static PinMap get_increment_pin(Type pintype);
-	
-	static PinName find_pin_pair(PinName pin);
-
-	static int find_pin(PinName pin, Type pintype);
-
-	static std::vector<PinName> find_resistor_ladder_pins(PinName pin);
-
-	static utest::v1::control_t run_i2c(void (*execution_callback)(PinName, PinName));
-
-	static utest::v1::control_t run_spi(void (*execution_callback)(PinName, PinName, PinName, PinName));
-
-	static utest::v1::control_t test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
-
-	static utest::v1::control_t test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
-
-	static unsigned int get_seed();
 
 	template <int timeout>
 	static utest::v1::status_t test_setup(const size_t number_of_cases) {
@@ -104,14 +92,113 @@ public:
 	    greentea_case_failure_abort_handler(source, reason);
 	    return utest::v1::STATUS_ABORT;
 	}
+	
+	/**
+	  * Find a pin within the array of type pintype
+	  * @param PinName pin to search for
+	  * @param Type pin type to in which the pin has to be a part of
+	  * @return index where the pin is found. Returns -1 if can't be found
+	**/
+	static int find_pin(PinName pin, Type pintype);
+
+	/**
+	  * Find the pin that is connected to the specified pin via a resistor on the DIO HW bank
+	  * @param PinName pin to find the corresponding pin connected by the resistor
+	  * @return PinName pin that is connected to the input pin
+	**/ 
+	static PinName find_pin_pair(PinName pin);
+
+	/**
+	  * Check to see if the pin iterator is pointing at a valid pin in the pinout
+	  * @param Type pin type to validate
+	  * @return bool if the pin iterator is a valid pin in the pinout
+	**/
+	static bool check_size(Type pintype);
+
+	/**
+	  * Reset the iterator if all pins of the specified pin type have been looked at,<br>
+	  *   or proceed to the next pin of the pin type if there are remaining pins
+	  * @param Type pin type to reset
+	  * @return control_t Case control statement to repeat or move on to the next case
+	**/
+	static utest::v1::control_t reset_iterator(Type pintype);
+
+	/**
+	  * Get the current pin for a specific pin type, and incrememnt the iterator for that pin type
+	  * @param Type pin type to retrieve and increment
+	  * @return PinName current pin
+	**/
+	static PinMap get_increment_pin(Type pintype);
+
+	/**
+	  * Find the resistor ladder pins that are not the specified pin
+	  * @param PinName pin that should not be included in the resistor ladder
+	  * @return vector<PinName> list of resistor ladder pins
+	**/
+	static std::vector<PinName> find_resistor_ladder_pins(PinName pin);
+
+	/**
+	  * Get a randomized seed from Greentea's host test
+	  * @return unsigned int random seed
+	**/
+	static unsigned int get_seed();
+
+	/**
+	  * Find a matching pin based on HW blocks to the current pin. Iterate the corresponding pin after test case execution
+	  * @param Callback to a function to run once a pin pairing has been found
+	  * @return control_t Case control to repeat or move on to next test cases
+	**/
+	static utest::v1::control_t run_i2c(void (*execution_callback)(PinName, PinName));
+
+	/**
+	  * Find a pin set (CLK, MISO, MOSI, CS) based on HW blocks that matches the current pin. Iterate the corresponding pins after test execution
+	  * @param Callback to a function to run once a pin pairing has been found
+	  * @return control_t Case control to repeat or move on to the next test cases
+	**/
+	static utest::v1::control_t run_spi(void (*execution_callback)(PinName, PinName, PinName, PinName));
+
+	/**
+	  * Find a pin of a specified test type and run a test case (passed in as a callback)
+	  * @param Type type of pin to find to run the callback
+	  * @param Type corresponding type of pin on the CI test shield
+	  * @param Callback to the test case to run once a pin is found
+	  * @param float data in float form to pass to the execution callback. Depends on callback
+	  * @param int data in int form to pass to the execution callback. Depends on callback
+	  * @return control_t identify to repeat or proceed to the next test case corresponding to the Specification
+	**/
+	static utest::v1::control_t test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
+
+	/**
+	  * Find pins of a specified test type and run a test case (passed in as a callback)
+	  *   Difference from the test_level1_framework function is this runs on ALL pins of a specified test type
+	  * @param Type type of pin to find to run the callback
+	  * @param Type corresponding type of pin on the CI test shield
+	  * @param Callback to the test case to run once a pin is found
+	  * @param float data in float form to pass to the execution callback. Depends on callback
+	  * @param int data in int form to pass to the execution callback. Depends on callback
+	  * @return control_t identify to repeat or proceed to the next test case corresponding to the Specification
+	**/
+	static utest::v1::control_t test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
+
 
 private:
 
-	void map_pins(const PinMap pinmap[], Type pintype);
-
+	/**
+	  * Add all of the CI Test Shield pins to the pinout vector
+	**/
 	void setup_cits_pins();
 
+	/**
+	  * Construct a pinmap from a pin
+	**/
 	PinMap construct_pinmap(PinName pin);
+
+	/**
+	  * Put pins from the specified pinmap into the pinout array indexed by pin type
+	  * @param PinMap[] Found in the hal, specifies all the pins with a certain type
+	  * @param Type which type the pins belong to (used to index into pinout)
+	**/
+	void map_pins(const PinMap pinmap[], Type pintype);
 
 };
 
