@@ -22,6 +22,11 @@
 
 using namespace utest::v1;
 
+#if defined(DEBUG_MSG) && (DEBUG_MSG == 1)
+#define TEST_TIMEOUT 30
+#else
+#define TEST_TIMEOUT 60
+#endif
 
 // test that all pins can be marked as BusIn
 void busin_define_test(){
@@ -98,7 +103,7 @@ void businout_bidirectional_test(){
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
     // Setup Greentea using a reasonable timeout in seconds
-    GREENTEA_SETUP(30, "default_auto");
+    GREENTEA_SETUP(TEST_TIMEOUT, "default_auto");
     return verbose_test_setup_handler(number_of_cases);
 }
 
