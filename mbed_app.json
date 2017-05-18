@@ -34,6 +34,13 @@
         "DEBUG_MSG": 0
     },
     "target_overrides": {
+        "DISCO_L475VG_IOT01A": {
+             "AOUT": "D7"
+        },
+        "DISCO_F413ZH": {
+             "AOUT": "A3",
+             "PWM_0": "D0"
+        },
         "NUCLEO_L476RG": {
              "AOUT": "A2"
         },
