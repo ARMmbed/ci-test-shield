@@ -1,5 +1,5 @@
 # ci-test-shield
-This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](https://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield). Make sure to use the latest version of the hardware to be fully compatible with the tests!
+This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](https://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/ARM-mbed/CITestShield). Make sure to use the latest version of the hardware to be fully compatible with the tests!
 
 If any tests fail then your platform is exhibiting unexpected behavior. More often than not this indicates a bug in your software port. For maximum mbed compatibility all tests should pass on your platform.
 
