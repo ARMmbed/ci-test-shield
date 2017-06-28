@@ -17,7 +17,7 @@
  */
 
 #if !DEVICE_SPI
-    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
+  #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
 #endif
 
 #include "mbed.h"
@@ -52,59 +52,57 @@ utest::v1::control_t test_level1_spi(const size_t call_count) {
 		TestFramework::find_pin(pin_miso, TestFramework::SPI_MISO)==-1 ||
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
 		TestFramework::find_pin(pin_cs, TestFramework::SPI_CS)==-1) {
-		TEST_ASSERT(false);
 		return utest::v1::CaseNext;
 	}
 
 	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
-    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
-    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
-    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
-    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+  TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
-    // Get a random seed from the Greentea host test
-    srand(TestFramework::get_seed());
+  // Get a random seed from the Greentea host test
+  srand(TestFramework::get_seed());
 
-    // Initialize the SD card and file system residing on the SD card
-    int error = 0; 
-    SDBlockDevice sd(pin_mosi, pin_miso, pin_clk, pin_cs);
-    FATFileSystem fs("sd");
-    sd.init();
-    error = fs.mount(&sd);
-    TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
+  // Initialize the SD card and file system residing on the SD card
+  int error = 0; 
+  SDBlockDevice sd(pin_mosi, pin_miso, pin_clk, pin_cs);
+  FATFileSystem fs("sd");
+  sd.init();
+  error = fs.mount(&sd);
+  TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 
-    // Iterate twice for consistency
-    for (int i=0; i<2; i++) {
+  // Iterate twice for consistency
+  for (int i=0; i<2; i++) {
 
-    	// Generate a random string
-	    char test_string[128] = {0};
-	    for (int i=0; i<iterations; i++) 
-	    	test_string[i] = 'A' + rand()%26;
+  	// Generate a random string
+	  char test_string[128] = {0};
+	  for (int i=0; i<iterations; i++) 
+	  	test_string[i] = 'A' + rand()%26;
 
-	    // Open the file and write the string
-	    FILE *File_write = fopen("/sd/test_card.txt", "w"); // open File_write
-	    TEST_ASSERT_MESSAGE(File_write != NULL,"SD Card is not present. Please insert an SD Card.");
-	    TEST_ASSERT_MESSAGE(fprintf(File_write, test_string) > 0,"Writing File to sd card failed"); // write data
-	    fclose(File_write);// close file on SD
+	  // Open the file and write the string
+	  FILE *File_write = fopen("/sd/test_card.txt", "w"); // open File_write
+	  TEST_ASSERT_MESSAGE(File_write != NULL,"SD Card is not present. Please insert an SD Card.");
+	  TEST_ASSERT_MESSAGE(fprintf(File_write, test_string) > 0,"Writing File to sd card failed"); // write data
+	  fclose(File_write);// close file on SD
 
-	    // Close the old file, open the same file in read only mode, and read the file
-	    FILE *File_read = fopen("/sd/test_card.txt", "r"); // open File_read
-	    char test_string_read[128] = {0};
-	    fgets(test_string_read, 128, File_read); // read string from the file
-	    DEBUG_PRINTF("Read '%s' in read test\nString comparison returns %d\n",test_string_read,strcmp(test_string_read,test_string));
-	    TEST_ASSERT_MESSAGE(strcmp(test_string_read,test_string) == 0,"String read does not match string written"); // test that strings match
-	    fclose(File_read);// close file on SD
-	    remove("/sd/test_card.txt");
+	  // Close the old file, open the same file in read only mode, and read the file
+	  FILE *File_read = fopen("/sd/test_card.txt", "r"); // open File_read
+	  char test_string_read[128] = {0};
+	  fgets(test_string_read, 128, File_read); // read string from the file
+	  DEBUG_PRINTF("Read '%s' in read test\nString comparison returns %d\n",test_string_read,strcmp(test_string_read,test_string));
+	  TEST_ASSERT_MESSAGE(strcmp(test_string_read,test_string) == 0,"String read does not match string written"); // test that strings match
+	  fclose(File_read);// close file on SD
+	  remove("/sd/test_card.txt");
 	}
 
-	// Unmount and de-initialize the SD card
-    error = fs.unmount();
-    TEST_ASSERT_MESSAGE(error==0,"SD file system unmount failed.");
+  // Unmount and de-initialize the SD card
+  error = fs.unmount();
+  TEST_ASSERT_MESSAGE(error==0,"SD file system unmount failed.");
 
-    sd.deinit();
-    TEST_ASSERT(true);
+  sd.deinit();
 
-    return utest::v1::CaseNext;
+  return utest::v1::CaseNext;
 }
 
 Case cases[] = {
@@ -116,5 +114,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

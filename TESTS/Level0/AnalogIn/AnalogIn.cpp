@@ -40,12 +40,11 @@ TestFramework test_framework;
 
 utest::v1::control_t test_level0_analogin(const size_t call_count) {
 	PinMap pin = test_framework.get_increment_pin(TestFramework::AnalogInput);
-	DEBUG_PRINTF("%dRunning analog input constructor on pin %d\n", ANSI_COLOR_YELLOW, pin.pin);
-    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+	DEBUG_PRINTF("Running analog input constructor on pin %d\n", pin.pin);
+  TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
 
 	AnalogIn ain(pin.pin);
 
-	TEST_ASSERT(true);
 	return test_framework.reset_iterator(TestFramework::AnalogInput);
 }
 
@@ -56,5 +55,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

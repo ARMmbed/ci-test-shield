@@ -40,12 +40,10 @@ TestFramework test_framework;
 
 void construct_i2c(PinName sda, PinName scl) {
 	DEBUG_PRINTF("Running I2C Constructor on SDA pin %d and SCL pin %d\n", sda, scl);
-    TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
-    TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
+  TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
+  TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
 
-    I2C i2c(sda, scl);
-
-	TEST_ASSERT(true);
+  I2C i2c(sda, scl);
 }
 
 utest::v1::control_t test_level0_i2c(const size_t call_count) {
@@ -59,5 +57,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

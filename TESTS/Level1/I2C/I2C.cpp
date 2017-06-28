@@ -50,39 +50,37 @@ utest::v1::control_t test_level1_i2c(const size_t call_count) {
 	PinName pin_sda = MBED_CONF_APP_I2C_SDA;
 	if (TestFramework::find_pin(pin_scl, TestFramework::I2C_SCL)==-1 ||
 		TestFramework::find_pin(pin_sda, TestFramework::I2C_SDA)==-1) {
-		TEST_ASSERT(false);
 		return utest::v1::CaseNext;
 	}
 
 	DEBUG_PRINTF("Running I2C constructor on SDA pin %d and SCL pin %d\n", pin_sda, pin_scl);
-    TEST_ASSERT_MESSAGE(pin_sda != NC, "SDA Pin is NC");
-    TEST_ASSERT_MESSAGE(pin_scl != NC, "SCL Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_sda != NC, "SDA Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_scl != NC, "SCL Pin is NC");
 
-    I2CEeprom memory(pin_sda,pin_scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+  I2CEeprom memory(pin_sda,pin_scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
 
 	// Generate a random string
-    char test_string[128] = {0};
-    for (int i=0; i<iterations; i++) 
-    	test_string[i] = DEADBEEF[i%8];
+  char test_string[128] = {0};
+  for (int i=0; i<iterations; i++) 
+  	test_string[i] = DEADBEEF[i%8];
 
-    char initial_read[128] = {0};
-    char should_be_null[128] = {0};
-    char read_data[128] = {0};
+  char initial_read[128] = {0};
+  char should_be_null[128] = {0};
+  char read_data[128] = {0};
 
-    int initial_read_bytes = memory.read(1, initial_read, iterations);
-    int initial_write_bytes = memory.write(1, NULL_STR, iterations);
-    int secondary_read_bytes = memory.read(1, should_be_null, iterations);
+  int initial_read_bytes = memory.read(1, initial_read, iterations);
+  int initial_write_bytes = memory.write(1, NULL_STR, iterations);
+  int secondary_read_bytes = memory.read(1, should_be_null, iterations);
 
-    int w = memory.write(1, test_string, iterations);
-    int r = memory.read(1, read_data, iterations);
+  int w = memory.write(1, test_string, iterations);
+  int r = memory.read(1, read_data, iterations);
 
-    DEBUG_PRINTF("Wrote %d bytes: %s\nRead %d bytes: %s\n", w, test_string, r, read_data);
-    TEST_ASSERT_MESSAGE(strcmp(initial_read,should_be_null) != 0,"Write never occurred. Null characters never got written");
-    TEST_ASSERT_MESSAGE(strcmp(NULL_STR,should_be_null) == 0,"Read is not working. Write occurred yet read grabbed different text");
-    TEST_ASSERT_MESSAGE(strcmp(test_string,read_data) == 0,"Read and write data does not match");
+  DEBUG_PRINTF("Wrote %d bytes: %s\nRead %d bytes: %s\n", w, test_string, r, read_data);
+  TEST_ASSERT_MESSAGE(strcmp(initial_read,should_be_null) != 0,"Write never occurred. Null characters never got written");
+  TEST_ASSERT_MESSAGE(strcmp(NULL_STR,should_be_null) == 0,"Read is not working. Write occurred yet read grabbed different text");
+  TEST_ASSERT_MESSAGE(strcmp(test_string,read_data) == 0,"Read and write data does not match");
 
-    TEST_ASSERT(true);
-    return utest::v1::CaseNext;
+  return utest::v1::CaseNext;
 }
 
 Case cases[] = {
@@ -94,5 +92,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

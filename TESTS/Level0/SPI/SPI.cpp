@@ -17,7 +17,7 @@
  */
 
 #if !DEVICE_SPI
-    #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
+  #error SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
 #endif
 
 #include "mbed.h"
@@ -40,15 +40,13 @@ TestFramework test_framework;
 
 void construct_i2c(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) {
 	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
-    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
-    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
-    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
-    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+  TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+  TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
-    SPI(pin_mosi, pin_miso, pin_clk);
-    DigitalOut cs(pin_cs);
-
-	TEST_ASSERT(true);
+  SPI(pin_mosi, pin_miso, pin_clk);
+  DigitalOut cs(pin_cs);
 }
 
 utest::v1::control_t test_level0_spi(const size_t call_count) {
@@ -62,5 +60,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }
