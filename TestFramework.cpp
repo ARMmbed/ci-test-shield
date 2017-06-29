@@ -167,21 +167,20 @@ utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, 
 
 	// Itereate through the SCL pins to find a pin that matches the HW block of the SDA pin
 	while (pin_iterators[I2C_SCL] < pinout[I2C_SCL].size()) {
-    	if (pinout[I2C_SCL][pin_iterators[I2C_SCL]].peripheral == sda_pin.peripheral) {
+    if (pinout[I2C_SCL][pin_iterators[I2C_SCL]].peripheral == sda_pin.peripheral) {
 
-    		// Execution has already occurred, but another SCL pin was found that matches the SDA pin. Queue up another test case
-    		if (tag)
-				return utest::v1::CaseRepeatAll;
-			// Matching SCL pin was found. Run the callback with the found pins
-    		else {
-	    		execution_callback(sda_pin.pin, pinout[I2C_SCL][pin_iterators[I2C_SCL]].pin);
-	    		tag = 1;
-	    	}
-    	}
-    	pin_iterators[I2C_SCL]++;
+    	// Execution has already occurred, but another SCL pin was found that matches the SDA pin. Queue up another test case
+    	if (tag) return utest::v1::CaseRepeatAll;
+		// Matching SCL pin was found. Run the callback with the found pins
+    	else {
+	  		execution_callback(sda_pin.pin, pinout[I2C_SCL][pin_iterators[I2C_SCL]].pin);
+	  		tag = 1;
+	  	}
+    }
+    pin_iterators[I2C_SCL]++;
 	}
 	// All the SCL pins have been found for the identified SDA pin. Increment the SDA pin
-	if (!tag) { TEST_ASSERT(false);}
+	if (!tag) TEST_ASSERT(false);
 	pin_iterators[I2C_SDA]++;
 	pin_iterators[I2C_SCL] = 0;
 	// Check to see if the SDA pin. Move on to the next test case if invalid and reset the counters
