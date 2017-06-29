@@ -163,7 +163,8 @@ unsigned int TestFramework::get_seed() {
 
 utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, PinName)) {
 	PinMap sda_pin = pinout[I2C_SDA][pin_iterators[I2C_SDA]];
-	int tag = 0;
+  // Tag is used to identify if a test case had been executed (true) or not (false)
+	bool tag = false;
 
 	// Itereate through the SCL pins to find a pin that matches the HW block of the SDA pin
 	while (pin_iterators[I2C_SCL] < pinout[I2C_SCL].size()) {
@@ -174,7 +175,7 @@ utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, 
 		// Matching SCL pin was found. Run the callback with the found pins
     	else {
 	  		execution_callback(sda_pin.pin, pinout[I2C_SCL][pin_iterators[I2C_SCL]].pin);
-	  		tag = 1;
+	  		tag = true;
 	  	}
     }
     pin_iterators[I2C_SCL]++;
@@ -183,7 +184,7 @@ utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, 
 	if (!tag) TEST_ASSERT(false);
 	pin_iterators[I2C_SDA]++;
 	pin_iterators[I2C_SCL] = 0;
-	// Check to see if the SDA pin. Move on to the next test case if invalid and reset the counters
+	// Check to see if there are any more SDA pins available. Move on to the next test case if invalid and reset the counters
 	return reset_iterator(I2C_SDA);
 }
 
@@ -289,13 +290,13 @@ utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type tes
 	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
 	// Check to see if that current pin is available on the CI test shield
 	int index = find_pin(pin, testtype);
-	// Tag is used to identify if a test case had been executed (1) or not (0)
-	int tag = 0;
+	// Tag is used to identify if a test case had been executed (true) or not (false)
+	bool tag = false;
 	// State: Execute
 	if (index != -1) {
-		// Pin was found, run the callback and specify the tag to 1 (run)
+		// Pin was found, run the callback and specify the tag to true (run)
 		execution_callback(pin, floatdata, intdata);
-		tag = 1;
+		tag = true;
 	}
 	// Search the remaining pins of the pintype to find a pin on the CI test shield
 	while (check_size(pintype)) {
@@ -314,7 +315,7 @@ utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type tes
 			// Pin was found and execution has not occurred yet
 			} else {
 				execution_callback(pin, floatdata, intdata);
-				tag = 1;
+				tag = true;
 			}
 		}
 	}
