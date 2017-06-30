@@ -202,13 +202,13 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 
 						// Iterate through the CS pins to find a matching HW block pin to the CLK pin
 						while (pin_iterators[SPI_CS] < pinout[SPI_CS].size()) {
-							if (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
+							if (pinout[SPI_CS][pin_iterators[SPI_CS]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
 
-								// Found all matching HW block pins. Run the execution callback with the identified pins
+								// Found all matching HW block pins. Run the execution callback with the identified pins. Also increments SPI_CLK pin in preparation for next iteration
 								execution_callback(pinout[SPI_CLK][pin_iterators[SPI_CLK]++].pin,
-													pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin,
-													pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin,
-													pinout[SPI_CS][pin_iterators[SPI_CS]].pin);
+													         pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin,
+													         pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin,
+													         pinout[SPI_CS][pin_iterators[SPI_CS]].pin);
 								// Reset the iterators
 								pin_iterators[SPI_MISO] = 0;
 								pin_iterators[SPI_MOSI] = 0;
@@ -217,18 +217,21 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 							}
 							pin_iterators[SPI_CS]++;
 						}
-						TEST_ASSERT(false);
+						TEST_ASSERT_MESSAGE(false, "No matching SPI_CS pins found");   
 					}
 					pin_iterators[SPI_MOSI]++;
 				}
-				TEST_ASSERT(false);
+				TEST_ASSERT_MESSAGE(false, "No matching SPI_MOSI pins found"); 
 			}
 			pin_iterators[SPI_MISO]++;
 		}
-		TEST_ASSERT(false);
+		TEST_ASSERT_MESSAGE(false, "No matching SPI_MISO pins found"); 
 	}
-	// All CLK pins have been iterated through. Reset the CLK pin iterator, run the CI test shield pin pair, and then move on to the next test case
+	// All CLK pins have been iterated through. Reset the pin iterators, run the CI test shield pin pair, and then move on to the next test case
 	pin_iterators[SPI_CLK] = 0;
+	pin_iterators[SPI_MISO] = 0;
+	pin_iterators[SPI_MOSI] = 0;
+	pin_iterators[SPI_CS] = 0;
 	execution_callback(MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_CS);
 	return utest::v1::CaseNext;
 }
