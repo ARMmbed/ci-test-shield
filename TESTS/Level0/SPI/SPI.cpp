@@ -38,8 +38,9 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void construct_i2c(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) {
+void construct_spi(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) {
 	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+  wait(0.1);   // Make sure system has time to print above message in case of error
   TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
   TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
   TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
@@ -50,7 +51,7 @@ void construct_i2c(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName 
 }
 
 utest::v1::control_t test_level0_spi(const size_t call_count) {
-	return test_framework.run_spi(&construct_i2c);
+	return test_framework.run_spi(&construct_spi);
 }
 
 Case cases[] = {
@@ -59,6 +60,6 @@ Case cases[] = {
 
 int main() {
 	// Formulate a specification and run the tests based on the Case array
-	Specification specification(TestFramework::test_setup<30>, cases);
+	Specification specification(TestFramework::test_setup<120>, cases);
   return !Harness::run(specification);
 }
