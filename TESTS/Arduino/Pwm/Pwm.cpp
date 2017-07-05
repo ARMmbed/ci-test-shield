@@ -26,32 +26,30 @@
 using namespace utest::v1;
 
 template <PinName pwm_pin> 
-void PWM_Test()
-{
-    PwmOut pwm(pwm_pin);
-    DEBUG_PRINTF("Tested pin %d for Arduino digital in/out capabilities\n", pwm_pin);
-    TEST_ASSERT(true);
+void PWM_Test(){
+  PwmOut pwm(pwm_pin);
+  DEBUG_PRINTF("Tested pin %d for Arduino digital in/out capabilities\n", pwm_pin);
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(30, "default_auto");
-    return verbose_test_setup_handler(number_of_cases);
+  GREENTEA_SETUP(30, "default_auto");
+  return verbose_test_setup_handler(number_of_cases);
 }
 
 utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
-    greentea_case_failure_abort_handler(source, reason);
-    return STATUS_ABORT;
+  greentea_case_failure_abort_handler(source, reason);
+  return STATUS_ABORT;
 }
 
 Case cases[] = {
-    Case("Arduino - PWM Constructor on PWM_0", PWM_Test<MBED_CONF_APP_PWM_0>, greentea_failure_handler),
-    Case("Arduino - PWM Constructor on PWM_1", PWM_Test<MBED_CONF_APP_PWM_1>, greentea_failure_handler),
-    Case("Arduino - PWM Constructor on PWM_2", PWM_Test<MBED_CONF_APP_PWM_2>, greentea_failure_handler),
-    Case("Arduino - PWM Constructor on PWM_3", PWM_Test<MBED_CONF_APP_PWM_3>, greentea_failure_handler),
+  Case("Arduino - PWM Constructor on PWM_0", PWM_Test<MBED_CONF_APP_PWM_0>, greentea_failure_handler),
+  Case("Arduino - PWM Constructor on PWM_1", PWM_Test<MBED_CONF_APP_PWM_1>, greentea_failure_handler),
+  Case("Arduino - PWM Constructor on PWM_2", PWM_Test<MBED_CONF_APP_PWM_2>, greentea_failure_handler),
+  Case("Arduino - PWM Constructor on PWM_3", PWM_Test<MBED_CONF_APP_PWM_3>, greentea_failure_handler),
 };
 
 int main() {
-    // Formulate a specification and run the tests based on the Case array
-    Specification specification(test_setup, cases);
-    return !Harness::run(specification);
+  // Formulate a specification and run the tests based on the Case array
+  Specification specification(test_setup, cases);
+  return !Harness::run(specification);
 }

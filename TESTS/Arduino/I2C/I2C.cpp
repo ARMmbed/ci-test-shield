@@ -26,21 +26,19 @@
 using namespace utest::v1;
 
 template <PinName sda, PinName scl> 
-void I2C_Test()
-{
-    I2C i2c(sda, scl);
-    DEBUG_PRINTF("Tested sda pin %d and scl pin %d for Arduino I2C capabilities\n", sda, scl);
-    TEST_ASSERT(true);
+void I2C_Test(){
+  I2C i2c(sda, scl);
+  DEBUG_PRINTF("Tested sda pin %d and scl pin %d for Arduino I2C capabilities\n", sda, scl);
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(30, "default_auto");
-    return verbose_test_setup_handler(number_of_cases);
+  GREENTEA_SETUP(30, "default_auto");
+  return verbose_test_setup_handler(number_of_cases);
 }
 
 utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
-    greentea_case_failure_abort_handler(source, reason);
-    return STATUS_ABORT;
+  greentea_case_failure_abort_handler(source, reason);
+  return STATUS_ABORT;
 }
 
 Case cases[] = {
@@ -48,7 +46,7 @@ Case cases[] = {
 };
 
 int main() {
-    // Formulate a specification and run the tests based on the Case array
-    Specification specification(test_setup, cases);
-    return !Harness::run(specification);
+  // Formulate a specification and run the tests based on the Case array
+  Specification specification(test_setup, cases);
+  return !Harness::run(specification);
 }

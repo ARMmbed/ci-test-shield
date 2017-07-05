@@ -38,7 +38,7 @@ utest::v1::control_t test_level0_businout(const size_t call_count) {
 	DEBUG_PRINTF("Running bus input/output constructor\n");
 
 	std::vector<PinName> pins;
-	for (int i=0; i<15; i++) {
+	for (int i=0; i<16; i++) {
 		if (TestFramework::check_size(TestFramework::BusIO)) {
 			pins.push_back(test_framework.get_increment_pin(TestFramework::BusIO).pin);
 		} else {
@@ -46,9 +46,8 @@ utest::v1::control_t test_level0_businout(const size_t call_count) {
 		}
 	}
 
-	BusInOut bio(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14]);
+	BusInOut bio(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
 
-	TEST_ASSERT(true);
 	return test_framework.reset_iterator(TestFramework::BusIO);
 }
 
@@ -59,5 +58,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

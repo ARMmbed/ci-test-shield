@@ -26,29 +26,27 @@
 using namespace utest::v1;
 
 template <PinName aout_pin> 
-void AnalogOutput_Test()
-{
-    AnalogOut ain(aout_pin);
-    DEBUG_PRINTF("Tested pin %d for Arduino analog out capabilities\n", aout_pin);
-    TEST_ASSERT(true);
+void AnalogOutput_Test(){
+  AnalogOut ain(aout_pin);
+  DEBUG_PRINTF("Tested pin %d for Arduino analog out capabilities\n", aout_pin);
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(30, "default_auto");
-    return verbose_test_setup_handler(number_of_cases);
+  GREENTEA_SETUP(30, "default_auto");
+  return verbose_test_setup_handler(number_of_cases);
 }
 
 utest::v1::status_t greentea_failure_handler(const Case *const source, const failure_t reason) {
-    greentea_case_failure_abort_handler(source, reason);
-    return STATUS_ABORT;
+  greentea_case_failure_abort_handler(source, reason);
+  return STATUS_ABORT;
 }
 
 Case cases[] = {
-    Case("Arduino - Analog Output Constructor on AOUT_0", AnalogOutput_Test<MBED_CONF_APP_AOUT>, greentea_failure_handler),
+  Case("Arduino - Analog Output Constructor on AOUT_0", AnalogOutput_Test<MBED_CONF_APP_AOUT>, greentea_failure_handler),
 };
 
 int main() {
-    // Formulate a specification and run the tests based on the Case array
-    Specification specification(test_setup, cases);
-    return !Harness::run(specification);
+  // Formulate a specification and run the tests based on the Case array
+  Specification specification(test_setup, cases);
+  return !Harness::run(specification);
 }

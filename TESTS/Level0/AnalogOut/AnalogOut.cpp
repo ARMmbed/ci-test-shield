@@ -40,11 +40,10 @@ TestFramework test_framework;
 utest::v1::control_t test_level0_analogout(const size_t call_count) {
 	PinMap pin = test_framework.get_increment_pin(TestFramework::AnalogOutput);
 	DEBUG_PRINTF("Running analog output constructor on pin %d\n", pin.pin);
-    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+  TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
 
 	AnalogOut ain(pin.pin);
 
-	TEST_ASSERT(true);
 	return test_framework.reset_iterator(TestFramework::AnalogOutput);
 }
 
@@ -55,5 +54,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }
