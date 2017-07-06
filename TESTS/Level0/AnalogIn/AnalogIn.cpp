@@ -40,10 +40,12 @@ TestFramework test_framework;
 
 utest::v1::control_t test_level0_analogin(const size_t call_count) {
 	PinMap pin = test_framework.get_increment_pin(TestFramework::AnalogInput);
-	DEBUG_PRINTF("Running analog input constructor on pin %d\n", pin.pin);
-  TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
+  if(pin.pin != USBTX && pin.pin != USBRX){  // make sure pin is not already being used
+	  DEBUG_PRINTF("Running analog input constructor on pin %d\n", pin.pin);
+    TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
 
-	AnalogIn ain(pin.pin);
+	  AnalogIn ain(pin.pin);
+  }
 
 	return test_framework.reset_iterator(TestFramework::AnalogInput);
 }
