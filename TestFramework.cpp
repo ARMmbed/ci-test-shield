@@ -203,29 +203,31 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 	
         // Iterate through all the CS pins
 				while (pin_iterators[SPI_CS] < pinout[SPI_CS].size()) {
+          // create local variables to help make code easier to read
+          PinMap CLK = pinout[SPI_CLK][pin_iterators[SPI_CLK]];
+          PinMap MISO = pinout[SPI_MISO][pin_iterators[SPI_MISO]];
+          PinMap MOSI = pinout[SPI_MOSI][pin_iterators[SPI_MOSI]];
+          PinMap CS = pinout[SPI_CS][pin_iterators[SPI_CS]];
 
           // ensure that chosen MISO, MOSI, and CS pins match the CLK pin's HW block
-          if (pinout[SPI_MISO][pin_iterators[SPI_MISO]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
-            if (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
- 					    if (pinout[SPI_CS][pin_iterators[SPI_CS]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
+          if (MISO.peripheral == CLK.peripheral) {
+            if (MOSI.peripheral == CLK.peripheral) {
+ 					    if (CS.peripheral == CLK.peripheral) {
 
                 // ensure that chosen SPI_CLK pin is not already assigned to another peripheral
-                if((pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != USBTX) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != USBRX)){ 
+                if((CLK.pin != MISO.pin) && (CLK.pin != MOSI.pin) && (CLK.pin != CS.pin) && (CLK.pin != USBTX) && (CLK.pin != USBRX)){ 
 
                   // ensure that chosen SPI_MISO pin is not already assigned to another peripheral
-                  if((pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != USBTX) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != USBRX)){
+                  if((MISO.pin != CLK.pin) && (MISO.pin != MOSI.pin) && (MISO.pin != CS.pin) && (MISO.pin != USBTX) && (MISO.pin != USBRX)){
 
                     // ensure that chosen SPI_MOSI pin is not already assigned to another peripheral
-                    if((pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != USBTX) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != USBRX)){
+                    if((MOSI.pin != CLK.pin) && (MOSI.pin != MISO.pin) && (MOSI.pin != CS.pin) && (MOSI.pin != USBTX) && (MOSI.pin != USBRX)){
               
                       // ensure that chosen SPI_CS pin is not already assigned to another peripheral
-                      if((pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != USBTX) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != USBRX)){
+                      if((CS.pin != CLK.pin) && (CS.pin != MOSI.pin) && (CS.pin != MISO.pin) && (CS.pin != USBTX) && (CS.pin != USBRX)){
                       
                         // Found matching HW block pins. Run execution callback with them. 
-                        execution_callback(pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin,
-                                           pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin,
-                                           pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin,
-                                           pinout[SPI_CS][pin_iterators[SPI_CS]].pin);
+                        execution_callback(CLK.pin, MISO.pin, MOSI.pin, CS.pin);
                         tag = true;
                       }
                     }
