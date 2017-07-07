@@ -25,6 +25,8 @@
 #include "TestFramework.hpp"
 #include <vector>
 
+#define BUS_SIZE 16
+
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
@@ -37,16 +39,29 @@ TestFramework test_framework;
 utest::v1::control_t test_level0_businout(const size_t call_count) {
 	DEBUG_PRINTF("Running bus input/output constructor\n");
 
-	std::vector<PinName> pins;
-	for (int i=0; i<16; i++) {
-		if (TestFramework::check_size(TestFramework::BusIO)) {
-			pins.push_back(test_framework.get_increment_pin(TestFramework::BusIO).pin);
-		} else {
-			pins.push_back((PinName)NC);
-		}
+	std::vector<PinName> pins;       // vector of pins that the bus will contain
+	while(pins.size() < BUS_SIZE){   // continually add pins until the bus is full
+    // check if more pins are available to add to bus
+		if(TestFramework::check_size(TestFramework::BusIO)) {
+      // fetch new pin
+      PinMap newPin = test_framework.get_increment_pin(TestFramework::BusIO);
+
+      // ensure new pin is not already assigned to another peripheral
+      if((newPin.pin != USBTX) && (newPin.pin != USBRX)){
+		 	  pins.push_back(newPin.pin);  // add pin to bus
+      }
+		} 
+
+    // if no more suitable pins are available, then add No-Connects until bus is full
+    else{
+			pins.push_back((PinName)NC);	
+    }
 	}
 
-	BusInOut bio(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
+  DEBUG_PRINTF("Pins assigned to bus:\n  pin[0] = %d\n  pin[1] = %d\n  pin[2] = %d\n  pin[3] = %d\n  pin[4] = %d\n  pin[5] = %d\n  pin[6] = %d\n  pin[7] = %d\n  pin[8] = %d\n  pin[9] = %d\n  pin[10] = %d\n  pin[11] = %d\n  pin[12] = %d\n  pin[13] = %d\n  pin[14] = %d\n  pin[15] = %d\n",pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
+	
+  // construct the bus with assigned pins
+  BusInOut bio(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
 
 	return test_framework.reset_iterator(TestFramework::BusIO);
 }
