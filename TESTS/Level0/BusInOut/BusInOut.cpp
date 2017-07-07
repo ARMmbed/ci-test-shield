@@ -44,13 +44,8 @@ utest::v1::control_t test_level0_businout(const size_t call_count) {
     // check if more pins are available to add to bus
 		if(TestFramework::check_size(TestFramework::BusIO)) {
       // fetch new pin
-      PinMap newPin = test_framework.get_increment_pin(TestFramework::BusIO);
-
-      // ensure new pin is not already assigned to another peripheral
-      if((newPin.pin != USBTX) && (newPin.pin != USBRX)){
-		 	  pins.push_back(newPin.pin);  // add pin to bus
-      }
-		} 
+		 	pins.push_back(test_framework.get_increment_pin(TestFramework::BusIO).pin);  
+    } 
 
     // if no more suitable pins are available, then add No-Connects until bus is full
     else{

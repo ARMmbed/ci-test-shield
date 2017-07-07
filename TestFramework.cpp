@@ -85,7 +85,8 @@ void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 			if (pinout[pintype][j].pin == pinmap[i].pin)
 				alreadyExists = true;
 		}
-		if (!alreadyExists) {
+    // if pin is not already in pinout and is not already assigned to USB_UART, then add to pinout
+		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)) {
 			pinout[pintype].push_back(pinmap[i]);
 		}
 		i++;
@@ -215,16 +216,16 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
  					    if (CS.peripheral == CLK.peripheral) {
 
                 // ensure that chosen SPI_CLK pin is not already assigned to another peripheral
-                if((CLK.pin != MISO.pin) && (CLK.pin != MOSI.pin) && (CLK.pin != CS.pin) && (CLK.pin != USBTX) && (CLK.pin != USBRX)){ 
+                if((CLK.pin != MISO.pin) && (CLK.pin != MOSI.pin) && (CLK.pin != CS.pin)){ 
 
                   // ensure that chosen SPI_MISO pin is not already assigned to another peripheral
-                  if((MISO.pin != CLK.pin) && (MISO.pin != MOSI.pin) && (MISO.pin != CS.pin) && (MISO.pin != USBTX) && (MISO.pin != USBRX)){
+                  if((MISO.pin != CLK.pin) && (MISO.pin != MOSI.pin) && (MISO.pin != CS.pin)){
 
                     // ensure that chosen SPI_MOSI pin is not already assigned to another peripheral
-                    if((MOSI.pin != CLK.pin) && (MOSI.pin != MISO.pin) && (MOSI.pin != CS.pin) && (MOSI.pin != USBTX) && (MOSI.pin != USBRX)){
+                    if((MOSI.pin != CLK.pin) && (MOSI.pin != MISO.pin) && (MOSI.pin != CS.pin)){
               
                       // ensure that chosen SPI_CS pin is not already assigned to another peripheral
-                      if((CS.pin != CLK.pin) && (CS.pin != MOSI.pin) && (CS.pin != MISO.pin) && (CS.pin != USBTX) && (CS.pin != USBRX)){
+                      if((CS.pin != CLK.pin) && (CS.pin != MOSI.pin) && (CS.pin != MISO.pin)){
                       
                         // Found matching HW block pins. Run execution callback with them. 
                         execution_callback(CLK.pin, MISO.pin, MOSI.pin, CS.pin);
