@@ -20,7 +20,6 @@
 /*/////////////////////////////////////////////////////////////////////////////
 //								Initialization								                             //
 /////////////////////////////////////////////////////////////////////////////*/
-
 TestFramework::TestFramework() {
 	map_pins(PinMap_ADC, AnalogInput);
 	map_pins(PinMap_DAC, AnalogOutput);
@@ -43,6 +42,7 @@ TestFramework::TestFramework() {
 	map_pins(PinMap_SPI_SSEL, SPI_CS);
 	setup_cits_pins();
 }
+
 
 void TestFramework::setup_cits_pins() {
 	pinout[CITS_AnalogInput].push_back(construct_pinmap(MBED_CONF_APP_AIN_0));
@@ -72,10 +72,12 @@ void TestFramework::setup_cits_pins() {
 	pinout[CITS_SPI_CS].push_back(construct_pinmap(MBED_CONF_APP_SPI_CS));
 }
 
+
 PinMap TestFramework::construct_pinmap(PinName pin) {
 	PinMap pinmap = {pin, 0, 0};
 	return pinmap;
 }
+
 
 void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 	int i = 0;
@@ -93,13 +95,18 @@ void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 	}
 }
 
+
 int TestFramework::find_pin(PinName pin, Type pintype) {
+  // scan through all pins of specified type looking for a match
 	for (unsigned int i=0; i<pinout[pintype].size(); i++) {
+    // match is found, return index of matching pin
 		if (pin == pinout[pintype][i].pin)
 			return i;
 	}
+  // no matching pins found
 	return -1;
 }
+
 
 PinName TestFramework::find_pin_pair(PinName pin) {
 	PinName pinpair = pin;
@@ -112,9 +119,11 @@ PinName TestFramework::find_pin_pair(PinName pin) {
     return pinpair;
 }
 
+
 bool TestFramework::check_size(Type pintype) {
 	return (pin_iterators[pintype] < pinout[pintype].size());
 }
+
 
 utest::v1::control_t TestFramework::reset_iterator(Type pintype) {
 	if (check_size(pintype))
@@ -125,9 +134,11 @@ utest::v1::control_t TestFramework::reset_iterator(Type pintype) {
 	}
 }
 
+
 PinMap TestFramework::get_increment_pin(Type pintype) {
 	return pinout[pintype][pin_iterators[pintype]++];
 }
+
 
 std::vector<PinName> TestFramework::find_resistor_ladder_pins(PinName pin) {
 	std::vector<PinName> resistor_ladder_pins;
@@ -137,6 +148,7 @@ std::vector<PinName> TestFramework::find_resistor_ladder_pins(PinName pin) {
 	}
 	return resistor_ladder_pins;
 }
+
 
 unsigned int TestFramework::get_seed() {
 	// Send key value pair to greentea host tests
@@ -153,6 +165,7 @@ unsigned int TestFramework::get_seed() {
 	return seed;
 }
 
+
 /*/////////////////////////////////////////////////////////////////////////////
 //								level0 										                                 //
 //																			                                     //
@@ -161,7 +174,6 @@ unsigned int TestFramework::get_seed() {
 // digital io, SPI), gets tested regardless of if it is connected to the CI  //
 // test shield.																                               //
 /////////////////////////////////////////////////////////////////////////////*/
-
 utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, PinName)) {
 	PinMap sda_pin = pinout[I2C_SDA][pin_iterators[I2C_SDA]];
   // Tag is used to identify if a test case had been executed (true) or not (false)
@@ -262,6 +274,7 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 	return utest::v1::CaseNext;
 }
 
+
 /*/////////////////////////////////////////////////////////////////////////////
 //								level1 										                                 //
 //																			                                     //
@@ -272,38 +285,27 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 // is found, it runs the callback passed in. Note that only one pin is tested//
 // for each hardware component.												                       //
 /////////////////////////////////////////////////////////////////////////////*/
-
 utest::v1::control_t TestFramework::test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata) {
-	// Get current pin specified by the stored iterator
-	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
-	// Check to see if that current pin is available on the CI test shield
-	int index = find_pin(pin, testtype);
-	// State: Execute
-	if (index != -1) {
-		// Current pin was mapped to the CI test shield so run the callback and reset the iterator
-		execution_callback(pin, floatdata, intdata);
-		pin_iterators[pintype] = 0;
-		return utest::v1::CaseNext;
-	}
-	while (check_size(pintype)) {
-		// State: Increment iterator
-		pin_iterators[pintype]++;
-		pin = pinout[pintype][pin_iterators[pintype]].pin;
-		// Check to see if the current pin is available on the CI test shield
-		index = find_pin(pin, testtype);
+  while(check_size(pintype)) {
+    // Get current pin specified by the stored iterator
+	  PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
+    DEBUG_PRINTF("In while loop pin %d\n", pin);
 
-		if (index != -1) {
-			// State: Execute
-			// Pin was found, so execute the callback and end the test case. Make sure to reset the iterator
-			execution_callback(pin, floatdata, intdata);
-			pin_iterators[pintype] = 0;
-			return utest::v1::CaseNext;
-		}
-	}
-	// State: End test
-	// All pins have been identified and run, reset the iterators and return back
-	return reset_iterator(pintype);
+    // Check to see if that current pin is available on the CI test shield
+	  int index = find_pin(pin, testtype);
+	  if (index != -1) {
+		  // Current pin is mapped to the CI test shield. Run the callback, reset the iterator, and run the next case
+		  execution_callback(pin, floatdata, intdata);
+		  pin_iterators[pintype] = 0;
+		  return utest::v1::CaseNext;
+ 	  }
+    else{
+      // Current pin was not mapped to CI test shield, try another pin
+      pin_iterators[pintype]++;
+    }
+  }
 }
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 //								level2 										                                 //
@@ -313,7 +315,6 @@ utest::v1::control_t TestFramework::test_level1_framework(Type pintype, Type tes
 // just a single pin) is tested. In addition, the tolerance and iterations   //
 // get a little bit more intense.											                       //
 /////////////////////////////////////////////////////////////////////////////*/
-
 utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata) {
 	// Get current pin specified by the stored iterator
 	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
