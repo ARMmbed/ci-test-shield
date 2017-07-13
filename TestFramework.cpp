@@ -20,18 +20,17 @@
 /*/////////////////////////////////////////////////////////////////////////////
 //								Initialization								                             //
 /////////////////////////////////////////////////////////////////////////////*/
-
 TestFramework::TestFramework() {
 	map_pins(PinMap_ADC, AnalogInput);
 	map_pins(PinMap_DAC, AnalogOutput);
 	map_pins(PinMap_PWM, DigitalIO);
 	map_pins(PinMap_ADC, DigitalIO);
-	// map_pins(PinMap_DAC, DigitalIO);
+	  // map_pins(PinMap_DAC, DigitalIO); grabbing pin number from PeripheralPins.c, instead of the pin translation from mbed_app.json
 	map_pins(PinMap_I2C_SDA, DigitalIO);
 	map_pins(PinMap_I2C_SCL, DigitalIO);
 	map_pins(PinMap_SPI_SCLK, DigitalIO);
 	map_pins(PinMap_SPI_MOSI, DigitalIO);
-	// map_pins(PinMap_SPI_MISO, DigitalIO);
+	map_pins(PinMap_SPI_MISO, DigitalIO);
 	map_pins(PinMap_SPI_SSEL, DigitalIO);
 	pinout[BusIO] = pinout[DigitalIO];
 	map_pins(PinMap_PWM, PWM);
@@ -43,6 +42,7 @@ TestFramework::TestFramework() {
 	map_pins(PinMap_SPI_SSEL, SPI_CS);
 	setup_cits_pins();
 }
+
 
 void TestFramework::setup_cits_pins() {
 	pinout[CITS_AnalogInput].push_back(construct_pinmap(MBED_CONF_APP_AIN_0));
@@ -72,10 +72,12 @@ void TestFramework::setup_cits_pins() {
 	pinout[CITS_SPI_CS].push_back(construct_pinmap(MBED_CONF_APP_SPI_CS));
 }
 
+
 PinMap TestFramework::construct_pinmap(PinName pin) {
 	PinMap pinmap = {pin, 0, 0};
 	return pinmap;
 }
+
 
 void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 	int i = 0;
@@ -85,20 +87,26 @@ void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 			if (pinout[pintype][j].pin == pinmap[i].pin)
 				alreadyExists = true;
 		}
-		if (!alreadyExists) {
+    // if pin is not already in pinout and is not already assigned to USB_UART, then add to pinout
+		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)) {
 			pinout[pintype].push_back(pinmap[i]);
 		}
 		i++;
 	}
 }
 
+
 int TestFramework::find_pin(PinName pin, Type pintype) {
+  // scan through all pins of specified type looking for a match
 	for (unsigned int i=0; i<pinout[pintype].size(); i++) {
+    // match is found, return index of matching pin
 		if (pin == pinout[pintype][i].pin)
 			return i;
 	}
+  // no matching pins found
 	return -1;
 }
+
 
 PinName TestFramework::find_pin_pair(PinName pin) {
 	PinName pinpair = pin;
@@ -111,9 +119,11 @@ PinName TestFramework::find_pin_pair(PinName pin) {
     return pinpair;
 }
 
+
 bool TestFramework::check_size(Type pintype) {
 	return (pin_iterators[pintype] < pinout[pintype].size());
 }
+
 
 utest::v1::control_t TestFramework::reset_iterator(Type pintype) {
 	if (check_size(pintype))
@@ -124,9 +134,11 @@ utest::v1::control_t TestFramework::reset_iterator(Type pintype) {
 	}
 }
 
+
 PinMap TestFramework::get_increment_pin(Type pintype) {
 	return pinout[pintype][pin_iterators[pintype]++];
 }
+
 
 std::vector<PinName> TestFramework::find_resistor_ladder_pins(PinName pin) {
 	std::vector<PinName> resistor_ladder_pins;
@@ -136,6 +148,7 @@ std::vector<PinName> TestFramework::find_resistor_ladder_pins(PinName pin) {
 	}
 	return resistor_ladder_pins;
 }
+
 
 unsigned int TestFramework::get_seed() {
 	// Send key value pair to greentea host tests
@@ -152,6 +165,7 @@ unsigned int TestFramework::get_seed() {
 	return seed;
 }
 
+
 /*/////////////////////////////////////////////////////////////////////////////
 //								level0 										                                 //
 //																			                                     //
@@ -160,7 +174,6 @@ unsigned int TestFramework::get_seed() {
 // digital io, SPI), gets tested regardless of if it is connected to the CI  //
 // test shield.																                               //
 /////////////////////////////////////////////////////////////////////////////*/
-
 utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, PinName)) {
 	PinMap sda_pin = pinout[I2C_SDA][pin_iterators[I2C_SDA]];
   // Tag is used to identify if a test case had been executed (true) or not (false)
@@ -190,7 +203,7 @@ utest::v1::control_t TestFramework::run_i2c(void (*execution_callback)(PinName, 
 
 
 utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, PinName, PinName, PinName)) {
-  bool tag = false;
+  bool tag = false;  // determines if execution_callback() was ran
   
   // Iterate through all CLK pins, finding the remaining SPI pins that have matching HW blocks 
 	while (pin_iterators[SPI_CLK] < pinout[SPI_CLK].size()) {
@@ -203,35 +216,33 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 	
         // Iterate through all the CS pins
 				while (pin_iterators[SPI_CS] < pinout[SPI_CS].size()) {
+          // create local variables to help make code easier to read
+          PinMap CLK = pinout[SPI_CLK][pin_iterators[SPI_CLK]];
+          PinMap MISO = pinout[SPI_MISO][pin_iterators[SPI_MISO]];
+          PinMap MOSI = pinout[SPI_MOSI][pin_iterators[SPI_MOSI]];
+          PinMap CS = pinout[SPI_CS][pin_iterators[SPI_CS]];
 
           // ensure that chosen MISO, MOSI, and CS pins match the CLK pin's HW block
-          if (pinout[SPI_MISO][pin_iterators[SPI_MISO]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
-            if (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
- 					    if (pinout[SPI_CS][pin_iterators[SPI_CS]].peripheral == pinout[SPI_CLK][pin_iterators[SPI_CLK]].peripheral) {
+          if ((MISO.peripheral == CLK.peripheral) && (MOSI.peripheral == CLK.peripheral) && (CS.peripheral == CLK.peripheral)){
+            
+            // ensure that chosen SPI_CLK pin is not already assigned to another peripheral
+            if((CLK.pin != MISO.pin) && (CLK.pin != MOSI.pin) && (CLK.pin != CS.pin)){ 
 
-                // ensure that chosen SPI_CLK pin is not already assigned to another peripheral
-                if((pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != USBTX) && (pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin != USBRX)){ 
+              // ensure that chosen SPI_MISO pin is not already assigned to another peripheral
+              if((MISO.pin != CLK.pin) && (MISO.pin != MOSI.pin) && (MISO.pin != CS.pin)){
 
-                  // ensure that chosen SPI_MISO pin is not already assigned to another peripheral
-                  if((pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != USBTX) && (pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin != USBRX)){
-
-                    // ensure that chosen SPI_MOSI pin is not already assigned to another peripheral
-                    if((pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != pinout[SPI_CS][pin_iterators[SPI_CS]].pin) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != USBTX) && (pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin != USBRX)){
-              
-                      // ensure that chosen SPI_CS pin is not already assigned to another peripheral
-                      if((pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != USBTX) && (pinout[SPI_CS][pin_iterators[SPI_CS]].pin != USBRX)){
-                      
-                        // Found matching HW block pins. Run execution callback with them. 
-                        execution_callback(pinout[SPI_CLK][pin_iterators[SPI_CLK]].pin,
-                                           pinout[SPI_MISO][pin_iterators[SPI_MISO]].pin,
-                                           pinout[SPI_MOSI][pin_iterators[SPI_MOSI]].pin,
-                                           pinout[SPI_CS][pin_iterators[SPI_CS]].pin);
-                        tag = true;
-                      }
-                    }
-                  }                
+                // ensure that chosen SPI_MOSI pin is not already assigned to another peripheral
+                if((MOSI.pin != CLK.pin) && (MOSI.pin != MISO.pin) && (MOSI.pin != CS.pin)){
+            
+                  // ensure that chosen SPI_CS pin is not already assigned to another peripheral
+                  if((CS.pin != CLK.pin) && (CS.pin != MOSI.pin) && (CS.pin != MISO.pin)){
+                  
+                    // Found matching HW block pins. Run execution callback with them. 
+                    execution_callback(CLK.pin, MISO.pin, MOSI.pin, CS.pin);
+                    tag = true;
+                  }
                 }
-              }
+              }                         
             }
           }
           pin_iterators[SPI_CS]++; // Increment and try next CS pin 
@@ -259,48 +270,37 @@ utest::v1::control_t TestFramework::run_spi(void (*execution_callback)(PinName, 
 	return utest::v1::CaseNext;
 }
 
-/*/////////////////////////////////////////////////////////////////////////////
-//								level1 										                                 //
-//																			                                     //
-// Level 1 tests begin to test the full API for each hardware component.     //
-// The API can only be tested on pins mapped to the CI test shield, so the   //
-// following function iterates through all pins associated with the specified//
-// hardware component to find pins mapped to the CI test shield. Once a pin  //
-// is found, it runs the callback passed in. Note that only one pin is tested//
-// for each hardware component.												                       //
-/////////////////////////////////////////////////////////////////////////////*/
 
+/*//////////////////////////////////////////////////////////////////////////////
+//								level1 										                                  //
+//																			                                      //
+// Level 1 tests begin to test the full API for each hardware component.      //
+// The API can only be tested on pins mapped to the CI test shield, so the    //
+// following function iterates through all pins associated with the specified //
+// hardware component until it finds a pin that is also mapped to the CI test //
+// shield. Once a pin is found, it runs the callback passed in. Note that     //
+// only one pin is tested for each hardware component.											  //
+//////////////////////////////////////////////////////////////////////////////*/
 utest::v1::control_t TestFramework::test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata) {
-	// Get current pin specified by the stored iterator
-	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
-	// Check to see if that current pin is available on the CI test shield
-	int index = find_pin(pin, testtype);
-	// State: Execute
-	if (index != -1) {
-		// Current pin was mapped to the CI test shield so run the callback and reset the iterator
-		execution_callback(pin, floatdata, intdata);
-		pin_iterators[pintype] = 0;
-		return utest::v1::CaseNext;
-	}
-	while (check_size(pintype)) {
-		// State: Increment iterator
-		pin_iterators[pintype]++;
-		pin = pinout[pintype][pin_iterators[pintype]].pin;
-		// Check to see if the current pin is available on the CI test shield
-		index = find_pin(pin, testtype);
+  while(check_size(pintype)) {
+    // Get current pin specified by the stored iterator
+	  PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
 
-		if (index != -1) {
-			// State: Execute
-			// Pin was found, so execute the callback and end the test case. Make sure to reset the iterator
-			execution_callback(pin, floatdata, intdata);
-			pin_iterators[pintype] = 0;
-			return utest::v1::CaseNext;
-		}
-	}
-	// State: End test
-	// All pins have been identified and run, reset the iterators and return back
-	return reset_iterator(pintype);
+    // Check to see if current pin is available on the CI test shield
+	  int index = find_pin(pin, testtype);
+	  if (index != -1) {
+		  // Current pin is mapped to the CI test shield. Run the callback, reset the iterator, and run the next case
+		  execution_callback(pin, floatdata, intdata);
+		  pin_iterators[pintype] = 0;
+		  return utest::v1::CaseNext;
+ 	  }
+    else{
+      // Current pin was not mapped to CI test shield, try another pin
+      pin_iterators[pintype]++;
+    }
+  }
 }
+
 
 /*/////////////////////////////////////////////////////////////////////////////
 //								level2 										                                 //
@@ -310,7 +310,6 @@ utest::v1::control_t TestFramework::test_level1_framework(Type pintype, Type tes
 // just a single pin) is tested. In addition, the tolerance and iterations   //
 // get a little bit more intense.											                       //
 /////////////////////////////////////////////////////////////////////////////*/
-
 utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata) {
 	// Get current pin specified by the stored iterator
 	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
