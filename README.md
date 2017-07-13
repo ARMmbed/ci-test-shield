@@ -1,5 +1,5 @@
 # ci-test-shield
-This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](https://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield). Make sure to use the latest version of the hardware to be fully compatible with the tests!
+This repo contains the test code for the ARM mbed CI Test shield. For the hardware schematics please see the [mbed HDK](https://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/ARM-mbed/CITestShield). Make sure to use the latest version of the hardware to be fully compatible with the tests!
 
 If any tests fail then your platform is exhibiting unexpected behavior. More often than not this indicates a bug in your software port. For maximum mbed compatibility all tests should pass on your platform.
 
@@ -28,7 +28,7 @@ Current API's that are tested by the CI Test shield are as follows
 
 ## Hardware : Where to get CI Test Shield?
 
-1. Buy pre-made shield (coming soon)
+1. Buy pre-made shield - [MinewTech](http://www.minewtech.cn/product/60655608234-804909412/CI_Test_Shield.html?spm=a2700.8304367.0.0.N9LkhJ) , LTEK (Coming Soon)
 2. DIY - buy [PCB from OSHPark](https://oshpark.com/shared_projects/azR9r1l1) and [parts from Octopart](https://octopart.com/bom-tool/ZgvU783O) and assemble it yourself! 
 3. Custom - use the [mbed HDK](http://github.com/ARMmbed/mbed-HDK/tree/master/Production%20Design%20Projects/CITestShield) to modify the design to match the headers on your board. 
 
