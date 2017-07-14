@@ -76,7 +76,6 @@ void test_analogin_execute(PinName pin, float tolerance, int iterations) {
 
 	    // Read the new value to make sure the voltage increased
 	    new_value = ain.read();
-      DEBUG_PRINTF("new_value on bus = %d\n", new_value);
 	    TEST_ASSERT_MESSAGE(new_value > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
 
 	    // Repeat the read multiple times to verify the output is not fluctuating
