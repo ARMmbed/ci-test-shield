@@ -89,6 +89,22 @@ For more on how config files work see the [mbed OS docs](https://docs.mbed.com/d
 - AnalogIn pins must also support DigitalOut
 - Tests require mbed-cli version > 0.9.9 .
 
+## Repository structure
+The latest version of the hardware and software is available on `master`. Development should not occur on this branch - all development should be done on the corresponding hardware branches. Only commits tagged for production will be moved over to master.
+
+Each version of the hardware has its' own branch.
+* `HW0` - Board identity: `0.1.0`. Original hardware board. 
+* `HW1` - Board identity: `1.0.0`. Revamped version of HW0 which has PCB resistors, new EEPROM chip.
+* `HW2` - Board identity: `2,0,0`. Latest and greatest, removed UART resistors. Updated FLASH.
+
+Developement should take place on the latest hardware branch. Currently that hardware branch is `HW2`. When a feature is approved and tested, the hardware branch will get tagged and merged into master.
+
+Release numbers are also now in effect. Tags are using the [semantic versioning model](http://semver.org/).
+X.Y.Z
+* X: Hardware version. Software for each hardware version are incompatible with previous hardware versions
+* Y: Feature. New features increment the minor number
+* Z: Patch
+
 ## More information
 For more information see the [Releases](https://github.com/ARMmbed/ci-test-shield/releases) page.
 
