@@ -87,7 +87,7 @@ void businout_bidirectional_test(){
     BusOut bout(MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_9);
     bout = 0;
     volatile int x = 0;
-    while(x < 0x0F){
+    while(x < 0x0F) {
         x++;
         bout.write(x);
         DEBUG_PRINTF("\r\n*********\r\nvalue of bin,bout,x is: 0x%x, 0x%x, 0x%x\r\n********\r\n",bin.read(),bout.read(),x);
