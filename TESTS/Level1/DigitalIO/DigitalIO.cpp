@@ -45,7 +45,7 @@ void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
   TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
   PinName pinpair = TestFramework::find_pin_pair(pin);
-  DEBUG_PRINTF("Running digital io test on pin %#x and its pin-pair %#x", pin, pin_pair);
+  DEBUG_PRINTF("Running digital io test on pin %#x and its pin-pair %#x", pin, pinpair);
 
   DigitalOut dout(pinpair);
   DigitalIn din(pin);

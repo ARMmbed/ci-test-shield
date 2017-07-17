@@ -31,7 +31,7 @@
         "PWM_1": "D5",
         "PWM_2": "D6",
         "PWM_3": "D9",
-        "DEBUG_MSG": 1
+        "DEBUG_MSG": 0
     },
     "target_overrides": {
         "DISCO_L475VG_IOT01A": {
