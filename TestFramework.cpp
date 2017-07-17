@@ -102,9 +102,16 @@ void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 			if (pinout[pintype][j].pin == pinmap[i].pin)
 				alreadyExists = true;
 		}
-    // if pin is not already in pinout and is not already assigned to USB_UART, then add to pinout
-		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)) {
-			pinout[pintype].push_back(pinmap[i]);
+    // push each valid pin onto the pinmap once for each pin. 
+    #ifdef TARGET_STM
+    // if testing on STM boards, do not add ADC internal channels, USBTX, and USBRX pins
+    if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX) && (pinmap[i].pin != ADC_TEMP) && (pinmap[i].pin != ADC_VREF) && (pinmap[i].pin != ADC_VBAT)){ 
+    
+    #else // else if not testing on STM boards
+    // do not add USBTX and USBRX pins
+		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)){
+    #endif // TARGET_STM
+			pinout[pintype].push_back(pinmap[i]); // add pin to end of pinmap
 		}
 		i++;
 	}
