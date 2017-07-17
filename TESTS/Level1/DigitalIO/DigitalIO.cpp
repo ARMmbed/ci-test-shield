@@ -42,18 +42,19 @@ void dio_toggled(void) {
 }
 
 void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
-	DEBUG_PRINTF("Running digital io test on pin %d\n", pin);
-    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+  TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-    PinName pinpair = TestFramework::find_pin_pair(pin);
-    DigitalOut dout(pinpair);
-    DigitalIn din(pin);
+  PinName pinpair = TestFramework::find_pin_pair(pin);
+  DEBUG_PRINTF("Running digital io test on pin %#x and its pin-pair %#x", pin, pin_pair);
 
-    // Verify Digital Input and Output can occur on the same pin
-    dout = 0;
-    TEST_ASSERT_MESSAGE(0 == din.read(),"Expected value to be 0, read value was not zero");
-    dout = 1;
-    TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
+  DigitalOut dout(pinpair);
+  DigitalIn din(pin);
+
+  // Verify Digital Input and Output can occur on the same pin
+  dout = 0;
+  TEST_ASSERT_MESSAGE(0 == din.read(),"Expected value to be 0, read value was not zero");
+  dout = 1;
+  TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
 }
 
 utest::v1::control_t test_level1_digitalio(const size_t call_count) {
@@ -67,5 +68,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

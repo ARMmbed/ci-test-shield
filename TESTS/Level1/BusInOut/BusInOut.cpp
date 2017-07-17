@@ -38,7 +38,7 @@ void test_busio_execute(PinName pin, float tolerance, int iterations) {
   TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
   PinName pin_pair = TestFramework::find_pin_pair(pin);
-  DEBUG_PRINTF("Running BusIO test on pin %d and its pin-pair %d", pin, pin_pair);
+  DEBUG_PRINTF("Running BusIO test on pin %#x and its pin-pair %#x", pin, pin_pair);
 
   BusInOut bio1(pin);
   BusInOut bio2(pin_pair);

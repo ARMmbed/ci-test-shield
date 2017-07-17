@@ -39,7 +39,7 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 TestFramework test_framework;
 
 void test_analogout_execute(PinName pin, float tolerance, int iterations){
-	DEBUG_PRINTF("Running analog output range test on pin %d\n", pin);
+	DEBUG_PRINTF("Running analog output range test on pin %#x\n", pin);
   TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
   // Find all pins on the resistor ladder that are not the current pin

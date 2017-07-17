@@ -53,7 +53,7 @@ utest::v1::control_t test_level1_i2c(const size_t call_count) {
 		return utest::v1::CaseNext;
 	}
 
-	DEBUG_PRINTF("Running I2C constructor on SDA pin %d and SCL pin %d\n", pin_sda, pin_scl);
+	DEBUG_PRINTF("Running I2C constructor on SDA pin %#x and SCL pin %#x\n", pin_sda, pin_scl);
   TEST_ASSERT_MESSAGE(pin_sda != NC, "SDA Pin is NC");
   TEST_ASSERT_MESSAGE(pin_scl != NC, "SCL Pin is NC");
 
@@ -61,9 +61,9 @@ utest::v1::control_t test_level1_i2c(const size_t call_count) {
 
 	// Generate a random string
   char test_string[128] = {0};
-  for (int i=0; i<iterations; i++) 
+  for (int i=0; i<iterations; i++){ 
   	test_string[i] = DEADBEEF[i%8];
-
+  }
   char initial_read[128] = {0};
   char should_be_null[128] = {0};
   char read_data[128] = {0};
