@@ -39,7 +39,7 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 TestFramework test_framework;
 
 void construct_i2c(PinName sda, PinName scl) {
-	DEBUG_PRINTF("Running I2C Constructor on SDA pin %d and SCL pin %d\n", sda, scl);
+	DEBUG_PRINTF("Running I2C Constructor on SDA pin %#x and SCL pin %#x\n", sda, scl);
   TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
   TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
 
