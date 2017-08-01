@@ -15,15 +15,14 @@
  */
 
 
-// check if SPI is supported on this device
-#if !DEVICE_SPI
+#if !DEVICE_SPI    // check if SPI is supported on this device
     #error [NOT_SUPPORTED] SPI is not supported on this platform, add 'DEVICE_SPI' definition to your platform.
-#endif
 
-// check if I2C is supported on this device
-#if !DEVICE_I2C
-  #error [NOT_SUPPORTED] I2C not supported on this platform, add 'DEVICE_I2C' definition to your platform.
-#endif
+#elif !DEVICE_I2C  // check if I2C is supported on this device
+    #error [NOT_SUPPORTED] I2C not supported on this platform, add 'DEVICE_I2C' definition to your platform.
+
+#endif             // !DEVICE_SPI or !DEVICE_I2C
+
 
 #include "mbed.h"
 #include "greentea-client/test_env.h"
@@ -36,12 +35,11 @@
 
 using namespace utest::v1;
 
-// TODO: make this string a randomly generated thing
-#define TEST_STRING_MAX 100
+#define TEST_STRING_MAX 512
 
+char TEST_STRING[TEST_STRING_MAX] = {0};  // reference string used in testing
 
-// Fill array with random characters. Used in SPI testing.
-char TEST_STRING[TEST_STRING_MAX] = {0};
+// Fill array with random characters. TODO: make this string a randomly generated thing
 void init_string()
 {
     for(int x = 0; x < TEST_STRING_MAX-1; x++){
@@ -49,53 +47,119 @@ void init_string()
     }
     TEST_STRING[TEST_STRING_MAX-1] = 0;
 
-    DEBUG_PRINTF("\r\n****\r\nTEST_STRING = %s\r\n****\r\n",TEST_STRING);
+    DEBUG_PRINTF("\r\n****\r\n TEST_STRING Size(Bytes) = %d\r\n TEST_STRING = %s\r\n****\r\n",TEST_STRING_MAX,TEST_STRING);
+}
+
+
+// test I2C and SPI APIs concurrently in a single thread
+void test_single_thread()
+{
+    // *******************************
+    // Initialize variables and APIs
+    // *******************************
+    
+    // I2C test initializations
+    int address = 0;                                      // starting address to write to in EEPROM
+    int num_read = 0;                                     // will report number of bytes read
+    int num_written = 0;                                  // will report number of bytes written
+    volatile char read_string_i2c[TEST_STRING_MAX] = {0}; // string that will be updated from reading EEPROM
+    I2CEeprom memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+
+    // SPI test initializations
+    volatile char read_string_spi[TEST_STRING_MAX] = {0}; // string that will be updated from reading SD card
+    SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
+    FATFileSystem fs("sd", &sd);
+    sd.init();
+    fs.mount(&sd);
+    FILE *File = fopen("/sd/test_sd_w.txt", "w");
+    TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
+    
+    // ******************************
+    // Begin concurrent API testing
+    // ******************************
+    // write to EEPROM using I2C
+    num_written = memory.write(address,TEST_STRING,TEST_STRING_MAX);
+
+    // write to SD card using SPI
+    int error = fprintf(File, TEST_STRING);                           // write data
+    TEST_ASSERT_MESSAGE(error > 0,"Writing file to sd card failed");  // error checking       
+    fclose(File);                                                     // close file on SD
+
+    // read back from EEPROM
+    num_read = memory.read(address,(char *)read_string_i2c,TEST_STRING_MAX);
+
+    // read data from SD card
+    File = fopen("/sd/test_sd_w.txt", "r");                   
+    fgets((char *)read_string_spi,TEST_STRING_MAX,File);                  // read string from the file
+
+    // ******************************
+    // Check results
+    // ******************************
+
+    // test results for I2C
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(TEST_STRING,(char *)read_string_i2c,"String read does not match the string written"); // test that strings match
+    TEST_ASSERT_EQUAL_MESSAGE(num_written,num_read,"Number of bytes written does not match the number of bytes read");
+    DEBUG_PRINTF("\r\n****\r\n I2C TEST:\r\n Address = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n String written = `%s` \r\n String read = `%s` \r\n****\r\n",address,num_written,num_read,TEST_STRING,read_string_i2c);
+
+    // test results for SPI
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(TEST_STRING,(char *)read_string_spi,"String read does not match the string written"); // test that strings match
+    DEBUG_PRINTF("\r\n****\r\n SPI TEST:\r\n String written = `%s` \r\n String read = `%s` \r\n****\r\n",TEST_STRING,read_string_spi);
+    fclose(File);            // close file on SD    
+    fs.unmount();            // unmount
+    sd.deinit();             // deinitialize SD
 }
 
 
 // test I2C API by writting and reading from EEPROM
 void test_I2C()
 {
-    int size_of_data = 100;                            // number of bytes to write
-    int address = 1;                                   // starting address to write to
+    // initialize variables and API
+    int address = 0;                                   // starting address to write to
     int num_read = 0;                                  // will report number of bytes read
     int num_written = 0;                               // will report number of bytes written
-    volatile char read_string[size_of_data] = {0};     // string that will be updated from reading EEPROM
-
+    volatile char read_string[TEST_STRING_MAX] = {0};  // string that will be updated from reading EEPROM
     I2CEeprom memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
-    num_written = memory.write(address,TEST_STRING,size_of_data);
-    num_read = memory.read(address,(char *)read_string,size_of_data);
 
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(TEST_STRING,(char *)read_string,"String read does not match the string written");
+    // write to EEPROM
+    num_written = memory.write(address,TEST_STRING,TEST_STRING_MAX);
+
+    // read back from EEPROM
+    num_read = memory.read(address,(char *)read_string,TEST_STRING_MAX);
+
+    // test for equality
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(TEST_STRING,(char *)read_string,"String read does not match the string written"); // test that strings match
     TEST_ASSERT_EQUAL_MESSAGE(num_written,num_read,"Number of bytes written does not match the number of bytes read");
-    DEBUG_PRINTF("\r\n****\r\n I2C TEST:\r\n Address = `%d`\r\n Len = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n String written = `%s` \r\n String read = `%s` \r\n****\r\n",address,size_of_data,num_written,num_read,TEST_STRING,read_string);
+    DEBUG_PRINTF("\r\n****\r\n I2C TEST:\r\n Address = `%d`\r\n Num Bytes Written = `%d` \r\n Num Bytes Read = `%d` \r\n String written = `%s` \r\n String read = `%s` \r\n****\r\n",address,num_written,num_read,TEST_STRING,read_string);
 }
 
 
 // test SPI API by writing and reading from SD card
 void test_SPI()
 {
-    // initialze sd hardware and filesystem
+    // initialze SD hardware, filesystem, and variables
     SDBlockDevice sd(MBED_CONF_APP_SPI_MOSI, MBED_CONF_APP_SPI_MISO, MBED_CONF_APP_SPI_CLK, MBED_CONF_APP_SPI_CS);
     FATFileSystem fs("sd", &sd);
     sd.init();
     fs.mount(&sd);
-
-    // write data
     FILE *File = fopen("/sd/test_sd_w.txt", "w");
     TEST_ASSERT_MESSAGE(File != NULL,"SD Card is not present. Please insert an SD Card.");
-    TEST_ASSERT_MESSAGE(fprintf(File, TEST_STRING) > 0,"Writing file to sd card failed");             // write data
-    fclose(File);                                                  // close file on SD
+    volatile char read_string[TEST_STRING_MAX] = {0};
 
-    // read data
-    char read_string [TEST_STRING_MAX] = {0};
+    // write data to SD card
+    int error = fprintf(File, TEST_STRING);                           // write data
+    TEST_ASSERT_MESSAGE(error > 0,"Writing file to sd card failed");  // error checking       
+    fclose(File);                                                     // close file on SD
+
+    // read data from SD card
     File = fopen("/sd/test_sd_w.txt", "r");
-    fgets(read_string,TEST_STRING_MAX,File);                    // read string from the file
+    fgets((char *)read_string,TEST_STRING_MAX,File);                  // read string from the file
+
+    // test for equality
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(TEST_STRING,(char *)read_string,"String read does not match the string written"); // test that strings match
     DEBUG_PRINTF("\r\n****\r\n SPI TEST:\r\n String written = `%s` \r\n String read = `%s` \r\n****\r\n",TEST_STRING,read_string);
-    TEST_ASSERT_MESSAGE(strcmp(read_string,TEST_STRING) == 0,"String read does not match string written"); // test that strings match
 
     // close, unmount, and deinitialize
-    fclose(File);                                                  // close file on SD
+    fclose(File);                                                     // close file on SD
     fs.unmount();
     sd.deinit();
 }
@@ -119,8 +183,9 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 
 // Test cases
 Case cases[] = {
-    Case("SPI - SD Write and Read", test_SPI,greentea_failure_handler),
-    Case("I2C - EEProm WR 100 Bytes",test_I2C,greentea_failure_handler),
+    //Case("SPI - SD Write and Read", test_SPI,greentea_failure_handler),
+    //Case("I2C - EEProm WR 100 Bytes",test_I2C,greentea_failure_handler),
+    Case("Concurrent testing of I2C and SPI in a single thread",test_single_thread,greentea_failure_handler),
 };
 
 
