@@ -55,7 +55,7 @@ utest::v1::control_t test_level1_spi(const size_t call_count) {
 		return utest::v1::CaseNext;
 	}
 
-	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+	DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
   TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
   TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
   TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");

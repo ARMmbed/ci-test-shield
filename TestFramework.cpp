@@ -21,25 +21,40 @@
 //								Initialization								                             //
 /////////////////////////////////////////////////////////////////////////////*/
 TestFramework::TestFramework() {
-	map_pins(PinMap_ADC, AnalogInput);
-	map_pins(PinMap_DAC, AnalogOutput);
-	map_pins(PinMap_PWM, DigitalIO);
-	map_pins(PinMap_ADC, DigitalIO);
-	  // map_pins(PinMap_DAC, DigitalIO); grabbing pin number from PeripheralPins.c, instead of the pin translation from mbed_app.json
-	map_pins(PinMap_I2C_SDA, DigitalIO);
-	map_pins(PinMap_I2C_SCL, DigitalIO);
-	map_pins(PinMap_SPI_SCLK, DigitalIO);
-	map_pins(PinMap_SPI_MOSI, DigitalIO);
-	map_pins(PinMap_SPI_MISO, DigitalIO);
-	map_pins(PinMap_SPI_SSEL, DigitalIO);
+  #ifdef DEVICE_ANALOGIN
+	  map_pins(PinMap_ADC, AnalogInput);
+    map_pins(PinMap_ADC, DigitalIO);
+  #endif  // DEVICE_ANALOGIN
+
+  #ifdef DEVICE_ANALOGOUT
+    map_pins(PinMap_DAC, AnalogOutput);
+  	// map_pins(PinMap_DAC, DigitalIO); grabbing pin number from PeripheralPins.c, instead of the pin translation from mbed_app.json
+  #endif  // DEVICE_ANALOGOUT
+
+  #ifdef DEVICE_I2C
+	  map_pins(PinMap_I2C_SDA, DigitalIO);
+	  map_pins(PinMap_I2C_SCL, DigitalIO);
+    map_pins(PinMap_I2C_SDA, I2C_SDA);
+	  map_pins(PinMap_I2C_SCL, I2C_SCL);
+  #endif  // DEVICE_I2C
+
+  #ifdef DEVICE_PWMOUT
+    map_pins(PinMap_PWM, DigitalIO);
+	  map_pins(PinMap_PWM, PWM);
+  #endif  // DEVICE_PWMOUT
+
+  #ifdef DEVICE_SPI
+    map_pins(PinMap_SPI_SCLK, DigitalIO);
+	  map_pins(PinMap_SPI_MOSI, DigitalIO);
+	  map_pins(PinMap_SPI_MISO, DigitalIO);
+	  map_pins(PinMap_SPI_SSEL, DigitalIO);
+    map_pins(PinMap_SPI_SCLK, SPI_CLK);
+	  map_pins(PinMap_SPI_MOSI, SPI_MOSI);
+	  map_pins(PinMap_SPI_MISO, SPI_MISO);
+	  map_pins(PinMap_SPI_SSEL, SPI_CS);
+  #endif  // DEVICE_SPI
+
 	pinout[BusIO] = pinout[DigitalIO];
-	map_pins(PinMap_PWM, PWM);
-	map_pins(PinMap_I2C_SDA, I2C_SDA);
-	map_pins(PinMap_I2C_SCL, I2C_SCL);
-	map_pins(PinMap_SPI_SCLK, SPI_CLK);
-	map_pins(PinMap_SPI_MOSI, SPI_MOSI);
-	map_pins(PinMap_SPI_MISO, SPI_MISO);
-	map_pins(PinMap_SPI_SSEL, SPI_CS);
 	setup_cits_pins();
 }
 
@@ -87,9 +102,16 @@ void TestFramework::map_pins(const PinMap pinmap[], Type pintype) {
 			if (pinout[pintype][j].pin == pinmap[i].pin)
 				alreadyExists = true;
 		}
-    // if pin is not already in pinout and is not already assigned to USB_UART, then add to pinout
-		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)) {
-			pinout[pintype].push_back(pinmap[i]);
+    // push each valid pin onto the pinmap once for each pin. 
+    #ifdef TARGET_STM
+    // if testing on STM boards, do not add ADC internal channels, USBTX, and USBRX pins
+    if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX) && (pinmap[i].pin != ADC_TEMP) && (pinmap[i].pin != ADC_VREF) && (pinmap[i].pin != ADC_VBAT)){ 
+    
+    #else // else if not testing on STM boards
+    // do not add USBTX and USBRX pins
+		if ((!alreadyExists) && (pinmap[i].pin != USBTX) && (pinmap[i].pin != USBRX)){
+    #endif // TARGET_STM
+			pinout[pintype].push_back(pinmap[i]); // add pin to end of pinmap
 		}
 		i++;
 	}

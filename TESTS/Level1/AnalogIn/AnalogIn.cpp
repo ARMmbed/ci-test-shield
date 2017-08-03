@@ -39,7 +39,7 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 TestFramework test_framework;
 
 void test_analogin_execute(PinName pin, float tolerance, int iterations) {
-	DEBUG_PRINTF("Running analog input range test on pin %d\n", pin);
+	DEBUG_PRINTF("Running analog input range test on pin %#x\n", pin);
   TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
   // Find all pins on the resistor ladder that are not the current pin
@@ -51,7 +51,7 @@ void test_analogin_execute(PinName pin, float tolerance, int iterations) {
   BusInOut outputs(resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
 	outputs.output();
 
-  DEBUG_PRINTF("Creating a resistive ladder bus with the following pins:\n  pin[0] = %d\n  pin[1] = %d\n  pin[2] = %d\n  pin[3] = %d\n  pin[4] = %d\n", resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
+  DEBUG_PRINTF("Creating a resistive ladder bus with the following pins:\n  pin[0] = %#x\n  pin[1] = %#x\n  pin[2] = %#x\n  pin[3] = %#x\n  pin[4] = %#x\n", resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
 
   // construct designated analogIn pin
 	AnalogIn ain(pin);
@@ -76,7 +76,6 @@ void test_analogin_execute(PinName pin, float tolerance, int iterations) {
 
 	    // Read the new value to make sure the voltage increased
 	    new_value = ain.read();
-      DEBUG_PRINTF("new_value on bus = %d\n", new_value);
 	    TEST_ASSERT_MESSAGE(new_value > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
 
 	    // Repeat the read multiple times to verify the output is not fluctuating

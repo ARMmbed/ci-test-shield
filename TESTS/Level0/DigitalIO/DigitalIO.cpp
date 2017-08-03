@@ -36,7 +36,7 @@ TestFramework test_framework;
 
 utest::v1::control_t test_level0_digitalio(const size_t call_count) {
 	PinMap pin = test_framework.get_increment_pin(TestFramework::DigitalIO);
-	DEBUG_PRINTF("Running digital io constructor on pin %d\n", pin.pin);
+	DEBUG_PRINTF("Running digital io constructor on pin %#x\n", pin.pin);
   TEST_ASSERT_MESSAGE(pin.pin != NC, "Pin is NC");
 
 	DigitalOut dout(pin.pin);

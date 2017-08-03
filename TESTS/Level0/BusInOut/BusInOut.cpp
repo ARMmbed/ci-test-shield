@@ -53,7 +53,7 @@ utest::v1::control_t test_level0_businout(const size_t call_count) {
     }
 	}
 
-  DEBUG_PRINTF("Pins assigned to bus:\n  pin[0] = %d\n  pin[1] = %d\n  pin[2] = %d\n  pin[3] = %d\n  pin[4] = %d\n  pin[5] = %d\n  pin[6] = %d\n  pin[7] = %d\n  pin[8] = %d\n  pin[9] = %d\n  pin[10] = %d\n  pin[11] = %d\n  pin[12] = %d\n  pin[13] = %d\n  pin[14] = %d\n  pin[15] = %d\n",pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
+  DEBUG_PRINTF("Pins assigned to bus:\n  pin[0] = %#x\n  pin[1] = %#x\n  pin[2] = %#x\n  pin[3] = %#x\n  pin[4] = %#x\n  pin[5] = %#x\n  pin[6] = %#x\n  pin[7] = %#x\n  pin[8] = %#x\n  pin[9] = %#x\n  pin[10] = %#x\n  pin[11] = %#x\n  pin[12] = %#x\n  pin[13] = %#x\n  pin[14] = %#x\n  pin[15] = %#x\n",pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);
 	
   // construct the bus with assigned pins
   BusInOut bio(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7],pins[8],pins[9],pins[10],pins[11],pins[12],pins[13],pins[14],pins[15]);

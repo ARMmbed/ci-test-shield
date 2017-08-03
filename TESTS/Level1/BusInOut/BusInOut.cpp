@@ -34,24 +34,25 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_busio_execute(PinName pin, float tolerance, int iterations) {
-	DEBUG_PRINTF("Running analog input range test on pin %d\n", pin);
-    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+void test_busio_execute(PinName pin, float tolerance, int iterations) {	
+  TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-    PinName pin_pair = TestFramework::find_pin_pair(pin);
-    BusInOut bio1(pin);
-    BusInOut bio2(pin_pair);
+  PinName pin_pair = TestFramework::find_pin_pair(pin);
+  DEBUG_PRINTF("Running BusIO test on pin %#x and its pin-pair %#x", pin, pin_pair);
 
-    bio1.output();
-    bio2.input();
-    bio1 = 0;
-    TEST_ASSERT_MESSAGE(bio2.read()==0, "Value read on bus does not equal value written.");
-    bio1 = 1;
-    TEST_ASSERT_MESSAGE(bio2.read()==1, "Value read on bus does not equal value written.");
+  BusInOut bio1(pin);
+  BusInOut bio2(pin_pair);
+
+  bio1.output();
+  bio2.input();
+  bio1 = 0;
+  TEST_ASSERT_MESSAGE(bio2.read()==0, "Value read on bus does not equal value written.");
+  bio1 = 1;
+  TEST_ASSERT_MESSAGE(bio2.read()==1, "Value read on bus does not equal value written.");
 }
 
 utest::v1::control_t test_level1_busio(const size_t call_count) {
-	return TestFramework::test_level2_framework(TestFramework::BusIO, TestFramework::CITS_DigitalIO, &test_busio_execute, 0.05, 10);
+	return TestFramework::test_level1_framework(TestFramework::BusIO, TestFramework::CITS_DigitalIO, &test_busio_execute, 0.05, 10);
 }
 
 Case cases[] = {
@@ -61,5 +62,5 @@ Case cases[] = {
 int main() {
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-    return !Harness::run(specification);
+  return !Harness::run(specification);
 }

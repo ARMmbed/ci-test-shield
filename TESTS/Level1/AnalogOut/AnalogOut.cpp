@@ -38,25 +38,24 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_analogout_execute(PinName pin, float tolerance, int iterations) {
-	DEBUG_PRINTF("Running analog output range test on pin %d\n", pin);
-    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+void test_analogout_execute(PinName pin, float tolerance, int iterations){
+	DEBUG_PRINTF("Running analog output range test on pin %#x\n", pin);
+  TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-    // Find all pins on the resistor ladder that are not the current pin
+  // Find all pins on the resistor ladder that are not the current pin
 	std::vector<PinName> resistor_ladder_pins = TestFramework::find_resistor_ladder_pins(pin);
-	if (resistor_ladder_pins.size() < 5)
+  if (resistor_ladder_pins.size() < 5){
 		TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
+  }
 
-	AnalogIn ain(resistor_ladder_pins[0]);
-
+	AnalogIn ain(resistor_ladder_pins[0]); 
 	// Repeat to guarentee consistency
-    for (unsigned int i=0; i<iterations; i++) {
-
-	    float input = 0.0f;
+  for (unsigned int i=0; i<iterations; i++){
+	  float input = 0.0f;
 		AnalogOut aout(pin);
 
-		// Itereate at 100mV increments
-		for (float i=0.0f; i<=1.0f; i+=0.1f) {
+    // Itereate at 100mV increments
+		for (float i=0.0f; i<=1.0f; i+=0.1f){
 			aout = i;
 			input = ain.read();
 			// Verify input matches expected output within a certain tolerance
