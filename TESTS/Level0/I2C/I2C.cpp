@@ -38,24 +38,31 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void construct_i2c(PinName sda, PinName scl) {
-	DEBUG_PRINTF("Running I2C Constructor on SDA pin %#x and SCL pin %#x\n", sda, scl);
-  TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
-  TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
 
-  I2C i2c(sda, scl);
+void construct_i2c(PinName sda, PinName scl) 
+{
+    DEBUG_PRINTF("Running I2C Constructor on SDA pin %#x and SCL pin %#x\n", sda, scl);
+    TEST_ASSERT_MESSAGE(sda != NC, "SDA Pin is NC");
+    TEST_ASSERT_MESSAGE(scl != NC, "SCL Pin is NC");
+
+    I2C i2c(sda, scl);
 }
 
-utest::v1::control_t test_level0_i2c(const size_t call_count) {
+
+utest::v1::control_t test_level0_i2c(const size_t call_count) 
+{
 	return TestFramework::run_i2c(&construct_i2c);
 }
+
 
 Case cases[] = {
 	Case("Level 0 - I2C Constructor", test_level0_i2c, TestFramework::greentea_failure_handler),
 };
 
-int main() {
+
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
-  return !Harness::run(specification);
+    return !Harness::run(specification);
 }

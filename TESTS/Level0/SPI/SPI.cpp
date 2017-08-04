@@ -38,27 +38,34 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void construct_spi(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) {
-	DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
-  TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
-  TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
-  TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
-  TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
-  SPI(pin_mosi, pin_miso, pin_clk);
-  DigitalOut cs(pin_cs);
+void construct_spi(PinName pin_clk, PinName pin_miso, PinName pin_mosi, PinName pin_cs) 
+{
+	DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
+    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+    TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
+    TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
+
+    SPI(pin_mosi, pin_miso, pin_clk);
+    DigitalOut cs(pin_cs);
 }
 
-utest::v1::control_t test_level0_spi(const size_t call_count) {
+
+utest::v1::control_t test_level0_spi(const size_t call_count) 
+{
 	return test_framework.run_spi(&construct_spi);
 }
+
 
 Case cases[] = {
 	Case("Level 0 - SPI Constructor", test_level0_spi, TestFramework::greentea_failure_handler),
 };
 
-int main() {
+
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<60>, cases);
-  return !Harness::run(specification);
+    return !Harness::run(specification);
 }
