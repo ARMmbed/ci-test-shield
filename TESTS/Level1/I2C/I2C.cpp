@@ -42,7 +42,7 @@ TestFramework test_framework;
 char* DEADBEEF = "DEADBEEF";
 char NULL_STR[128] = {0};
 
-template <int iterations>
+template <int num_bytes>
 utest::v1::control_t test_level1_i2c(const size_t call_count) 
 {
 
@@ -62,23 +62,15 @@ utest::v1::control_t test_level1_i2c(const size_t call_count)
 
     // Generate a random string
     char test_string[128] = {0};
-    for (int i=0; i<iterations; i++){ 
+    for (int i=0; i<num_bytes; i++){ 
         test_string[i] = DEADBEEF[i%8];
     }
-    char initial_read[128] = {0};
-    char should_be_null[128] = {0};
     char read_data[128] = {0};
 
-    int initial_read_bytes = memory.read(1, initial_read, iterations);
-    int initial_write_bytes = memory.write(1, NULL_STR, iterations);
-    int secondary_read_bytes = memory.read(1, should_be_null, iterations);
-
-    int w = memory.write(1, test_string, iterations);
-    int r = memory.read(1, read_data, iterations);
-
+    // Test write/read of random string
+    int w = memory.write(1, test_string, num_bytes);
+    int r = memory.read(1, read_data, num_bytes);
     DEBUG_PRINTF("Wrote %d bytes: %s\nRead %d bytes: %s\n", w, test_string, r, read_data);
-    TEST_ASSERT_MESSAGE(strcmp(initial_read,should_be_null) != 0,"Write never occurred. Null characters never got written");
-    TEST_ASSERT_MESSAGE(strcmp(NULL_STR,should_be_null) == 0,"Read is not working. Write occurred yet read grabbed different text");
     TEST_ASSERT_MESSAGE(strcmp(test_string,read_data) == 0,"Read and write data does not match");
 
     return utest::v1::CaseNext;
