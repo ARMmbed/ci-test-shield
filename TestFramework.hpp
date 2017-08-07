@@ -75,16 +75,20 @@ public:
 
 
 	template <int timeout>
-	static utest::v1::status_t test_setup(const size_t number_of_cases) {
+	static utest::v1::status_t test_setup(const size_t number_of_cases) 
+    {
 	    GREENTEA_SETUP(timeout, "rand_provider");
 	    return utest::v1::verbose_test_setup_handler(number_of_cases);
 	}
 
-	static utest::v1::status_t greentea_failure_handler(const utest::v1::Case *const source, const utest::v1::failure_t reason) {
+
+	static utest::v1::status_t greentea_failure_handler(const utest::v1::Case *const source, const utest::v1::failure_t reason) 
+    {
 	    greentea_case_failure_abort_handler(source, reason);
 	    return utest::v1::STATUS_ABORT;
 	}
 	
+
 	/**
 	  * Find a pin within the array of type pintype
 	  * @param PinName pin to search for
@@ -93,6 +97,7 @@ public:
 	**/
 	static int find_pin(PinName pin, Type pintype);
 
+
 	/**
 	  * Find the pin that is connected to the specified pin via a resistor on the DIO HW bank
 	  * @param PinName pin to find the corresponding pin connected by the resistor
@@ -100,12 +105,14 @@ public:
 	**/ 
 	static PinName find_pin_pair(PinName pin);
 
+
 	/**
 	  * Check to see if the pin iterator is pointing at a valid pin in the pinout
 	  * @param Type pin type to validate
 	  * @return bool if the pin iterator is a valid pin in the pinout
 	**/
 	static bool check_size(Type pintype);
+
 
 	/**
 	  * Reset the iterator if all pins of the specified pin type have been looked at,<br>
@@ -115,12 +122,14 @@ public:
 	**/
 	static utest::v1::control_t reset_iterator(Type pintype);
 
+
 	/**
 	  * Get the current pin for a specific pin type, and incrememnt the iterator for that pin type
 	  * @param Type pin type to retrieve and increment
 	  * @return PinName current pin
 	**/
 	static PinMap get_increment_pin(Type pintype);
+
 
 	/**
 	  * Find the resistor ladder pins that are not the specified pin
@@ -129,11 +138,13 @@ public:
 	**/
 	static std::vector<PinName> find_resistor_ladder_pins(PinName pin);
 
+
 	/**
 	  * Get a randomized seed from Greentea's host test
 	  * @return unsigned int random seed
 	**/
 	static unsigned int get_seed();
+
 
 	/**
 	  * Find a matching pin based on HW blocks to the current pin. Iterate the corresponding pin after test case execution
@@ -142,12 +153,14 @@ public:
 	**/
 	static utest::v1::control_t run_i2c(void (*execution_callback)(PinName, PinName));
 
+
 	/**
 	  * Find a pin set (CLK, MISO, MOSI, CS) based on HW blocks that matches the current pin. Iterate the corresponding pins after test execution
 	  * @param Callback to a function to run once a pin pairing has been found
 	  * @return control_t Case control to repeat or move on to the next test cases
 	**/
 	static utest::v1::control_t run_spi(void (*execution_callback)(PinName, PinName, PinName, PinName));
+
 
 	/**
 	  * Find a pin of a specified test type and run a test case (passed in as a callback)
@@ -159,6 +172,7 @@ public:
 	  * @return control_t identify to repeat or proceed to the next test case corresponding to the Specification
 	**/
 	static utest::v1::control_t test_level1_framework(Type pintype, Type testtype, void (*execution_callback)(PinName, float, int), float floatdata, int intdata);
+
 
 	/**
 	  * Find pins of a specified test type and run a test case (passed in as a callback)
@@ -180,10 +194,12 @@ private:
 	**/
 	void setup_cits_pins();
 
+
 	/**
 	  * Construct a pinmap from a pin
 	**/
 	PinMap construct_pinmap(PinName pin);
+
 
 	/**
 	  * Put pins from the specified pinmap into the pinout array indexed by pin type
