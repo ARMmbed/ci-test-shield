@@ -29,6 +29,8 @@
 #include "TestFramework.hpp"
 #include <vector>
 
+#define BUS_SIZE 5
+
 using namespace utest::v1;
 
 // Static variables for managing the dynamic list of pins
@@ -38,65 +40,69 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_analogin_execute(PinName pin, float tolerance, int iterations) {
+void test_analogin_execute(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running analog input range test on pin %#x\n", pin);
-  TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
+    TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
-  // Find all pins on the resistor ladder that are not the current pin
+    // Find all pins on the resistor ladder that are not the current pin
 	std::vector<PinName> resistor_ladder_pins = TestFramework::find_resistor_ladder_pins(pin);
-	if (resistor_ladder_pins.size() < 5)
-		TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
+	if (resistor_ladder_pins.size() < BUS_SIZE){
+	    TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
+    }
 
 	// Create a bus with all of these pins
-  BusInOut outputs(resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
+    BusInOut outputs(resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
 	outputs.output();
 
-  DEBUG_PRINTF("Creating a resistive ladder bus with the following pins:\n  pin[0] = %#x\n  pin[1] = %#x\n  pin[2] = %#x\n  pin[3] = %#x\n  pin[4] = %#x\n", resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
+    DEBUG_PRINTF("Creating a resistive ladder bus with the following pins:\n  pin[0] = %#x\n  pin[1] = %#x\n  pin[2] = %#x\n  pin[3] = %#x\n  pin[4] = %#x\n", resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
 
-  // construct designated analogIn pin
+    // construct designated analogIn pin
 	AnalogIn ain(pin);
 
-  for (unsigned int i=0; i<iterations; i++) {
+    for (unsigned int i=0; i<iterations; i++) {
+        // Initialization
+        int x = 0;
+        int y= 0;
+        outputs = 0;
+        float prev_value = 0;
+        float new_value = 0;
+        float test_value = 0;
 
-  	// Initialization
-	  int x = 0;
-	  int y= 0;
-	  outputs = 0;
-	  float prev_value = 0;
-	  float new_value = 0;
-	  float test_value = 0;
+        // Iterate through each of the bus pins
+        for(x = 0; x<BUS_SIZE; x++) {
 
-	  // Iterate through each of the bus pins
-	  for(x = 0; x<5; x++) {
+            // Read the previous value, and turn another pin on in the resistor ladder
+            prev_value = ain.read();
+            y = (y<<1) + 1;
+            outputs = y;
 
-	  	// Read the previous value, and turn another pin on in the resistor ladder
-	    prev_value = ain.read();
-	    y = (y<<1) + 1;
-	    outputs = y;
+            // Read the new value to make sure the voltage increased
+            new_value = ain.read();
+            TEST_ASSERT_MESSAGE(new_value > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
 
-	    // Read the new value to make sure the voltage increased
-	    new_value = ain.read();
-	    TEST_ASSERT_MESSAGE(new_value > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
-
-	    // Repeat the read multiple times to verify the output is not fluctuating
-	    for (unsigned int j = 0; j<iterations; j++) {
-	    	test_value = ain.read();
-	    	TEST_ASSERT_MESSAGE(abs(test_value - new_value) < tolerance, "Analog Input fluctuated past the tolerance");
-	    }
-	  }
+            // Repeat the read multiple times to verify the output is not fluctuating
+            for (unsigned int j = 0; j<iterations; j++) {
+                test_value = ain.read();
+                TEST_ASSERT_MESSAGE(abs(test_value - new_value) < tolerance, "Analog Input fluctuated past the tolerance");
+            }
+        }
 	}
 }
 
-utest::v1::control_t test_level1_analogin(const size_t call_count) {
-	return TestFramework::test_level1_framework(TestFramework::AnalogInput, TestFramework::CITS_AnalogInput, &test_analogin_execute, 0.05, 10);
+
+utest::v1::control_t test_level1_analogin(const size_t call_count) 
+{
+    return TestFramework::test_level1_framework(TestFramework::AnalogInput, TestFramework::CITS_AnalogInput, &test_analogin_execute, 0.05, 10);
 }
 
 Case cases[] = {
-	Case("Level 1 - Analog Input Range test (single pin)", test_level1_analogin, TestFramework::greentea_failure_handler),
+    Case("Level 1 - Analog Input Range test (single pin)", test_level1_analogin, TestFramework::greentea_failure_handler),
 };
 
-int main() {
-	// Formulate a specification and run the tests based on the Case array
-	Specification specification(TestFramework::test_setup<30>, cases);
-  return !Harness::run(specification);
+int main() 
+{
+    // Formulate a specification and run the tests based on the Case array
+    Specification specification(TestFramework::test_setup<30>, cases);
+    return !Harness::run(specification);
 }
