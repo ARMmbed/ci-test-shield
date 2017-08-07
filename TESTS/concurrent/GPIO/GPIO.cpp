@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+
+#if !DEVICE_ANALOGIN
+  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
+#endif
+
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "unity.h"

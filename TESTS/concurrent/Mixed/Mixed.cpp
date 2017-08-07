@@ -21,7 +21,10 @@
 #elif !DEVICE_I2C  // check if I2C is supported on this device
     #error [NOT_SUPPORTED] I2C not supported on this platform, add 'DEVICE_I2C' definition to your platform.
 
-#endif             // !DEVICE_SPI or !DEVICE_I2C
+#elif !DEVICE_ANALOGIN
+  #error [NOT_SUPPORTED] AnalogIn not supported on this platform, add 'DEVICE_ANALOGIN' definition to your platform.
+
+#endif             // !DEVICE_SPI or !DEVICE_I2C or !DEVICE_ANALOGIN
 
 
 #include "mbed.h"
