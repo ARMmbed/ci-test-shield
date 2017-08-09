@@ -318,7 +318,9 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 Case cases[] = {
     Case("Concurrent testing of Comms and GPIO in a single thread",test_single_thread,greentea_failure_handler),
+#if !MBED_CONF_APP_SINGLE_THREAD_ONLY
     Case("Concurrent testing of Comms and GPIO in multiple threads",test_multiple_threads,greentea_failure_handler),
+#endif /* MBED_CONF_APP_SINGLE_THREAD_ONLY */
 };
 
 

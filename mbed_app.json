@@ -1,5 +1,6 @@
 {
     "config": {
+        "SINGLE_THREAD_ONLY": "0",
         "UART_RX": "D0",
         "UART_TX": "D1",
         "DIO_0": "D0",
@@ -45,6 +46,9 @@
              "PWM_0": "D2",
              "PWM_2": "D7",
              "AOUT": "A2"
+        },
+        "NUCLEO_F103RB": {
+             "SINGLE_THREAD_ONLY": "1"
         },
         "NUCLEO_F207ZG": {
              "AOUT": "D13"
