@@ -49,9 +49,10 @@ utest::v1::control_t test_level1_i2c(const size_t call_count)
 	// Check to see if the CI test shield I2C pins are connected to the board
 	PinName pin_scl = MBED_CONF_APP_I2C_SCL;
 	PinName pin_sda = MBED_CONF_APP_I2C_SDA;
+
 	if (TestFramework::find_pin(pin_scl, TestFramework::I2C_SCL)==-1 ||
 	    TestFramework::find_pin(pin_sda, TestFramework::I2C_SDA)==-1) {
-	    return utest::v1::CaseNext;
+        TEST_ASSERT_MESSAGE(false,"CI test shield is not properly connected to default I2C pins, or pins are already assigned as greentea's UART pins.");
 	}
 
     DEBUG_PRINTF("Running I2C constructor on SDA pin %#x and SCL pin %#x\n", pin_sda, pin_scl);

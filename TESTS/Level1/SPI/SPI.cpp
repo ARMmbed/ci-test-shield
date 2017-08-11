@@ -40,7 +40,7 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-template <int iterations>
+template <int num_bytes>
 utest::v1::control_t test_level1_spi(const size_t call_count) 
 {
 	// Verify that the CI test shield pins are connected to the SPI pins
@@ -52,23 +52,22 @@ utest::v1::control_t test_level1_spi(const size_t call_count)
 		TestFramework::find_pin(pin_miso, TestFramework::SPI_MISO)==-1 ||
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
 		TestFramework::find_pin(pin_cs, TestFramework::SPI_CS)==-1) {
-		return utest::v1::CaseNext;
+        TEST_ASSERT_MESSAGE(false,"CI test shield is not properly connected to default SPI pins, or pins are already assigned as greentea's UART pins.");
 	}
-
-	DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
-    TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
+	TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
     TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
     TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
     TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
     // Get a random seed from the Greentea host test
-    srand(TestFramework::get_seed());
+    //srand(TestFramework::get_seed());  TODO: need to fix, causing test error when calling get_seed
 
     // Initialize the SD card and file system residing on the SD card
-    int error = 0; 
+    DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
     SDBlockDevice sd(pin_mosi, pin_miso, pin_clk, pin_cs);
     FATFileSystem fs("sd");
     sd.init();
+    int error = 0; 
     error = fs.mount(&sd);
     TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 
@@ -77,8 +76,8 @@ utest::v1::control_t test_level1_spi(const size_t call_count)
 
         // Generate a random string
         char test_string[128] = {0};
-        for (int i=0; i<iterations; i++){ 
-            test_string[i] = 'A' + rand()%26;
+        for (int j=0; j<num_bytes; j++){ 
+            test_string[j] = 'A' + rand()%26;
         }
         // Open the file and write the string
         FILE *File_write = fopen("/sd/test_card.txt", "w"); // open File_write
@@ -90,7 +89,7 @@ utest::v1::control_t test_level1_spi(const size_t call_count)
         FILE *File_read = fopen("/sd/test_card.txt", "r"); // open File_read
         char test_string_read[128] = {0};
         fgets(test_string_read, 128, File_read); // read string from the file
-        DEBUG_PRINTF("Read '%s' in read test\nString comparison returns %d\n",test_string_read,strcmp(test_string_read,test_string));
+        DEBUG_PRINTF("Read '%s' in iteration %d's read test\nString comparison returns %d\n",test_string_read, i,strcmp(test_string_read,test_string));
         TEST_ASSERT_MESSAGE(strcmp(test_string_read,test_string) == 0,"String read does not match string written"); // test that strings match
         fclose(File_read);// close file on SD
         remove("/sd/test_card.txt");

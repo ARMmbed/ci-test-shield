@@ -31,17 +31,8 @@ using namespace utest::v1;
 std::vector< vector <PinMap> > TestFramework::pinout(TS_NC);
 std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 
-Timer timer;
-int clocked_dio_toggle;
-
 // Initialize a test framework object
 TestFramework test_framework;
-
-void dio_toggled(void) 
-{
-    clocked_dio_toggle = timer.read_us();
-}
-
 
 void test_digitalio_execute(PinName pin, float tolerance, int iterations) 
 {
@@ -65,6 +56,7 @@ utest::v1::control_t test_level1_digitalio(const size_t call_count)
 {
     return TestFramework::test_level1_framework(TestFramework::DigitalIO, TestFramework::CITS_DigitalIO, &test_digitalio_execute, 0.05, 10);
 }
+
 
 Case cases[] = {
     Case("Level 1 - Digital In/Out Range test (single pin)", test_level1_digitalio, TestFramework::greentea_failure_handler),
