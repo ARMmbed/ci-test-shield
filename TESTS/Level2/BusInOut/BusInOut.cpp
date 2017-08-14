@@ -35,15 +35,18 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 TestFramework test_framework;
 
 // test that all pins can be marked as BusIn
-void busin_define_test(){
+void busin_define_test()
+{
     BusIn bin(MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9,MBED_CONF_APP_SPI_CS,MBED_CONF_APP_SPI_MOSI,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5);
     int x = 0;
     x = bin.read();
     TEST_ASSERT_MESSAGE(true,"The fact that it hasnt error out proves this passes the sniff test");
 }
 
+
 // test that all pins can be marked as BusOut
-void busout_define_test(){
+void busout_define_test()
+{
     BusOut bout(MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_8,MBED_CONF_APP_DIO_9,MBED_CONF_APP_SPI_CS,MBED_CONF_APP_SPI_MOSI,MBED_CONF_APP_AIN_0,MBED_CONF_APP_AIN_1,MBED_CONF_APP_AIN_2,MBED_CONF_APP_AIN_3,MBED_CONF_APP_AIN_4,MBED_CONF_APP_AIN_5);
     bout = 0;
     volatile int x = 0;
@@ -55,8 +58,10 @@ void busout_define_test(){
     TEST_ASSERT_MESSAGE(true,"The fact that it hasnt error out proves this passes the sniff test");
 }
 
+
 // test that all pins can be marked as BusInOut
-void businout_define_test(){
+void businout_define_test()
+{
     BusInOut bio1(MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_8);
     BusInOut bio2(MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_9);
     bio1.output();
@@ -89,7 +94,8 @@ void businout_define_test(){
 }
 
 // Test writing from one bus to another
-void businout_bidirectional_test(){
+void businout_bidirectional_test()
+{
     BusIn bin(MBED_CONF_APP_DIO_2,MBED_CONF_APP_DIO_4,MBED_CONF_APP_DIO_6,MBED_CONF_APP_DIO_8);
     BusOut bout(MBED_CONF_APP_DIO_3,MBED_CONF_APP_DIO_5,MBED_CONF_APP_DIO_7,MBED_CONF_APP_DIO_9);
     bout = 0;
@@ -103,6 +109,7 @@ void businout_bidirectional_test(){
     TEST_ASSERT_MESSAGE(true,"The fact that it hasnt error out proves this passes the sniff test");
 }
 
+
 Case cases[] = {
     Case("Level 2 - Bus Input definable", busin_define_test,  TestFramework::greentea_failure_handler),
     Case("Level 2 - Bus Output definable", busout_define_test, TestFramework::greentea_failure_handler),
@@ -110,8 +117,10 @@ Case cases[] = {
     Case("Level 2 - Bus Input/Output range test 2", businout_bidirectional_test, TestFramework::greentea_failure_handler),
 };
 
+
 // Entry point into the tests
-int main() {
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
     return !Harness::run(specification);

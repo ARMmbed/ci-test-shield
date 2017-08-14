@@ -38,14 +38,16 @@ std::vector<unsigned int> TestFramework::pin_iterators(TS_NC);
 // Initialize a test framework object
 TestFramework test_framework;
 
-void test_analogin_execute(PinName pin, float tolerance, int iterations) {
+void test_analogin_execute(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running analog input range test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
     // Find all of the pins in the resistor ladder that are not the current pin, organize them into a bus inout
 	std::vector<PinName> resistor_ladder_pins = TestFramework::find_resistor_ladder_pins(pin);
-	if (resistor_ladder_pins.size() < 5)
+	if (resistor_ladder_pins.size() < 5){
 		TEST_ASSERT_MESSAGE(false, "Error finding the resistor ladder pins");
+    }
     BusInOut outputs(resistor_ladder_pins[0],resistor_ladder_pins[1],resistor_ladder_pins[2],resistor_ladder_pins[3],resistor_ladder_pins[4]);
 	outputs.output();
 
@@ -79,15 +81,20 @@ void test_analogin_execute(PinName pin, float tolerance, int iterations) {
 	}
 }
 
-utest::v1::control_t test_level2_analogin(const size_t call_count) {
+
+utest::v1::control_t test_level2_analogin(const size_t call_count) 
+{
 	return TestFramework::test_level2_framework(TestFramework::AnalogInput, TestFramework::CITS_AnalogInput, &test_analogin_execute, 0.02, 100);
 }
+
 
 Case cases[] = {
 	Case("Level 2 - Analog Input Range test (all pins)", test_level2_analogin, TestFramework::greentea_failure_handler),
 };
 
-int main() {
+
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
     return !Harness::run(specification);

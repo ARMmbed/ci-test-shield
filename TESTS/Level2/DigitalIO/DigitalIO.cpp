@@ -37,11 +37,14 @@ int clocked_dio_toggle;
 // Initialize a test framework object
 TestFramework test_framework;
 
-void dio_toggled(void) {
+void dio_toggled(void) 
+{
 	clocked_dio_toggle = timer.read_us();
 }
 
-void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
+
+void test_digitalio_execute(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running digital io test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
@@ -78,15 +81,20 @@ void test_digitalio_execute(PinName pin, float tolerance, int iterations) {
     }
 }
 
-utest::v1::control_t test_level2_digitalio(const size_t call_count) {
+
+utest::v1::control_t test_level2_digitalio(const size_t call_count) 
+{
 	return TestFramework::test_level2_framework(TestFramework::DigitalIO, TestFramework::CITS_DigitalIO, &test_digitalio_execute, 0.02, 100);
 }
+
 
 Case cases[] = {
 	Case("Level 2 - Digital In/Out Range test (all pins)", test_level2_digitalio, TestFramework::greentea_failure_handler),
 };
 
-int main() {
+
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<30>, cases);
     return !Harness::run(specification);

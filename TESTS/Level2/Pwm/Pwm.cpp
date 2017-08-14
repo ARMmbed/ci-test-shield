@@ -45,20 +45,25 @@ int last_rise_time;
 int duty_count;
 
 // Callback for a PWM rising edge
-void callback_pwm_rise(void) {
+void callback_pwm_rise(void) 
+{
     rise_count++;
     last_rise_time = timer.read_ms();
 }
 
+
 // Callback for a PWM falling edge
-void callback_pwm_fall(void) {
+void callback_pwm_fall(void) 
+{
     fall_count++;
-    if (last_rise_time != 0)
+    if (last_rise_time != 0) {
         duty_count = duty_count + (timer.read_ms() - last_rise_time);
+    }
 }
 
-void test_pwm_execute(PinName pin, float tolerance, int iterations, float dutycycle, int period) {
 
+void test_pwm_execute(PinName pin, float tolerance, int iterations, float dutycycle, int period) 
+{
     // Initialize
     float calculated_percent = iterations * tolerance;
     if (calculated_percent < 1) calculated_percent = 1.0f;
@@ -101,22 +106,24 @@ void test_pwm_execute(PinName pin, float tolerance, int iterations, float dutycy
     TEST_ASSERT_MESSAGE( std::abs(iterations - fc) <= calculated_percent, "There was more than a specific variance in number of fall cycles seen and number expected.");
     // @TODO The following assert is a good check to have (comparing times) but fails on most platforms. Need to come up with a better way to do this test
     // TEST_ASSERT_MESSAGE( std::abs(expectedTime - avgTime) <= calculated_percent,"Greater than a specific variance between expected and measured duty cycle");
-
 }
 
+
 // Test case to just iterate through duty cycles
-void test_pwm_dutycycle(PinName pin, float tolerance, int iterations) {
+void test_pwm_dutycycle(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
     
 	for (float dutycycle=0.05f; dutycycle <= 0.95f; dutycycle+=0.1f) {
 		test_pwm_execute(pin, tolerance, iterations, dutycycle, 10);
 	}
-
 }
 
+
 // Test case to just iterate through the period
-void test_pwm_frequency(PinName pin, float tolerance, int iterations) {
+void test_pwm_frequency(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
@@ -125,8 +132,10 @@ void test_pwm_frequency(PinName pin, float tolerance, int iterations) {
 	}
 }
 
+
 // Test case that combines period and duty cycles
-void test_pwm(PinName pin, float tolerance, int iterations) {
+void test_pwm(PinName pin, float tolerance, int iterations) 
+{
 	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
@@ -137,11 +146,15 @@ void test_pwm(PinName pin, float tolerance, int iterations) {
 	}
 }
 
-utest::v1::control_t test_level2_pwm_frequency(const size_t call_count) {
+
+utest::v1::control_t test_level2_pwm_frequency(const size_t call_count) 
+{
 	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm_frequency, 0.05f, 20);
 }
 
-utest::v1::control_t test_level2_pwm_dutycycle(const size_t call_count) {
+
+utest::v1::control_t test_level2_pwm_dutycycle(const size_t call_count) 
+{
 	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm_dutycycle, 0.05f, 20);
 }
 
@@ -149,13 +162,16 @@ utest::v1::control_t test_level2_pwm(const size_t call_count) {
 	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm, 0.05f, 20);
 }
 
+
 Case cases[] = {
 	Case("Level 2 - PWM Frequency test (all pins)", test_level2_pwm_frequency, TestFramework::greentea_failure_handler),
 	Case("Level 2 - PWM Dutycycle test (all pins)", test_level2_pwm_dutycycle, TestFramework::greentea_failure_handler),
 	Case("Level 2 - PWM all tests (all pins)", test_level2_pwm, TestFramework::greentea_failure_handler),
 };
 
-int main() {
+
+int main() 
+{
 	// Formulate a specification and run the tests based on the Case array
 	Specification specification(TestFramework::test_setup<300>, cases);
     return !Harness::run(specification);
