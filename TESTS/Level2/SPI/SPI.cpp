@@ -51,7 +51,7 @@ utest::v1::control_t test_level2_spi(const size_t call_count)
 	if (TestFramework::find_pin(pin_mosi, TestFramework::SPI_MOSI)==-1 ||
 		TestFramework::find_pin(pin_miso, TestFramework::SPI_MISO)==-1 ||
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
-		TestFramework::find_pin(pin_cs, TestFramework::SPI_CS)==-1) {
+		TestFramework::find_pin(pin_cs, TestFramework::DigitalIO)==-1) {
 		return utest::v1::CaseNext;
 	}
 
