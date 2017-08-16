@@ -51,7 +51,7 @@ utest::v1::control_t test_level1_spi(const size_t call_count)
 	if (TestFramework::find_pin(pin_mosi, TestFramework::SPI_MOSI)==-1 ||
 		TestFramework::find_pin(pin_miso, TestFramework::SPI_MISO)==-1 ||
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
-		TestFramework::find_pin(pin_cs, TestFramework::SPI_CS)==-1) {
+		TestFramework::find_pin(pin_cs, TestFramework::DigitalIO)==-1) {
         TEST_ASSERT_MESSAGE(false,"CI test shield is not properly connected to default SPI pins, or pins are already assigned as greentea's UART pins.");
 	}
 	TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
