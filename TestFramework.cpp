@@ -55,13 +55,6 @@ TestFramework::TestFramework()
 	map_pins(PinMap_SPI_SSEL, SPI_CS);
     #endif  // DEVICE_SPI
 
-    #ifdef DEVICE_SERIAL
-    map_pins(PinMap_UART_TX, DigitalIO);
-    map_pins(PinMap_UART_RX, DigitalIO);
-    map_pins(PinMap_UART_CTS, DigitalIO);
-    map_pins(PinMap_UART_RTS, DigitalIO);
-    #endif  // DEVICE_SERIAL
-
 	pinout[BusIO] = pinout[DigitalIO];
 	setup_cits_pins();
 }
