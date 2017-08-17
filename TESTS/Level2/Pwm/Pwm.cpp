@@ -112,7 +112,7 @@ void test_pwm_execute(PinName pin, float tolerance, int iterations, float dutycy
 // Test case to just iterate through duty cycles
 void test_pwm_dutycycle(PinName pin, float tolerance, int iterations) 
 {
-	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+	DEBUG_PRINTF("Running pwm test on pin %#x\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
     
 	for (float dutycycle=0.05f; dutycycle <= 0.95f; dutycycle+=0.1f) {
@@ -124,7 +124,7 @@ void test_pwm_dutycycle(PinName pin, float tolerance, int iterations)
 // Test case to just iterate through the period
 void test_pwm_frequency(PinName pin, float tolerance, int iterations) 
 {
-	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+	DEBUG_PRINTF("Running pwm test on pin %#x\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
     for (int period=10; period<=200; period+=40) {
@@ -136,7 +136,7 @@ void test_pwm_frequency(PinName pin, float tolerance, int iterations)
 // Test case that combines period and duty cycles
 void test_pwm(PinName pin, float tolerance, int iterations) 
 {
-	DEBUG_PRINTF("Running pwm test on pin %d\n", pin);
+	DEBUG_PRINTF("Running pwm test on pin %#x\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
 	for (float dutycycle=0.2f; dutycycle <= 0.8f; dutycycle+=0.2f) {
@@ -158,6 +158,7 @@ utest::v1::control_t test_level2_pwm_dutycycle(const size_t call_count)
 	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm_dutycycle, 0.05f, 20);
 }
 
+
 utest::v1::control_t test_level2_pwm(const size_t call_count) {
 	return TestFramework::test_level2_framework(TestFramework::PWM, TestFramework::CITS_PWM, &test_pwm, 0.05f, 20);
 }
@@ -173,6 +174,6 @@ Case cases[] = {
 int main() 
 {
 	// Formulate a specification and run the tests based on the Case array
-	Specification specification(TestFramework::test_setup<300>, cases);
+	Specification specification(TestFramework::test_setup<360>, cases);
     return !Harness::run(specification);
 }
