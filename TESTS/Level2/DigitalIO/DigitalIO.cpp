@@ -45,7 +45,7 @@ void dio_toggled(void)
 
 void test_digitalio_execute(PinName pin, float tolerance, int iterations) 
 {
-	DEBUG_PRINTF("Running digital io test on pin %d\n", pin);
+	DEBUG_PRINTF("Running digital io test on pin %#x\n", pin);
     TEST_ASSERT_MESSAGE(pin != NC, "Pin is NC");
 
     PinName pinpair = TestFramework::find_pin_pair(pin);

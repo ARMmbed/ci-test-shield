@@ -29,7 +29,7 @@ TestFramework::TestFramework()
 
     #ifdef DEVICE_ANALOGOUT
     map_pins(PinMap_DAC, AnalogOutput);
-  	// map_pins(PinMap_DAC, DigitalIO); grabbing pin number from PeripheralPins.c, instead of the pin translation from mbed_app.json
+  	// map_pins(PinMap_DAC, DigitalIO); grabbing pin number defined in PinNames.c, instead of the intended pin translation from mbed_app.json
     #endif  // DEVICE_ANALOGOUT
 
     #ifdef DEVICE_I2C
@@ -54,6 +54,13 @@ TestFramework::TestFramework()
 	map_pins(PinMap_SPI_MISO, SPI_MISO);
 	map_pins(PinMap_SPI_SSEL, SPI_CS);
     #endif  // DEVICE_SPI
+
+    #ifdef DEVICE_SERIAL
+    map_pins(PinMap_UART_TX, DigitalIO);
+    map_pins(PinMap_UART_RX, DigitalIO);
+    map_pins(PinMap_UART_CTS, DigitalIO);
+    map_pins(PinMap_UART_RTS, DigitalIO);
+    #endif  // DEVICE_SERIAL
 
 	pinout[BusIO] = pinout[DigitalIO];
 	setup_cits_pins();
@@ -351,9 +358,9 @@ utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type tes
 {
 	// Get current pin specified by the stored iterator
 	PinName pin = pinout[pintype][pin_iterators[pintype]].pin;
-	// Check to see if that current pin is available on the CI test shield
+    // Check to see if that current pin is available on the CI test shield
 	int index = find_pin(pin, testtype);
-	// Tag is used to identify if a test case had been executed (true) or not (false)
+    // Tag is used to identify if a test case had been executed (true) or not (false)
 	bool tag = false;
 	// State: Execute
 	if (index != -1) {
@@ -366,10 +373,9 @@ utest::v1::control_t TestFramework::test_level2_framework(Type pintype, Type tes
 		// State: Increment iterator
 		pin_iterators[pintype]++;
 		pin = pinout[pintype][pin_iterators[pintype]].pin;
-		// Check to see if the current pin is available on the CI test shield
+        // Check to see if the current pin is available on the CI test shield
 		index = find_pin(pin, testtype);
-
-		if (index != -1) {
+        if (index != -1) {
 			// State: End case
 			// Pin was found, but execution had already occurred so queue up another test case
 			if (tag) {
