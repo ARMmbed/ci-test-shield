@@ -52,21 +52,20 @@ utest::v1::control_t test_level2_spi(const size_t call_count)
 		TestFramework::find_pin(pin_miso, TestFramework::SPI_MISO)==-1 ||
 		TestFramework::find_pin(pin_clk, TestFramework::SPI_CLK)==-1 ||
 		TestFramework::find_pin(pin_cs, TestFramework::DigitalIO)==-1) {
-		return utest::v1::CaseNext;
+		TEST_ASSERT_MESSAGE(false,"CI test shield is not properly connected to default SPI pins, or pins are already assigned as greentea's UART pins.");
 	}
-
-	DEBUG_PRINTF("Running SPI constructor on CLK pin %d, MISO pin %d, MOSI pin %d, and CS pin %d\n", pin_clk, pin_miso, pin_mosi, pin_cs);
     TEST_ASSERT_MESSAGE(pin_clk != NC, "SPI CLK pin is NC");
     TEST_ASSERT_MESSAGE(pin_mosi != NC, "SPI MOSI Pin is NC");
     TEST_ASSERT_MESSAGE(pin_miso != NC, "SPI MISO Pin is NC");
     TEST_ASSERT_MESSAGE(pin_cs != NC, "SPI CS Pin is NC");
 
     // Get a random seed from the Greentea host test
-    srand(TestFramework::get_seed());
+    // srand(TestFramework::get_seed()); TODO: not working properly.
 
     // Initialize the SD card and file system residing on the SD card
-    int error = 0; 
+    DEBUG_PRINTF("Running SPI constructor on CLK pin %#x, MISO pin %#x, MOSI pin %#x, and CS pin %#x\n", pin_clk, pin_miso, pin_mosi, pin_cs);
     SDBlockDevice sd(pin_mosi, pin_miso, pin_clk, pin_cs);
+    int error = 0; 
     FATFileSystem fs("sd");
     sd.init();
     error = fs.mount(&sd);
@@ -115,9 +114,9 @@ utest::v1::control_t test_level2_spi(const size_t call_count)
 
 
 Case cases[] = {
-	Case("Level 2 - SPI test - 1 byte (all pin sets)", test_level2_spi<1>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - SPI test - 10 byte (all pin sets)", test_level2_spi<10>, TestFramework::greentea_failure_handler),
-	Case("Level 2 - SPI test - 100 byte (all pin sets)", test_level2_spi<100>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 1 byte of random data to random file name", test_level2_spi<1>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 10 byte of random data to random file name", test_level2_spi<10>, TestFramework::greentea_failure_handler),
+	Case("Level 2 - SPI test - 100 byte of random data to random file name", test_level2_spi<100>, TestFramework::greentea_failure_handler),
 };
 
 
