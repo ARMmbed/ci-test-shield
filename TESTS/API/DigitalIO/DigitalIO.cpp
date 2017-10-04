@@ -23,7 +23,7 @@
 using namespace utest::v1;
 
 // Template to test paired Digital IO pins, meant to be re-used multiple times
-template <PinName dout_pin, PinName din_pin> 
+template <PinName dout_pin, PinName din_pin>
 void DigitalIO_Test()
 {
     DigitalOut dout(dout_pin);
@@ -34,6 +34,10 @@ void DigitalIO_Test()
     // test 1
     dout = 1;
     TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
+    // test 2
+    // Test = operator in addition to the .read() function
+    dout = 0;
+    TEST_ASSERT_MESSAGE(0 == din,"Expected value to be 0, read value was not zero");
 }
 
 utest::v1::status_t test_setup(const size_t number_of_cases) {
