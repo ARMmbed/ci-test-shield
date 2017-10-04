@@ -37,8 +37,8 @@ using namespace utest::v1;
 
 #define TEST_STRING_MAX 128
 
-Thread Thread_I2C;                        // thread used in multithread tests
-Thread Thread_SPI;                        // thread used in multithread tests
+Thread Thread_I2C(osPriorityNormal, OS_STACK_SIZE/2);  // thread used in multithread tests
+Thread Thread_SPI(osPriorityNormal, OS_STACK_SIZE/2);  // thread used in multithread tests
 osThreadId Multi_Thread_ID;               // thread id for main function controlling multithread tests
 char Test_String[TEST_STRING_MAX] = {0};  // reference string used in testing
 
