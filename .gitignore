@@ -1,3 +1,9 @@
+I2CEeprom
+LM75B
+mbed-os
+SDDriver
+
+
 # Ignore list for Eagle, a PCB layout tool
 
 # Backup files
