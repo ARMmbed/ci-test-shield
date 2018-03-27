@@ -65,6 +65,9 @@ void test_card_present()
     sd.init();
 
     error = fs.mount(&sd);
+    if(error)
+        error = fs.reformat(&sd);
+
     TEST_ASSERT_MESSAGE(error==0,"SD file system mount failed.");
 	
     FILE *File = fopen("/sd/card-present.txt", "w+");
