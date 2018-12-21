@@ -41,11 +41,27 @@ void init_string(char* buffer, int len)
 }
 
 // a test to see if the temperature can be read. A I2C failure returns a 0
+// This test uses the complete I2C read transaction API
 template<PinName sda, PinName scl, int expected_temperature, int delta_in_temperature>
-void test_lm75b()
+void test_lm75b_CT()
 {
     LM75B  temperature(sda, scl);
-    float temp = temperature.temp();
+    float temp = temperature.temp_CT();
+    DEBUG_PRINTF("\r\n****\r\nTEST LM75B : Temperature Read = `%f`\r\n****\r\n",temp);
+    TEST_ASSERT_MESSAGE(0 != temperature.open(),"Failed to open sensor");
+    //TEST_ASSERT_MESSAGE(NULL != temperature.temp(),"Invalid value NULL returned");
+    // TEST_ASSERT_MESSAGE(50 > temperature.temp(),"Its too Hot (>10C), Faulty Sensor?");
+    // TEST_ASSERT_MESSAGE(0 < temperature.temp(),"Its Too Cold (<0C), Faulty Sensor?");
+    TEST_ASSERT_FLOAT_WITHIN_MESSAGE(delta_in_temperature, expected_temperature, temp,"Temperature is not within specified range");
+}
+
+// a test to see if the temperature can be read. A I2C failure returns a 0
+// This test uses the single byte I2C read transaction API
+template<PinName sda, PinName scl, int expected_temperature, int delta_in_temperature>
+void test_lm75b_BT()
+{
+    LM75B  temperature(sda, scl);
+    float temp = temperature.temp_BT();
     DEBUG_PRINTF("\r\n****\r\nTEST LM75B : Temperature Read = `%f`\r\n****\r\n",temp);
     TEST_ASSERT_MESSAGE(0 != temperature.open(),"Failed to open sensor");
     //TEST_ASSERT_MESSAGE(NULL != temperature.temp(),"Invalid value NULL returned");
@@ -123,7 +139,8 @@ utest::v1::status_t greentea_failure_handler(const Case *const source, const fai
 // Test cases
 Case cases[] = {
     Case("I2C -  Instantiation of I2C Object",test_object<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL>,greentea_failure_handler),
-    Case("I2C -  LM75B Temperature Read",test_lm75b<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
+    Case("I2C -  LM75B Temperature Read Complete Transactions",test_lm75b_CT<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
+    Case("I2C -  LM75B Temperature Read Byte Transactions",test_lm75b_BT<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,25,20>,greentea_failure_handler),
     Case("I2C -  EEProm WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
     Case("I2C -  EEProm 2nd WR Single Byte",single_byte_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,1>,greentea_failure_handler),
     Case("I2C -  EEProm WR 2 Bytes",flash_WR<MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,2,5>,greentea_failure_handler),

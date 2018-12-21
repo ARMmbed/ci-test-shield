@@ -16,6 +16,9 @@
 
 #include "LM75B.h"
 
+#define ACK  1
+#define NACK 0
+
 LM75B::LM75B(PinName sda, PinName scl, Address addr, int hz) : m_I2C(sda, scl), m_ADDR((int)addr)
 {
     //Set the I2C bus frequency
@@ -151,10 +154,16 @@ void LM75B::osFaultQueue(OSFaultQueue queue)
     write8(REG_CONF, value);
 }
 
-float LM75B::alertTemp()
+float LM75B::alertTemp_CT()
 {
     //Use the 9-bit helper to read the TOS register
-    return readAlertTempHelper(REG_TOS);
+    return readAlertTempHelper_CT(REG_TOS);
+}
+
+float LM75B::alertTemp_BT()
+{
+    //Use the 9-bit helper to read the TOS register
+    return readAlertTempHelper_BT(REG_TOS);
 }
 
 void LM75B::alertTemp(float temp)
@@ -163,10 +172,16 @@ void LM75B::alertTemp(float temp)
     return writeAlertTempHelper(REG_TOS, temp);
 }
 
-float LM75B::alertHyst()
+float LM75B::alertHyst_CT()
 {
     //Use the 9-bit helper to read the THYST register
-    return readAlertTempHelper(REG_THYST);
+    return readAlertTempHelper_CT(REG_THYST);
+}
+
+float LM75B::alertHyst_BT()
+{
+    //Use the 9-bit helper to read the THYST register
+    return readAlertTempHelper_BT(REG_THYST);
 }
 
 void LM75B::alertHyst(float temp)
@@ -175,13 +190,29 @@ void LM75B::alertHyst(float temp)
     return writeAlertTempHelper(REG_THYST, temp);
 }
 
-float LM75B::temp()
+float LM75B::temp_CT()
 {
     //Signed return value
     short value;
 
     //Read the 11-bit raw temperature value
-    value = read16(REG_TEMP) >> 5;
+    value = read16_CT(REG_TEMP) >> 5;
+
+    //Sign extend negative numbers
+    if (value & (1 << 10))
+        value |= 0xFC00;
+
+    //Return the temperature in °C
+    return value * 0.125;
+}
+
+float LM75B::temp_BT()
+{
+    //Signed return value
+    short value;
+
+    //Read the 11-bit raw temperature value
+    value = read16_BT(REG_TEMP) >> 5;
 
     //Sign extend negative numbers
     if (value & (1 << 10))
@@ -224,16 +255,39 @@ void LM75B::write8(char reg, char data)
     m_I2C.write(m_ADDR, buff, 2);
 }
 
-unsigned short LM75B::read16(char reg)
+unsigned short LM75B::read16_CT(char reg)
 {
     //Create a temporary buffer
     char buff[2];
+    int response;
 
     //Select the register
     m_I2C.write(m_ADDR, &reg, 1, true);
 
     //Read the 16-bit register
     m_I2C.read(m_ADDR, buff, 2);
+
+    //Return the combined 16-bit value
+    return (buff[0] << 8) | buff[1];
+}
+
+unsigned short LM75B::read16_BT(char reg)
+{
+    //Create a temporary buffer
+    char buff[2];
+    int response;
+
+    //Select the register
+    m_I2C.start();
+    response = m_I2C.write(m_ADDR);
+    response = m_I2C.write(reg);
+
+    //Read the 16-bit register
+    m_I2C.start();
+    response = m_I2C.write(m_ADDR | 1);
+    buff[0] = m_I2C.read(ACK);
+    buff[1] = m_I2C.read(NACK);
+    m_I2C.stop();
 
     //Return the combined 16-bit value
     return (buff[0] << 8) | buff[1];
@@ -253,13 +307,29 @@ void LM75B::write16(char reg, unsigned short data)
     m_I2C.write(m_ADDR, buff, 3);
 }
 
-float LM75B::readAlertTempHelper(char reg)
+float LM75B::readAlertTempHelper_CT(char reg)
 {
     //Signed return value
     short value;
 
     //Read the 9-bit raw temperature value
-    value = read16(reg) >> 7;
+    value = read16_CT(reg) >> 7;
+
+    //Sign extend negative numbers
+    if (value & (1 << 8))
+        value |= 0xFF00;
+
+    //Return the temperature in °C
+    return value * 0.5;
+}
+
+float LM75B::readAlertTempHelper_BT(char reg)
+{
+    //Signed return value
+    short value;
+
+    //Read the 9-bit raw temperature value
+    value = read16_BT(reg) >> 7;
 
     //Sign extend negative numbers
     if (value & (1 << 8))

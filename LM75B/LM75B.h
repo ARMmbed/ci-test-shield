@@ -161,10 +161,18 @@ public:
     void osFaultQueue(OSFaultQueue queue);
 
     /** Get the current alert temperature threshold of the LM75B
+     *  using the complete I2C read transaction API
      *
      * @returns The current alert temperature threshold in °C.
      */
-    float alertTemp();
+    float alertTemp_CT();
+    
+    /** Get the current alert temperature threshold of the LM75B
+     *  using the single byte I2C read transaction API
+     *
+     * @returns The current alert temperature threshold in °C.
+     */
+    float alertTemp_BT();
 
     /** Set the alert temperature threshold of the LM75B
      *
@@ -173,10 +181,18 @@ public:
     void alertTemp(float temp);
 
     /** Get the current alert temperature hysteresis threshold of the LM75B
+     *  using the complete I2C read transaction API
      *
      * @returns The current alert temperature hysteresis threshold in °C.
      */
-    float alertHyst();
+    float alertHyst_CT();
+    
+    /** Get the current alert temperature hysteresis threshold of the LM75B
+     *  using the single byte I2C read transaction API
+     *
+     * @returns The current alert temperature hysteresis threshold in °C.
+     */
+    float alertHyst_BT();
 
     /** Set the alert temperature hysteresis threshold of the LM75B
      *
@@ -185,10 +201,18 @@ public:
     void alertHyst(float temp);
 
     /** Get the current temperature measurement of the LM75B
+     *  using the complete I2C read transaction API
      *
      * @returns The current temperature measurement in °C.
      */
-    float temp();
+    float temp_CT();
+    
+    /** Get the current temperature measurement of the LM75B
+     *  using the single byte I2C read transaction API
+     *
+     * @returns The current temperature measurement in °C.
+     */
+    float temp_BT();
 
 #ifdef MBED_OPERATORS
     /** A shorthand for temp()
@@ -214,9 +238,11 @@ private:
     //Internal functions
     char read8(char reg);
     void write8(char reg, char data);
-    unsigned short read16(char reg);
+    unsigned short read16_CT(char reg);
+    unsigned short read16_BT(char reg);
     void write16(char reg, unsigned short data);
-    float readAlertTempHelper(char reg);
+    float readAlertTempHelper_CT(char reg);
+    float readAlertTempHelper_BT(char reg);
     void writeAlertTempHelper(char reg, float temp);
 };
 
