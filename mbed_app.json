@@ -35,6 +35,13 @@
         "DEBUG_MSG": 0
     },
     "target_overrides": {
+        "*":{
+            "target.components_add" : ["SD"],
+            "sd.SPI_MOSI"           : "MBED_CONF_APP_SPI_MOSI",
+            "sd.SPI_MISO"           : "MBED_CONF_APP_SPI_MISO",
+            "sd.SPI_CLK"            : "MBED_CONF_APP_SPI_CLK",
+            "sd.SPI_CS"             : "MBED_CONF_APP_SPI_CS"
+        },
         "NUCLEO_F070RB": {
             "PWM_0": "D4",
             "PWM_2": "D5"
