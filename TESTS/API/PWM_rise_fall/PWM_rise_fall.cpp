@@ -35,7 +35,7 @@ volatile int duty_rise_count;
 
 void duty_cbfn_rise(void){
   duty_rise_count++;
-  last_rise_time = duty_timer.read_ms();
+  last_rise_time = duty_timer.read_us();
 }
 
 volatile int duty_running_count;
@@ -47,7 +47,7 @@ void duty_cbfn_fall(void){
       // do nothing
   } 
   else{
-    duty_running_count = duty_running_count + (duty_timer.read_ms() - last_rise_time);
+    duty_running_count = duty_running_count + (duty_timer.read_us() - last_rise_time);
   }
 }
 
@@ -73,7 +73,7 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
   iin.disable_irq(); // This is here because otherwise it fails on some platforms
   duty_timer.stop();
 
-  float avgTime = (float)duty_running_count / NUM_TESTS;
+  float avgTime = (float)duty_running_count / (NUM_TESTS * 1000);
   float expectedTime = (float)period_in_ms * duty_cycle_percent;
 
   DEBUG_PRINTF("\r\n rise_count = %d, fall count = %d, TotalTime = %d, avgTime = %f, expected time = %f ",duty_rise_count,duty_fall_count,duty_running_count,avgTime, expectedTime);
