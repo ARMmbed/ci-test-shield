@@ -30,13 +30,16 @@ void DigitalIO_Test()
     DigitalIn din(din_pin);
     // test 0
     dout = 0;
+    wait_ns(100);
     TEST_ASSERT_MESSAGE(0 == din.read(),"Expected value to be 0, read value was not zero");
     // test 1
     dout = 1;
+    wait_ns(100);
     TEST_ASSERT_MESSAGE(1 == din.read(),"Expected value to be 1, read value was not one");
     // test 2
     // Test = operator in addition to the .read() function
     dout = 0;
+    wait_ns(100);
     TEST_ASSERT_MESSAGE(0 == din,"Expected value to be 0, read value was not zero");
 }
 
