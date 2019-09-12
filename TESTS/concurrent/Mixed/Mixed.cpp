@@ -149,8 +149,10 @@ void test_GPIO()
     for(int iter = 0; iter<5; iter++) { 
         // DigitalIO test
         d_out = 0;  // test 0
+        wait_ns(100);
         TEST_ASSERT_MESSAGE(0 == d_in.read(),"Expected value to be 0, read value was not zero");
         d_out = 1;  // test 1
+        wait_ns(100);
         TEST_ASSERT_MESSAGE(1 == d_in.read(),"Expected value to be 1, read value was not one");
 
         // AnalogIn test
@@ -240,8 +242,10 @@ void test_single_thread()
 
         // DigitalIO test
         d_out = 0;  // test 0
+        wait_ns(100);
         TEST_ASSERT_MESSAGE(0 == d_in.read(),"Expected value to be 0, read value was not zero");
         d_out = 1;  // test 1
+        wait_ns(100);
         TEST_ASSERT_MESSAGE(1 == d_in.read(),"Expected value to be 1, read value was not one");
 
         // AnalogIn test
