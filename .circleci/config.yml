@@ -1,0 +1,21 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: mbedos/mbed-os-env:stable
+    working_directory: ~
+    steps:
+      - checkout:
+          path: ci-test-shield
+      - run: |
+          cd ci-test-shield
+          git clone https://github.com/ARMmbed/mbed-os.git
+          rm mbed-os.lib
+          mbed deploy -v
+          mbed test --compile -t GCC_ARM -m K64F -n tests-*
+          mbed test --compile -t GCC_ARM -m NUCLEO_F429ZI -n tests-*
+
