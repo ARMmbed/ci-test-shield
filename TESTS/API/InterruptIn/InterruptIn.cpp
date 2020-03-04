@@ -50,7 +50,7 @@ void InterruptInTest()
     result = false;
     intin.rise(cbfn);
     dout = 1;
-    wait(0); // dummy wait to get volatile result value
+    thread_sleep_for(0); // dummy wait to get volatile result value
     DEBUG_PRINTF("Value of result is : %d\n",result);
     TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on rising edge of pin");
 
@@ -60,7 +60,7 @@ void InterruptInTest()
     result = false;
     intin.fall(cbfn);
     dout = 0;
-    wait(0); // dummy wait to get volatile result value
+    thread_sleep_for(0); // dummy wait to get volatile result value
     DEBUG_PRINTF("Value of result is : %d\n",result);
     TEST_ASSERT_MESSAGE(result,"cbfn was not triggered on falling edge of pin");
 }

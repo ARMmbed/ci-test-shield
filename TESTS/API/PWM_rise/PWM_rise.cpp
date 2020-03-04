@@ -47,7 +47,7 @@ void PWM_Period_Test(){
   
   //Start Testing
   pwm.write(0.5f); // 50% duty cycle
-  wait_ms(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
+  thread_sleep_for(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
   iin.disable_irq(); // This is here because otherwise it fails on some platforms
   int rc = rise_count; // grab the numbers to work with as the pwm may continue going
 
