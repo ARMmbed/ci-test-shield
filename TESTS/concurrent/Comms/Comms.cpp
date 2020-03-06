@@ -31,11 +31,13 @@
 #include "ci_test_config.h"
 #include "FATFileSystem.h"
 #include "SDBlockDevice.h"
-#include <I2CEeprom.h>
+#include <I2CEEBlockDevice.h>
 
 using namespace utest::v1;
 
 #define TEST_STRING_MAX 128
+#define TEST_BLOCK_SIZE 32
+#define TEST_SIZE       TEST_BLOCK_SIZE * 500
 
 Thread Thread_I2C(osPriorityNormal, OS_STACK_SIZE/2);  // thread used in multithread tests
 Thread Thread_SPI(osPriorityNormal, OS_STACK_SIZE/2);  // thread used in multithread tests
@@ -62,13 +64,13 @@ void test_I2C()
     int num_read = 0;                                  // will report number of bytes read
     int num_written = 0;                               // will report number of bytes written
     volatile char read_string[TEST_STRING_MAX] = {0};  // string that will be updated from reading EEPROM
-    I2CEeprom memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+    I2CEEBlockDevice memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,TEST_SIZE);
 
     // write to EEPROM
-    num_written = memory.write(address,Test_String,TEST_STRING_MAX);
+    num_written = memory.program((const void *)Test_String,address,TEST_STRING_MAX);
 
     // read back from EEPROM
-    num_read = memory.read(address,(char *)read_string,TEST_STRING_MAX);
+    num_read = memory.read((void *)read_string,address,TEST_STRING_MAX);
 
     // test for equality
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Test_String,(char *)read_string,"String read does not match the string written"); // test that strings match
@@ -138,7 +140,7 @@ void test_single_thread()
     int num_read = 0;                                     // will report number of bytes read
     int num_written = 0;                                  // will report number of bytes written
     volatile char read_string_i2c[TEST_STRING_MAX] = {0}; // string that will be updated from reading EEPROM
-    I2CEeprom memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+    I2CEEBlockDevice memory(MBED_CONF_APP_I2C_SDA,MBED_CONF_APP_I2C_SCL,MBED_CONF_APP_I2C_EEPROM_ADDR,TEST_SIZE);
 
     // SPI test initializations
     volatile char read_string_spi[TEST_STRING_MAX] = {0}; // string that will be updated from reading SD card
@@ -153,7 +155,7 @@ void test_single_thread()
     // Begin concurrent API testing
     // ******************************
     // write to EEPROM using I2C
-    num_written = memory.write(address,Test_String,TEST_STRING_MAX);
+    num_written = memory.program((const void *)Test_String,address,TEST_STRING_MAX);
 
     // write to SD card using SPI
     int error = fprintf(File, Test_String);                           // write data
@@ -161,7 +163,7 @@ void test_single_thread()
     fclose(File);                                                     // close file on SD
 
     // read back from EEPROM
-    num_read = memory.read(address,(char *)read_string_i2c,TEST_STRING_MAX);
+    num_read = memory.read((void *)read_string_i2c,address,TEST_STRING_MAX);
 
     // read data from SD card
     File = fopen("/sd/test_sd_w.txt", "r");                   

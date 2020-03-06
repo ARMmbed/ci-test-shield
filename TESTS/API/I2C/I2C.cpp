@@ -23,11 +23,14 @@
 #include "greentea-client/test_env.h"
 #include "unity.h"
 #include "utest.h"
-#include "LM75B.h"
-#include <I2CEeprom.h>
+#include "lm75b.h"
+#include <I2CEEBlockDevice.h>
 #include "ci_test_config.h"
 
 using namespace utest::v1;
+
+#define TEST_BLOCK_SIZE 32
+#define TEST_SIZE       TEST_BLOCK_SIZE * 500
 
 // Fill array with random characters
 void init_string(char* buffer, int len)
@@ -58,7 +61,7 @@ void test_lm75b()
 template<PinName sda, PinName scl,int size_of_data, int address>
 void flash_WR()
 {
-    I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+    I2CEEBlockDevice memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,TEST_SIZE);
     int num_read = 0;
     int num_written = 0;
     volatile char test_string[size_of_data] = {0};
@@ -69,8 +72,8 @@ void flash_WR()
     }
     DEBUG_PRINTF("\r\n****\r\n Test String = `%s` \r\n****\r\n",test_string);
 
-    num_written = memory.write(address,(char *)test_string,size_of_data);
-    num_read = memory.read(address,(char *)read_string,size_of_data);
+    num_written = memory.program((const void *)test_string, address, size_of_data);
+    num_read = memory.read((void *)read_string, address, size_of_data);
 
     TEST_ASSERT_MESSAGE(strcmp((char *)test_string,(char *)read_string) == 0,"String Written != String Read");
     TEST_ASSERT_MESSAGE(strcmp((char *)read_string,(char *)test_string) == 0,"String Written != String Read");
@@ -85,13 +88,13 @@ void flash_WR()
 template<PinName sda, PinName scl, int address>
 void single_byte_WR()
 {
-    I2CEeprom memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,32,0);
+    I2CEEBlockDevice memory(sda,scl,MBED_CONF_APP_I2C_EEPROM_ADDR,TEST_SIZE);
     char test = 'A' + rand()%26;
     char read;
     int r = 0;
     int w = 0;
-    w = memory.write(address,test);
-    r = memory.read(address,read);
+    w = memory.program((const void *)&test, address, sizeof(test));
+    r = memory.read((void *)&read, address, sizeof(test));
     DEBUG_PRINTF("\r\n****\r\n Num Bytes Read = %d \r\n Num Bytes Written = %d \r\n Read byte = `%c` \r\n Written Byte = `%c` \r\n****\r\n",r,w,read,test);
 
     TEST_ASSERT_EQUAL_MESSAGE(test,read,"Character Read does not equal character written!");
