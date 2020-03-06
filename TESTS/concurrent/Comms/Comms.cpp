@@ -114,7 +114,7 @@ void test_SPI()
 // test I2C and SPI APIs concurrently in multiple threads
 void test_multiple_threads()
 {
-    Multi_Thread_ID = Thread::gettid();                               // update thread id for this thread
+    Multi_Thread_ID = ThisThread::get_id();                               // update thread id for this thread
     Thread_I2C.start(callback(test_I2C));                             // kick off threads
     Thread_SPI.start(callback(test_SPI));                             // kick off threads
     wait(0.1);                                                        // allow time for debug print statements to complete.
