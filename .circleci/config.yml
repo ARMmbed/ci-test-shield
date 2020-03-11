@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  prepare:
     docker:
       - image: mbedos/mbed-os-env:stable
     working_directory: ~
@@ -15,7 +15,40 @@ jobs:
           cd ci-test-shield
           git clone https://github.com/ARMmbed/mbed-os.git
           rm mbed-os.lib
-          mbed deploy -v
-          mbed test --compile -t GCC_ARM -m K64F -n tests-*
-          mbed test --compile -t GCC_ARM -m NUCLEO_F429ZI -n tests-*
+          mbed deploy
+          pwd
+      - persist_to_workspace:
+          root: /root/project
+          paths: ci-test-shield
+  build_k64f:
+    docker:
+      - image: mbedos/mbed-os-env:stable
+    working_directory: ~
+    steps:
+      - attach_workspace:
+         at: /root/project
+      - run: |
+         cd ci-test-shield
+         mbed test --compile -t GCC_ARM -m K64F -n tests-*
+  build_nucleo_f429zi:
+    docker:
+      - image: mbedos/mbed-os-env:stable
+    working_directory: ~
+    steps:
+      - attach_workspace:
+         at: /root/project
+      - run: |
+         cd ci-test-shield
+         mbed test --compile -t GCC_ARM -m K64F -n tests-*
 
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - prepare
+    - build_k64f:
+        requires:
+          - prepare
+    - build_nucleo_f429zi:
+        requires:
+          - prepare
