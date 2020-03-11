@@ -57,9 +57,9 @@ void businout_define_test(){
         x = (x<<1) +1;
         bio1.output();
         bio1 = x;
-        wait(1);
+        thread_sleep_for(1000);
         bio2.input();
-        wait(1);
+        thread_sleep_for(1000);
         volatile int y = bio2.read();
         DEBUG_PRINTF("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
         TEST_ASSERT_MESSAGE(y == x,"Value read on bus does not equal value written. ");
@@ -70,9 +70,9 @@ void businout_define_test(){
         x = (x<<1) +1;
         bio2.output();
         bio2 = x;
-        wait(1);
+        thread_sleep_for(1000);
         bio1.input();
-        wait(1);
+        thread_sleep_for(1000);
         volatile int y = bio1.read();
         DEBUG_PRINTF("\r\n*********\r\nvalue of x,bio is: 0x%x, 0x%x\r\n********\r\n",x,y);
         TEST_ASSERT_MESSAGE(y == x,"Value read on bus does not equal value written. ");

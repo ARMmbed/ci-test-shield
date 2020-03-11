@@ -69,7 +69,7 @@ void PWM_Duty_slave(PinName pwm_out_pin, PinName int_in_pin, int period_in_ms, f
   pwm.period((float)period_in_ms / 1000); // set PWM period
   duty_timer.start();
   pwm.write(duty_cycle_percent); // set duty cycle
-  wait_ms(NUM_TESTS*period_in_ms);
+  thread_sleep_for(NUM_TESTS*period_in_ms);
   iin.disable_irq(); // This is here because otherwise it fails on some platforms
   duty_timer.stop();
 
@@ -130,7 +130,7 @@ void PWM_Period_Test(){
   
   //Start Testing
   pwm.write(0.5f); // 50% duty cycle
-  wait_ms(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
+  thread_sleep_for(num_tests * period_in_miliseconds); // wait for pwm to run and counts to add up
   iin.disable_irq(); // This is here because otherwise it fails on some platforms
   int rc = rise_count; // grab the numbers to work with as the pwm may continue going
   int fc = fall_count;

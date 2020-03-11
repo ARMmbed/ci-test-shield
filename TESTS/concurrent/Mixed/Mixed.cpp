@@ -168,7 +168,7 @@ void test_GPIO()
         int_out = 0;
         int_in.rise(cbfn);
         int_out = 1;
-        wait(0); // dummy wait to get volatile result value
+        thread_sleep_for(0); // dummy wait to get volatile result value
         TEST_ASSERT_MESSAGE(GPIO_Result,"cbfn was not triggered on rising edge of pin");
 
         // Falling Edge InterruptIn test
@@ -176,7 +176,7 @@ void test_GPIO()
         int_out = 1;
         int_in.fall(cbfn);
         int_out = 0;
-        wait(0); // dummy wait to get volatile result value
+        thread_sleep_for(0); // dummy wait to get volatile result value
         TEST_ASSERT_MESSAGE(GPIO_Result,"cbfn was not triggered on falling edge of pin");
     }
     osSignalSet(Multi_Thread_ID, 0x4);                                // signal completion of thread
@@ -191,7 +191,7 @@ void test_multiple_threads()
     Thread_I2C.start(callback(test_I2C));                             // kick off threads
     Thread_SPI.start(callback(test_SPI));                             // kick off threads
     Thread_GPIO.start(callback(test_GPIO));                           // kick off threads
-    wait(0.1);                                                        // allow time for debug print statements to complete.
+    thread_sleep_for(100);                                                        // allow time for debug print statements to complete.
 
     // Use this to wait for both signaling events to occur
     // Internaly the code is doing something like this:
@@ -261,7 +261,7 @@ void test_single_thread()
         int_out = 0;
         int_in.rise(cbfn);
         int_out = 1;
-        wait(0); // dummy wait to get volatile result value
+        thread_sleep_for(0); // dummy wait to get volatile result value
         TEST_ASSERT_MESSAGE(GPIO_Result,"cbfn was not triggered on rising edge of pin");
 
         // Falling Edge InterruptIn test
@@ -269,7 +269,7 @@ void test_single_thread()
         int_out = 1;
         int_in.fall(cbfn);
         int_out = 0;
-        wait(0); // dummy wait to get volatile result value
+        thread_sleep_for(0); // dummy wait to get volatile result value
         TEST_ASSERT_MESSAGE(GPIO_Result,"cbfn was not triggered on falling edge of pin");
 
         // Write to EEPROM using I2C

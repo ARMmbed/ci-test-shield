@@ -119,7 +119,7 @@ void test_multiple_threads()
     Multi_Thread_ID = ThisThread::get_id();                               // update thread id for this thread
     Thread_I2C.start(callback(test_I2C));                             // kick off threads
     Thread_SPI.start(callback(test_SPI));                             // kick off threads
-    wait(0.1);                                                        // allow time for debug print statements to complete.
+    thread_sleep_for(100);                                                        // allow time for debug print statements to complete.
 
     // Use this to wait for both signaling events to occur
     // Internaly the code is doing something like this:
