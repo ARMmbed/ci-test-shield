@@ -37,16 +37,14 @@ void AnalogInput_Test()
     int x = 0;
     int y= 0;
     outputs = 0;
-    float prev_value = 0;
+    unsigned short prev_value = 0;
     for(x = 0; x<5; x++) {
-        DEBUG_PRINTF("X=%d\n",x);
-        prev_value = ain.read();
+        prev_value = ain.read_u16();
         y = (y<<1) + 1;
         outputs = y;
-        DEBUG_PRINTF("outputs=0x%x\nprevValue=%f\nain=%f\n\n",y,prev_value,ain.read());
-        TEST_ASSERT_MESSAGE(ain.read() > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
+        DEBUG_PRINTF("X=%d outputs=0x%x prevValue=%u ain=%u\n", x, y, prev_value, ain.read_u16());
+        TEST_ASSERT_MESSAGE(ain.read_u16() > prev_value,"Analog Input did not increment. Check that you have assigned valid pins in mbed_app.json file")
     }
-    DEBUG_PRINTF("Finished the Test\n");
     TEST_ASSERT(true);
 }
 
