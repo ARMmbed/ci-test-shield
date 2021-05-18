@@ -34,13 +34,53 @@ void cbfn_rise(void){
   rise_count++;
 }
 
+PinName PWM_IN(PinName pwm_out_pin)
+{
+    switch ( pwm_out_pin ) {
+        case MBED_CONF_APP_DIO_0:
+            return MBED_CONF_APP_DIO_1;
+            break;
+        case MBED_CONF_APP_DIO_1:
+            return MBED_CONF_APP_DIO_0;
+            break;
+        case MBED_CONF_APP_DIO_2:
+            return MBED_CONF_APP_DIO_3;
+            break;
+        case MBED_CONF_APP_DIO_3:
+            return MBED_CONF_APP_DIO_2;
+            break;
+        case MBED_CONF_APP_DIO_4:
+            return MBED_CONF_APP_DIO_5;
+            break;
+        case MBED_CONF_APP_DIO_5:
+            return MBED_CONF_APP_DIO_4;
+            break;
+        case MBED_CONF_APP_DIO_6:
+            return MBED_CONF_APP_DIO_7;
+            break;
+        case MBED_CONF_APP_DIO_7:
+            return MBED_CONF_APP_DIO_6;
+            break;
+        case MBED_CONF_APP_DIO_8:
+            return MBED_CONF_APP_DIO_9;
+            break;
+        case MBED_CONF_APP_DIO_9:
+            return MBED_CONF_APP_DIO_8;
+            break;
+        default:
+            return NC;
+            break;
+    }
+}
+
 // Template to test that a PWM signal has the correct length by measuring the number of rise interrupts
 // interrupts during a specified number of tests. 
-template <PinName pwm_out_pin, PinName int_in_pin, int period_in_miliseconds, int num_tests> 
+template <PinName pwm_out_pin, int period_in_miliseconds, int num_tests>
 void PWM_Period_Test(){
   // Initialize PWM, InterruptIn, Timer, and Rising / Falling edge counts
   rise_count = 0;
   PwmOut pwm(pwm_out_pin);
+  PinName int_in_pin = PWM_IN(pwm_out_pin);
   InterruptIn iin(int_in_pin);
   iin.rise(cbfn_rise);
   pwm.period((float)period_in_miliseconds/1000);
@@ -116,10 +156,10 @@ Case cases[] = {
   Case("Pwm object definable", pwm_define_test,greentea_failure_handler),   
 
   // Test Frequency length by counting rise ticks
-  Case("PWM_0 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_0, MBED_CONF_APP_DIO_2, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
-  Case("PWM_1 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_1, MBED_CONF_APP_DIO_4, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
-  Case("PWM_2 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_2, MBED_CONF_APP_DIO_7, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
-  Case("PWM_3 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_3, MBED_CONF_APP_DIO_8, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
+  Case("PWM_0 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_0, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
+  Case("PWM_1 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_1, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
+  Case("PWM_2 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_2, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
+  Case("PWM_3 Frequency 30ms",  PWM_Period_Test< MBED_CONF_APP_PWM_3, 30,  100 >, greentea_failure_handler),  // Test at 30ms 100 times, default 50%duty cycle
 
 };
 
