@@ -51,7 +51,6 @@ void pwm_interrupt_timer_test()
     Timer timer;
     PwmOut pwm(MBED_CONF_APP_PWM_0);
     InterruptIn x(MBED_CONF_APP_DIO_2);
-    InterruptIn y(MBED_CONF_APP_DIO_4);
     x.rise(cbfn_rise);
     x.fall(cbfn_fall);
     fall_count = 0;
