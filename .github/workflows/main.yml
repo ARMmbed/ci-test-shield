@@ -1,0 +1,33 @@
+on:
+  pull_request:
+  push:
+
+jobs: 
+  build-cli-v1:
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:master-latest
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [K64F, NUCLEO_F429ZI]
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Checkout mbed-os
+        uses: actions/checkout@v2
+        with:
+          repository: ARMmbed/mbed-os
+          path: mbed-os
+                    
+      -
+        name: build-example
+        run: |
+          set -e
+          rm -f mbed-os.lib
+          mbed deploy
+          mbed test --compile -t GCC_ARM -m ${{ matrix.target }} -n tests-*
